@@ -45,6 +45,8 @@
 	</beans:bean>
 
 	<!-- Web Application Security -->
+	<global-method-security secured-annotations="enabled"/>
+	
 	<http pattern="/static/**" security="none"/>
 	
 	<http auto-config="true" use-expressions="true">

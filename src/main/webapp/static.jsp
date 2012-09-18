@@ -28,12 +28,39 @@
 		<title>Application Configuration</title>
 	</head>
 	<body>
-		<jsp:include page="includes/header.jsp" />
+		<div class="navbar navbar-fixed-top">
+	      <div class="navbar-inner">
+	        <div class="container-fluid">
+	          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	            <span class="icon-bar"></span>
+	          </a>
+	          <a class="brand" href="<c:url value="/" />">Application Configuration</a>
+	          <div class="nav-collapse collapse">
+	            <ul class="nav">
+	              <li class="active"><a href="<c:url value="/applications" />">Applications</a></li>
+	              <li><a href="<c:url value="/environments" />">Environments</a></li>
+	            </ul>
+	            	<sec:authorize access="isAnonymous()">
+			            <form class="navbar-form pull-right" action="j_spring_security_check" method="post">
+			              <input class="span2" type="text" placeholder="Login" name="j_username">
+			              <input class="span2" type="password" placeholder="Password" name="j_password">
+			              <button type="submit" class="btn">Sign in</button>
+			            </form>
+		            </sec:authorize>
+		            <sec:authorize access="isAuthenticated()">
+		            	<p class="navbar-text pull-right">
+		            		<a href="<c:url value="/j_spring_security_logout" />">Logout: </a> <sec:authentication property="principal.username" />
+		            	</p>
+	            	</sec:authorize>
+	          </div><!--/.nav-collapse -->
+	        </div>
+	      </div>
+	    </div>
 	    
 	    <div class="container-fluid">
       		<div class="row-fluid">
-	
-				<!-- Side Navigation - The Applications -->
         		<div class="span3">
           			<div class="well sidebar-nav">
             			<ul class="nav nav-list">
@@ -41,12 +68,6 @@
               				<c:forEach items="${applicationList}" var="application">
               					<li><a href="#" class="application-selectable" applicationName="${application.name}" applicationId="${application.id}">${application.name}</a></li>
               				</c:forEach>
-              				<li>
-              					<a href="#">Test App</a>
-              					<ul>
-              						<li><a href="#asdf">Test Env</a></li>
-              					</ul>
-              				</li>
               			</ul>
               		</div>
               		
@@ -57,9 +78,9 @@
               		<div class="tabbable tabs-top">
               			<ul class="nav nav-tabs">
               				<li><a href="#settings" data-toggle="tab">Settings</a></li>
-              				<li class="active"><a href="<c:url value="/application/${applicationList[0].name}/environment/Default"/>">Default</a></li>
+              				<li class="active"><a href="#tab1" data-toggle="tab">Default</a></li>
               				<li><a href="#tab2" data-toggle="tab">Development</a></li>
-              				<li class="pull-right"><a href="#addEnvironmentModal" data-toggle="modal">Add +</a></li>
+              				<li class="pull-right"><a href="addNewEnvironment">Add +</a></li>
               			</ul>
               			
               			<div class="tab-content">
@@ -125,9 +146,9 @@
               				
               				<div class="tab-pane" id="settings">
               					<form>
-              						<legend id="settings-label">iVOS Settings</legend>
+              						<legend>iVOS Settings</legend>
               						<label>Application Name</label>
-              						<input type="text" name="settings-name" id="settings-name" value="iVOS"/>
+              						<input type="text" value="iVOS"/>
               						
               						<label>Application Owner</label>
               						<select>
@@ -135,10 +156,17 @@
               						</select>
               						
               						<label>---- Private Key ----</label>
-              						<pre id="settings-privateKey"></pre>
+              						<pre>jO1O1v2ftXMsawM90tnXwc6xhOAT1gDBC9S8DKeca..JZNUgYYwNS0dP2UK
+tmyN+XqVcAKw4HqVmChXy5b5msu8eIq3uc2NqNVtR..2ksSLukP8pxXcHyb
++sEwvM4uf8qbnHAqwnOnP9+KV9vds6BaH1eRA4CHz..n+NVZlzBsTxTlS16
+/Umr7wJzVrMqK5sDiSu4WuaaBdqMGfL5hLsTjcBFD..Da2iyQmSKuVD4lIZ
+yPQqjHKT70kEuSz+vdKuAzoIGNCvgQxXyqKSSX7td..1r7GBbjlIT7xgo8B
+LvNaqyvLW5qKCMfWSVJr7xnP1xUU3MVoahhUPxOKX..sEvVM+tkeSPh7GxF</pre>
               						
               						<label>---- Public Key ----</label>
-              						<pre id="settings-publicKey"></pre>
+              						<pre>7QQjk4VpzzxuHx9XKPnYMOE9p8EEJiAyMW+Ms6blh..t3P9GPUJ9aRaH7yl
+uUwJ2JXIZu1us4oObAi2mAmSWBebKiWQYBzuNDryK..iNAcY/7kndVqcxV2
+PCFMM9TwsiJq6r38+CfvdIkol7sQcPf4us1fpVJSc..EB9U7obrrgX6s2PG</pre>
               						<br>
               						<button type="submit" class="btn btn-primary">Save</button>
               						<button type="submit" class="btn btn-warning">Regenerate Keys</button>
@@ -162,29 +190,6 @@
 		    <form>
 		    	<label>Application Name</label>
 		    	<input id="addApplicationName" type="text" />
-		    </form>
-		  </div>
-		  <div class="modal-footer">
-		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		    <button class="btn btn-primary">Save changes</button>
-		  </div>
-		</div>
-		
-		<!-- Add application modal dialog -->
-		<div class="modal hide fadein" id="addEnvironmentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		  <div class="modal-header">
-		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		    <h3 id="myModalLabel">Add Environment</h3>
-		  </div>
-		  <div class="modal-body">
-		    <form>
-		    	<label>Environment Name</label>
-		    	<input id="addApplicationName" type="text" />
-		    	
-		    	<label>Extends</label>
-		    	<select>
-		    		<option value="">None</option>
-		    	</select>
 		    </form>
 		  </div>
 		  <div class="modal-footer">
