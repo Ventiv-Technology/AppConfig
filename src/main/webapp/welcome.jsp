@@ -6,7 +6,7 @@
 	<head>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-		<link href="static/css/bootstrap.min.css" rel="stylesheet">
+		<link href="<c:url value="/static/css/bootstrap.min.css" />" rel="stylesheet">
 		<style type="text/css">
 	      body {
 	        padding-top: 60px;
@@ -16,15 +16,15 @@
 	        padding: 9px 0;
 	      }
 	    </style>
-    	<link href="static/css/bootstrap-responsive.min.css" rel="stylesheet">
+    	<link href="<c:url value="/static/css/bootstrap-responsive.min.css" />" rel="stylesheet">
     	
-		<script src="static/js/jquery-1.8.1.min.js"></script>
-		<script src="static/js/bootstrap.min.js"></script>
-		<script>
-			$(function() {
-				$('.tooltip-holder').tooltip();
-			});
-		</script>
+    	<script type="text/javascript">
+    		var contextRoot = '<c:url value="/"/>';
+    	</script>
+    	
+		<script src="<c:url value="/static/js/jquery-1.8.1.min.js" />"></script>
+		<script src="<c:url value="/static/js/bootstrap.min.js" />"></script>
+		<script src="<c:url value="/static/js/application.js" />" ></script>
 		<title>Application Configuration</title>
 	</head>
 	<body>
@@ -71,9 +71,7 @@
               			</ul>
               		</div>
               		
-              		<div>
-              			<button class="btn">Add Application</button>
-              		</div>
+              		<a href="#addApplicationModal" role="button" class="btn" data-toggle="modal">Add Application</a>
               	</div><!-- End Sidebar -->
               	
               	<div class="span9">
@@ -180,6 +178,24 @@ PCFMM9TwsiJq6r38+CfvdIkol7sQcPf4us1fpVJSc..EB9U7obrrgX6s2PG</pre>
               	</div>
               	
 			</div>
+		</div>
+		
+		<!-- Add application modal dialog -->
+		<div class="modal hide fadein" id="addApplicationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3 id="myModalLabel">Add Application</h3>
+		  </div>
+		  <div class="modal-body">
+		    <form>
+		    	<label>Application Name</label>
+		    	<input id="addApplicationName" type="text" />
+		    </form>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		    <button class="btn btn-primary">Save changes</button>
+		  </div>
 		</div>
 		              
 	</body>
