@@ -37,62 +37,85 @@ $(function() {
 	
 	// Handle the environments selector
 	$("#applicationList .application-environment").click(function() {
-		var clickedEnvironment = $(this);
-		var environmentName = clickedEnvironment.attr("environmentName");
-		var applicationName =clickedEnvironment.attr("applicationName");
-		
-		$("#application-contents").load(contextRoot + "application/" + applicationName + "/environment/" + environmentName, function() {
-			$("#applicationList .active").removeClass("active");
-			clickedEnvironment.addClass("active");
-			activeEnvironmentName = environmentName;
-			
-			initializeNewEnvironment();			
-		});
+		loadNewEnvironment($(this).attr("environmentName"));
 	});
 	
 	// Handle pressing escape to reset forms
 	$("body").keyup(function() {
 		if (event.which == 27) {
-			$(".property-row").off('click');
 			$("#properties-body input").replaceWith(function() {
 				return $(this).attr("originalValue");
 			});
-			$(".property-row").click(onPropertyRowClick);
+			resetPropertyRowClickHandlers();
 		}
 	});
+	
+	
 });
+
+/**
+ * Loads new environment in the right side pane (ID = application-contents).  This will load via an environment name (for RESTful purposes)
+ * for the current, active application.
+ * 
+ * @param environmentName
+ */
+function loadNewEnvironment(environmentName) {
+	$('.tooltip-holder').tooltip('hide');
+	$("#application-contents").load(contextRoot + "application/" + activeApplicationName + "/environment/" + environmentName, function() {		
+		$("#applicationList .active").removeClass("active");
+		$("#applicationList .application-environment[environmentName=" + environmentName + "]").addClass("active");
+		activeEnvironmentName = environmentName;
+		
+		initializeNewEnvironment();			
+	});
+}
 
 function initializeNewEnvironment() {
 	$('.tooltip-holder').tooltip();
 	attachAddPropertyListener();
-	$(".property-row").click(onPropertyRowClick);
+	$(".property-delete").click(onPropertyDelete);
+	$(".property-encrypt").click(onPropertyEncrypt);
+	$(".property-decrypt").click(onPropertyDecrypt);
+	resetPropertyRowClickHandlers();
+	$("#confirmChangeKeys .btn-warning").click(regenerateKeysForCurrentEnvironment);
+}
+
+function resetPropertyRowClickHandlers() {
+	$(".property-key").off('click');
+	$(".property-value").off('click');
+	$(".property-key").click(onPropertyRowClick);
+	$(".property-value").click(onPropertyRowClick);
 }
 
 
 function attachAddPropertyListener() {
 	$('#addProperty').click(function() {
-		var newRow = $("<tr class='property-row' propertyName='__adding_new_key__'><td></td><td></td><td></td></tr>").appendTo("#properties-body");
-		newRow.click(onPropertyRowClick);
+		var newRow = $("<tr class='property-row'><td class='property-key'><input type='text' originalValue='__adding_new_property__' value=''/></td><td class='property-value'><input type='text' originalValue='' value=''/></td><td></td><td></td><td></td></tr>").appendTo("#properties-body");
+		newRow.find(".property-key").keyup(onPropertySubmission);
+		newRow.find(".property-value").keyup(onPropertySubmission);
 	});
 }
 
 function onPropertyRowClick() {
-	$(this).off('click');
-	var keyTableCell = $(this).children()[0];
-	var valueTableCell = $(this).children()[1];
+	var propertyRow = $(this).parents(".property-row");
+	var keyTableCell = propertyRow.find(".property-key");
+	var valueTableCell = propertyRow.find(".property-value");
 	
-	var newKey = $("<td><input type='text' originalValue='" + $(keyTableCell).text() + "' value='" + $(keyTableCell).text() + "'/></td>");
-	$(keyTableCell).replaceWith(newKey);
+	keyTableCell.off('click');
+	valueTableCell.off('click');
 	
-	var newValue = $("<td><input type='text' originalValue='" + $(valueTableCell).text() + "' value='" + $(valueTableCell).text() + "'/></td>");
-	$(valueTableCell).replaceWith(newValue);
+	var newKey = $("<input type='text' originalValue='" + $(keyTableCell).text() + "' value='" + $(keyTableCell).text() + "'/>");
+	keyTableCell.html(newKey);
+	
+	var newValue = $("<input type='text' originalValue='" + $(valueTableCell).text() + "' value='" + $(valueTableCell).text() + "'/>");
+	valueTableCell.html(newValue);
 
-	newKey.find("input").keyup(onPropertySubmission);
-	newValue.find("input").keyup(onPropertySubmission);
+	newKey.keyup(onPropertySubmission);
+	newValue.keyup(onPropertySubmission);
 }
 
 function onPropertySubmission(event) {
-	var tableRow = $(this).parent().parent();
+	var tableRow = $(this).parents(".property-row");
 	var key = tableRow.find("input:first").val();
 	var value = tableRow.find("input:last").val();
 	var originalKey = tableRow.find("input:first").attr("originalValue");
@@ -100,15 +123,77 @@ function onPropertySubmission(event) {
 	
 	if (event.which == 13) {
 		$.ajax({
-			url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey + "?key=" + key + "&value=" + value,
+			url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey + "?key=" + encodeURIComponent(key) + "&value=" + encodeURIComponent(value),
 			type: "POST",
 			dataType: "JSON",
 			success: function(data) {
 				tableRow.find("input:first").replaceWith(key);
 				tableRow.find("input:last").replaceWith(value);
 				
-				tableRow.click(onPropertyRowClick);
+				resetPropertyRowClickHandlers();
 			}
 		});
 	}
+}
+
+function onPropertyDelete() {
+	var tableRow = $(this).parents(".property-row");
+	var originalKey = tableRow.find("input:first").attr("originalValue");
+	if (originalKey == null)
+		originalKey = tableRow.find(".property-key").text();
+	
+	$.ajax({
+		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey,
+		type: "DELETE",
+		dataType: "JSON",
+		success: function(data) {
+			loadNewEnvironment(activeEnvironmentName);
+		}
+	});
+}
+
+function onPropertyEncrypt() {
+	var tableRow = $(this).parents(".property-row");
+	var originalKey = tableRow.find("input:first").attr("originalValue");
+	if (originalKey == null)
+		originalKey = tableRow.find(".property-key").text();
+	
+	$.ajax({
+		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey + "/encrypt",
+		type: "POST",
+		dataType: "JSON",
+		success: function(data) {
+			loadNewEnvironment(activeEnvironmentName);
+		}
+	});
+}
+
+function onPropertyDecrypt() {
+	var tableRow = $(this).parents(".property-row");
+	var originalKey = tableRow.find("input:first").attr("originalValue");
+	if (originalKey == null)
+		originalKey = tableRow.find(".property-key").text();
+	
+	$.ajax({
+		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey + "/decrypt",
+		type: "POST",
+		dataType: "JSON",
+		success: function(data) {
+			loadNewEnvironment(activeEnvironmentName);
+		}
+	});
+}
+
+function regenerateKeysForCurrentEnvironment() {
+	$.ajax({
+		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/keys",
+		type: "POST",
+		dataType: "JSON",
+		success: function(data) {
+			$("#settings-privateKey").text(data.privateKey);
+			$("#settings-publicKey").text(data.publicKey);
+			
+			$("#confirmChangeKeys").modal('hide');
+		}
+	});
 }

@@ -21,9 +21,15 @@ class InheritanceUtil {
 				if (answer.containsKey(it.key) == false) {
 					def inheritedFrom = env == currentEnv ? null : currentEnv;
 					answer.put(it.key, new Variable([key: it.key, value: it.value, inheritedFrom: inheritedFrom]))
+					
+					if (currentEnv?.getEncryptedVariables()?.contains(it.key))
+						answer.get(it.key).setEncrypted(Boolean.TRUE);
 				} else {
 					answer.get(it.key).overrides = currentEnv
 					answer.get(it.key).overrideValue = it.value
+					
+					if (currentEnv?.getEncryptedVariables()?.contains(it.key))
+						answer.get(it.key).setOverrideEncrypted(Boolean.TRUE);
 				}
 			}
 			
@@ -31,7 +37,9 @@ class InheritanceUtil {
 			fetchPersistable(currentEnv);
 		}
 		
-		answer.values()
+		answer.values().sort { a, b ->
+			a.key <=> b.key
+		}
 	}
 	
 	protected void fetchPersistable(def persistable) {

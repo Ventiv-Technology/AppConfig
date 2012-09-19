@@ -26,8 +26,11 @@ dependencies {
 	compile group: 'org.springframework', name: 'spring-aspects', version: '3.1.2.RELEASE'
 	compile group: 'org.springframework', name: 'spring-tx', version: '3.1.2.RELEASE'
 	compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.3.0.Final'
-	compile group: 'com.crygier', name: 'SpringUtils', version: '1.0.0'
+	compile group: 'com.crygier', name: 'SpringUtils', version: '1.0.1'
 	compile group: 'jstl', name: 'jstl', version: '1.2'
+	compile group: 'commons-codec', name: 'commons-codec', version: '1.7'
+	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+	compile group: 'bouncycastle', name: 'bcprov-jdk16', version: '140'
 	
 	// Security
 	compile group: 'org.springframework.security', name: 'spring-security-core', version: '3.1.2.RELEASE'

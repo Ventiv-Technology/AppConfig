@@ -16,7 +16,7 @@
 	<context:component-scan base-package="org.aon.esolutions.appconfig.web.controller" />
 	
 	<!-- Web MVC Setup -->
-	<mvc:annotation-driven>
+	<mvc:annotation-driven>		
     	<mvc:argument-resolvers>
         	<bean class="org.springframework.data.web.PageableArgumentResolver" />
     	</mvc:argument-resolvers>

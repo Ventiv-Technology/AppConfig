@@ -64,4 +64,29 @@ class InheritanceUtilSpec extends Specification {
 		variables.find() { it.key == "variable.2" }.overrideValue == "value.2"
 		variables.find() { it.key == "variable.2" }.value == "value.overridden"
 	}
+	
+	def "test override encrypted with unencrypted"() {
+		when:
+		Environment parent = new Environment();
+		parent.put("variable.1", "value.1");
+		parent.put("variable.2", "value.2.encrypted");
+		parent.put("variable.4", "value.4.encrypted");
+		parent.addEncryptedVariable("variable.2");
+		parent.addEncryptedVariable("variable.4");
+		
+		Environment child = new Environment();
+		child.put("variable.2", "value.overridden");
+		child.put("variable.3", "value.3.encrypted");
+		child.addEncryptedVariable("variable.3");
+		child.setParent(parent);
+		
+		Collection<Variable> variables = util.getVariablesForEnvironment(child);
+		
+		then:
+		variables
+		variables.find() { it.key == "variable.1" }.encrypted == false
+		variables.find() { it.key == "variable.2" }.encrypted == false
+		variables.find() { it.key == "variable.3" }.encrypted
+		variables.find() { it.key == "variable.4" }.encrypted
+	}
 }

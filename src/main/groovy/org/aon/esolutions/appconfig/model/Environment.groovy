@@ -1,6 +1,6 @@
 package org.aon.esolutions.appconfig.model
 
-import java.util.Map.Entry;
+import java.util.Map.Entry
 
 import org.springframework.data.neo4j.annotation.GraphId
 import org.springframework.data.neo4j.annotation.NodeEntity
@@ -15,11 +15,14 @@ class Environment {
 	Long id;
 	
 	String name;
+	String privateKey;
+	String publicKey;
 	
 	@RelatedTo(type = "INHERITS_FROM")
 	Environment parent;
 	
 	DynamicProperties variables;
+	List<String> encryptedVariables;
 	
 	public void put(String key, String value) {
 		getVariables().setProperty(key, value);
@@ -42,5 +45,16 @@ class Environment {
 	
 	public Set<Entry<String, String>> getVariableEntries() {
 		getVariables().asMap().entrySet();
+	}
+	
+	public void addEncryptedVariable(String key) {
+		getEncryptedVariables().add(key);
+	}
+	
+	public List<String> getEncryptedVariables() {
+		if (encryptedVariables == null)
+			encryptedVariables = new ArrayList<String>();
+			
+		return encryptedVariables;
 	}
 }

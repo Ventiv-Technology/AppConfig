@@ -37,7 +37,7 @@
       		<div class="row-fluid">
 	
 				<!-- Side Navigation - The Applications -->
-        		<div class="span3">
+        		<div class="span2">
           			<div class="well sidebar-nav">
             			<ul class="nav nav-list" id="applicationList">
               				<li class="nav-header">Applications</li>
@@ -56,7 +56,7 @@
               		<a href="#addEnvironmentModal" role="button" class="btn" data-toggle="modal">Add Environment</a>
               	</div><!-- End Sidebar -->
               	
-              	<div class="span9" id="application-contents">
+              	<div class="span10" id="application-contents">
               		<form>
 						<legend>${application.name} Settings</legend>
 						<label>Application Name</label>
@@ -113,6 +113,23 @@
 		    <button class="btn btn-primary">Save changes</button>
 		  </div>
 		</div>
-		              
+		
+		<!-- Confirm Change Keys Dialog -->
+		<div class="modal hide fadein" id="confirmChangeKeys" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3 id="myModalLabel">Confirm Key Change</h3>
+		  </div>
+		  <div class="modal-body">
+		    <p>WARNING: Changing the keys will re-encrypt all encrypted values in the system, but if these have been exported to a
+		    file system for a running application, they will no longer work unless the private key is stored along side.  Please
+		    ensure you really know what you're doing before finishing.</p>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		    <button class="btn btn-warning">Change Keys</button>
+		  </div>
+		</div>
+		
 	</body>
 </html>
