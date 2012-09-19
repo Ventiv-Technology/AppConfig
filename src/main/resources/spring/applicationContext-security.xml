@@ -15,34 +15,17 @@
 		</beans:property>
 	</beans:bean>
 
-	<!-- LDAP Configuration - TODO: Move this into a customized class that reads properties and kicks out proper authentication type - spring wrapper -->
-	<beans:bean id="contextSource" class="org.springframework.security.ldap.DefaultSpringSecurityContextSource">
-		<beans:constructor-arg value="${security.ldap.server.url}" />
-		<beans:property name="userDn" value="${security.ldap.server.manager.dn}" />
-		<beans:property name="password" value="${security.ldap.server.manager.password}" />
-	</beans:bean>
-	
-	<beans:bean id="ldapUserSearch" class="org.springframework.security.ldap.search.FilterBasedLdapUserSearch">
-		<beans:constructor-arg index="0" value="${security.ldap.user.search.base}"/>
-		<beans:constructor-arg index="1" value="${security.ldap.user.search.filter}"/>
-		<beans:constructor-arg index="2" ref="contextSource"/>
-	</beans:bean>
-
-	<beans:bean id="ldap" class="org.springframework.security.ldap.authentication.LdapAuthenticationProvider">
-		<beans:constructor-arg>
-			<beans:bean class="org.springframework.security.ldap.authentication.BindAuthenticator">
-				<beans:constructor-arg ref="contextSource" />
-				<beans:property name="userSearch" ref="ldapUserSearch"/>
-			</beans:bean>
-		</beans:constructor-arg>
-		<beans:constructor-arg>
-			<beans:bean class="org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator">
-				<beans:constructor-arg ref="contextSource" />
-				<beans:constructor-arg value="${security.ldap.group.search.base}" />
-				<beans:property name="groupSearchFilter" value="${security.ldap.group.search.filter}" />
-			</beans:bean>
-		</beans:constructor-arg>
-	</beans:bean>
+	<!-- Authentication - LDAP hardcoded for now -->
+	<ldap-server url="${security.ldap.server.url}" 
+	             manager-dn="${security.ldap.server.manager.dn}" 
+	             manager-password="${security.ldap.server.manager.password}"/>
+	             
+	<authentication-manager>
+		<ldap-authentication-provider group-search-base="${security.ldap.group.search.base}"
+		                              group-search-filter="${security.ldap.group.search.filter}"
+		                              user-search-base="${security.ldap.user.search.base}"
+		                              user-search-filter="${security.ldap.user.search.filter}"/>
+	</authentication-manager>
 
 	<!-- Web Application Security -->
 	<global-method-security secured-annotations="enabled"/>
@@ -53,14 +36,5 @@
 		<intercept-url pattern="/" access="permitAll"/>
 		<intercept-url pattern="/**" access="permitAll" />
 	</http>
-
-	<authentication-manager>
-		<authentication-provider ref="${security.user.service.name}" />
-	</authentication-manager>
-	
-	<user-service id="testService">
-		<user name="jimi" password="jimispassword" authorities="ROLE_USER, ROLE_ADMIN" />
-		<user name="bob" password="bobspassword" authorities="ROLE_USER" />
-	</user-service>
 
 </beans:beans>
