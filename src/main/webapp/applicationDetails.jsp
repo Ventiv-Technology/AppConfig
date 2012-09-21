@@ -52,8 +52,8 @@
               			</ul>
               		</div>
               		
-              		<a href="#addApplicationModal" role="button" class="btn" data-toggle="modal">Add Application</a>
-              		<a href="#addEnvironmentModal" role="button" class="btn" data-toggle="modal">Add Environment</a>
+              		<a href="#addApplicationModal" role="button" class="btn" data-toggle="modal">+ App</a>
+              		<a href="#addEnvironmentModal" role="button" class="btn" data-toggle="modal">+ Env</a>
               	</div><!-- End Sidebar -->
               	
               	<div class="span10" id="application-contents">

@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2012 Aon eSolutions
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package org.aon.esolutions.appconfig.web.controller;
 
 import java.security.Key;
@@ -14,6 +29,7 @@ import org.aon.esolutions.appconfig.util.RSAEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,7 +69,8 @@ public class EnvironmentController {
 		return null;
 	}
 	
-	@RequestMapping(value = "/{environmentName}", method = RequestMethod.PUT)
+	@Transactional
+	@RequestMapping(value = "/{environmentName}", method = RequestMethod.PUT)	
 	public Environment addEnvironment(@PathVariable String applicationName, @PathVariable String environmentName, @RequestParam("parentId") String parentId) {
 		Application app = applicationRepository.findByName(applicationName);
 		Environment parent = environmentRepository.findOne(Long.parseLong(parentId));
@@ -66,6 +83,7 @@ public class EnvironmentController {
 		return newEnv;
 	}
 	
+	@Transactional
 	@RequestMapping(value = "/{environmentName}/keys", method = RequestMethod.POST)
 	public Map<String, String> updateKeys(@PathVariable String applicationName, @PathVariable String environmentName) throws Exception {
 		Environment env = getEnvironment(applicationName, environmentName);
@@ -110,6 +128,7 @@ public class EnvironmentController {
 		return answer;
 	}
 	
+	@Transactional
 	@RequestMapping(value = "/{environmentName}/variable/{existingKey:.*}", method = RequestMethod.POST)
 	public void updateVariable(@PathVariable String applicationName, @PathVariable String environmentName, 
 			                  @PathVariable String existingKey, @RequestParam("key") String updatedKey, @RequestParam("value") String updatedValue) {
@@ -123,6 +142,7 @@ public class EnvironmentController {
 		}
 	}
 	
+	@Transactional
 	@RequestMapping(value = "/{environmentName}/variable/{existingKey}/encrypt", method = RequestMethod.POST)
 	public  Map<String, String> encryptVariable(@PathVariable String applicationName, @PathVariable String environmentName, @PathVariable String existingKey) throws Exception {
 		Environment env = getEnvironment(applicationName, environmentName);
@@ -143,6 +163,7 @@ public class EnvironmentController {
 		return null;
 	}
 	
+	@Transactional
 	@RequestMapping(value = "/{environmentName}/variable/{existingKey}/decrypt", method = RequestMethod.POST)
 	public  Map<String, String> decryptVariable(@PathVariable String applicationName, @PathVariable String environmentName, @PathVariable String existingKey) throws Exception {
 		Environment env = getEnvironment(applicationName, environmentName);
@@ -166,6 +187,7 @@ public class EnvironmentController {
 		return null;
 	}
 	
+	@Transactional
 	@RequestMapping(value = "/{environmentName}/variable/{existingKey:.*}", method = RequestMethod.DELETE)
 	public void deleteVariable(@PathVariable String applicationName, @PathVariable String environmentName, @PathVariable String existingKey) {
 		Environment env = getEnvironment(applicationName, environmentName);

@@ -19,26 +19,13 @@
 	xmlns:beans="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:neo4j="http://www.springframework.org/schema/data/neo4j"
-	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
 		http://www.springframework.org/schema/data/neo4j http://www.springframework.org/schema/data/neo4j/spring-neo4j-2.0.xsd">
 
-	<!-- Import the bits that are configurable -->
-	<beans:import resource="includes/applicationContext-security-${security.authentication.name}.xml"/>
-
-	<beans:bean id="aclService" class="org.aon.esolutions.appconfig.security.Neo4jAclService">
-		<beans:property name="defaultGrantedPermissions">
-			<beans:map>
-				<beans:entry key="org.aon.esolutions.appconfig.model.Application">
-					<beans:array>
-						<util:constant static-field="org.springframework.security.acls.domain.BasePermission.READ"/>
-					</beans:array>
-				</beans:entry>
-			</beans:map>
-		</beans:property>
-	</beans:bean>
+	<neo4j:repositories base-package="org.aon.esolutions.appconfig.security.repository"/>
+	
+	<beans:bean id="aclService" class="org.aon.esolutions.appconfig.security.Neo4jAclService"/>
 	
 	<beans:bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
 	    <beans:property name="permissionEvaluator">
@@ -47,19 +34,5 @@
 	        </beans:bean>
 	    </beans:property>
 	</beans:bean>
-	
-	<!-- Web Application Security -->
-	<global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
-	    <expression-handler ref="expressionHandler" />
-	</global-method-security>
-	
-	<http pattern="/static/**" security="none"/>
-	
-	<http auto-config="true" use-expressions="true" >
-<!-- 		<http-basic /> -->
-<!-- 	    <logout /> -->
-		<intercept-url pattern="/" access="permitAll"/>
-		<intercept-url pattern="/**" access="permitAll" />
-	</http>
 
 </beans:beans>

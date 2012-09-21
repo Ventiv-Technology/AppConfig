@@ -11,6 +11,15 @@
 	    <param-value>classpath*:spring/applicationContext*.xml</param-value>
 	</context-param>
 	
+	<context-param>
+	    <param-name>system.properties.property</param-name>
+	    <param-value>appconfig.properties.location</param-value>
+	</context-param>
+	
+	<listener>
+		<listener-class>org.aon.esolutions.appconfig.web.SystemPropertiesListener</listener-class>
+	</listener>
+	
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>

@@ -13,31 +13,42 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.aon.esolutions.appconfig.model
+package org.aon.esolutions.appconfig.security.model
 
+import org.apache.commons.lang.ObjectUtils;
 import org.springframework.data.neo4j.annotation.GraphId
+import org.springframework.data.neo4j.annotation.Indexed
 import org.springframework.data.neo4j.annotation.NodeEntity
 import org.springframework.data.neo4j.annotation.RelatedTo
+import org.springframework.data.neo4j.support.index.IndexType;
+import org.springframework.security.acls.model.ObjectIdentity
 
 @NodeEntity
-class Application {
-	
-	@GraphId
+class Neo4jObjectIdentity implements ObjectIdentity {
+
+	@GraphId	
 	Long id;
 	
-	@RelatedTo(type = "USED_IN")
-	Set<Environment> environments;
+	String type;
 	
-	String name;
-	String privateKey;
-	String publicKey;
-	String[] ownerRoles;
-	String[] ownerLogins;
+	@Indexed( indexName="domainObjectId", indexType=IndexType.SIMPLE)
+	Long domainObjectId;
 	
-	public void addEnvironment(Environment env) {
-		if (environments == null)
-			environments = new TreeSet<Environment>()
-			
-		environments.add(env);
+	@RelatedTo(type = "PARENT_OF")
+	Set<Neo4jObjectIdentity> children;
+	
+	@Override
+	public Serializable getIdentifier() {
+		return domainObjectId;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return ObjectUtils.equals(domainObjectId, obj?.domainObjectId)
+	}
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode();
 	}
 }

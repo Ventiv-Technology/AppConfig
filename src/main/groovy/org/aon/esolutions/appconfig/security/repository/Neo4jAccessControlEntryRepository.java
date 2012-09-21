@@ -13,19 +13,13 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.aon.esolutions.appconfig.repository;
+package org.aon.esolutions.appconfig.security.repository;
 
-import org.aon.esolutions.appconfig.model.Environment;
+import org.aon.esolutions.appconfig.security.model.Neo4jAccessControlEntry;
 import org.springframework.data.neo4j.repository.GraphRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface EnvironmentRepository extends GraphRepository<Environment> {
-	
-	@Override
-	@Transactional
-	@PreAuthorize("hasPermission(#environment, 'WRITE')")
-	public <U extends Environment> U save(U envrionment);
+public interface Neo4jAccessControlEntryRepository extends GraphRepository<Neo4jAccessControlEntry> {
+
 }

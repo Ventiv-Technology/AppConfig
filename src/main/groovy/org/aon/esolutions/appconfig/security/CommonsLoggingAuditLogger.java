@@ -13,19 +13,20 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.aon.esolutions.appconfig.repository;
+package org.aon.esolutions.appconfig.security;
 
-import org.aon.esolutions.appconfig.model.Environment;
-import org.springframework.data.neo4j.repository.GraphRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.security.acls.domain.AuditLogger;
+import org.springframework.security.acls.model.AccessControlEntry;
 
-@Repository
-public interface EnvironmentRepository extends GraphRepository<Environment> {
+public class CommonsLoggingAuditLogger implements AuditLogger {
 	
+	private static final Log logger = LogFactory.getLog(CommonsLoggingAuditLogger.class);
+
 	@Override
-	@Transactional
-	@PreAuthorize("hasPermission(#environment, 'WRITE')")
-	public <U extends Environment> U save(U envrionment);
+	public void logIfNeeded(boolean granted, AccessControlEntry ace) {
+		logger.debug("AUDIT LOG: isGranted: " + granted + " for ACE: " + ace);
+	}
+
 }

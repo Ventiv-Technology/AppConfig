@@ -28,22 +28,24 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 	
-	<bean id="propertyPlaceholderConfigurer" class="com.crygier.spring.util.SystemPropertyPlaceholderConfigurer">
-		<property name="systemProperty" value="appconfig.properties.location" />
-		<property name="ignoreResourceNotFound" value="true" />
-		<property name="ignoreUnresolvablePlaceholders" value="true"/>
-		<property name="locations">
-			<list>
-				<value>classpath:appconfig.properties</value>
-			</list>
-		</property>
-	</bean>
+	<import resource="applicationContext-data-neo4j-${data.neo4j.configuration}.xml"/>
 	
-	<context:annotation-config />
-	<context:spring-configured />
-	
-	<context:component-scan base-package="org.aon.esolutions.appconfig">
-		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
-	</context:component-scan>
+	<neo4j:repositories base-package="org.aon.esolutions.appconfig.repository"/>
+	<neo4j:repositories base-package="org.aon.esolutions.appconfig.security.repository" />
+
+    <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager">
+        <property name="transactionManager">
+            <bean class="org.neo4j.kernel.impl.transaction.SpringTransactionManager">
+                <constructor-arg ref="graphDatabaseService"/>
+            </bean>
+        </property>
+        <property name="userTransaction">
+            <bean class="org.neo4j.kernel.impl.transaction.UserTransactionImpl">
+                <constructor-arg ref="graphDatabaseService"/>
+            </bean>
+        </property>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
   
 </beans>
