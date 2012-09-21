@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
 @ContextConfiguration(locations = ["/spring/applicationContext.xml", "/spring/test-applicationContext-security.xml", "/spring/test-applicationContext-data.xml"])
-class Neo4jAclServiceSpec extends Specification {
+class Neo4jAclServiceSpec {// comment out - doesn't work w/ local db just remote extends Specification {
 
 	@Autowired Neo4jAclService aclService;
 	@Autowired private Neo4jTemplate template;

@@ -22,6 +22,7 @@ import java.util.Properties;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.ClassPathResource;
@@ -66,6 +67,12 @@ public class SystemPropertiesListener implements ServletContextListener {
     private void loadPropsFromSystem(String systemPropValue) {
     	Properties props = System.getProperties();
     	String fileLocation = props.getProperty(systemPropValue);
+    	
+    	if (StringUtils.isEmpty(fileLocation)) {
+    		logger.warn("Not loading properties from system property (" + systemPropValue + ") as it was not provided.");
+    		return;
+    	}
+    		
     	
     	try {
 			props.load(new FileReader(new File(fileLocation)));
