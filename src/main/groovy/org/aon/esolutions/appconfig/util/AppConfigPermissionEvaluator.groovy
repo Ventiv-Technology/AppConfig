@@ -17,10 +17,13 @@ package org.aon.esolutions.appconfig.util
 
 import org.aon.esolutions.appconfig.model.Application
 import org.aon.esolutions.appconfig.model.Environment
-import org.aon.esolutions.appconfig.model.PrivateKeyHolder;
+import org.aon.esolutions.appconfig.model.PrivateKeyHolder
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.springframework.security.access.PermissionEvaluator
 import org.springframework.security.acls.domain.DefaultPermissionFactory
 import org.springframework.security.acls.domain.PermissionFactory
+import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
@@ -28,6 +31,8 @@ import org.springframework.security.acls.model.SidRetrievalStrategy
 import org.springframework.security.core.Authentication
 
 class AppConfigPermissionEvaluator implements PermissionEvaluator {
+	
+	private static final Log logger = LogFactory.getLog(AppConfigPermissionEvaluator.class);
 	
 	private SidRetrievalStrategy sidRetrievalStrategy = new SidRetrievalStrategyImpl();
     private PermissionFactory permissionFactory = new DefaultPermissionFactory();
@@ -58,7 +63,22 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 	}
 	
 	private boolean environmentHasPermission(Environment environment, List<Sid> sids, List<Permission> permission) {
-		return true;
+		if (environment.isVisibleToAll())
+			return true;
+			
+		def authorizedSid = sids.find {
+			if (it instanceof PrincipalSid)
+				return environment.getPermittedUsers()?.contains(it.getPrincipal());
+			
+			return  environment.getPermittedRoles()?.contains(it.getGrantedAuthority());
+		}
+		
+		if (logger.debugEnabled && authorizedSid != null)
+			logger.debug("Found an authorized SID for Environment(${environment.id}) ${environment.name}: $authorizedSid");
+		else
+			logger.debug("No authorized SID for Environment(${environment.id}) ${environment.name}");
+			
+		return authorizedSid != null;
 	}
 	
 	private boolean privateKeyHasPermission(PrivateKeyHolder privateKey, List<Sid> sids, List<Permission> permission) {

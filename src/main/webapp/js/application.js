@@ -63,7 +63,11 @@ $(function() {
  */
 function loadNewEnvironment(environmentName) {
 	$('.tooltip-holder').tooltip('hide');
-	$("#application-contents").load(contextRoot + "application/" + activeApplicationName + "/environment/" + environmentName, function() {		
+	$("#application-contents").load(contextRoot + "application/" + activeApplicationName + "/environment/" + environmentName, function(responseText, textStatus, jqXHR) {
+		if (handleAjaxError(jqXHR, textStatus) == false) {
+			return;
+		}
+		
 		$("#applicationList .active").removeClass("active");
 		$("#applicationList .application-environment[environmentName=" + environmentName + "]").addClass("active");
 		activeEnvironmentName = environmentName;
@@ -206,11 +210,16 @@ function regenerateKeysForCurrentEnvironment() {
 }
 
 function handleAjaxError(jqXHR, textStatus) {
-	if (jqXHR.status == 403)
+	if (jqXHR.status == 403) {
 		showAlert("Unauthorized Action")
+		return false;
+	}
+	
+	return true;
 }
 
 
 function showAlert(message) {
+	$("#alert-holder").empty();
 	$("#alert-holder").append("<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>×</button>" + message + "</div>")
 }

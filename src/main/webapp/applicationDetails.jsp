@@ -34,6 +34,10 @@
 		<jsp:include page="includes/header.jsp" />
 	    
 	    <div class="container-fluid">
+	    	<div class="row-fluid">
+	    		<div class="span12" id="alert-holder"></div>
+	    	</div>
+	    	
       		<div class="row-fluid">
 	
 				<!-- Side Navigation - The Applications -->

@@ -33,6 +33,10 @@ class Environment {
 	String name;
 	String publicKey;
 	
+	List<String> permittedUsers;
+	List<String> permittedRoles;
+	boolean visibleToAll = true;
+	
 	@RelatedTo(type = "INHERITS_FROM")
 	Environment parent;
 	

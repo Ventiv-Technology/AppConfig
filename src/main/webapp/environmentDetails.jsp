@@ -1,6 +1,6 @@
 <%@page import="org.aon.esolutions.appconfig.model.Environment"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<div id="alert-holder"></div>
+
 <div class="tabbable tabs-top">
 	<ul class="nav nav-tabs">
 		<li><a href="#settings" data-toggle="tab">Settings</a></li>
@@ -74,10 +74,29 @@
 				<legend id="settings-label">${environment.name} Settings</legend>
 				<label>Environment Name</label> 
 				<input type="text" name="name" id="environment-name" value="${environment.name}" />
-				<label>Environment Owner</label>
-				<select>
-					<option>jcrygier</option>
-				</select>
+				
+				<div class="row-fluid">
+					<div class="span4">
+						<label>Permitted Users</label>
+						<select multiple="multiple">
+							<option selected="selected">jcrygier</option>
+							<option>cayres</option>
+							<option selected="selected">mlauer</option>
+						</select>
+					</div>
+					
+					<div class="span4">
+						<label>Permitted Roles</label>
+						<select multiple="multiple">
+							<option>ROLE_ADMIN</option>
+							<option selected="selected">ROLE_USER</option>
+						</select>
+					</div>
+				</div>
+				
+				<label class="checkbox">
+					<input type="checkbox"> Visible to All
+				</label>
 				
 				<label>---- Private Key ----</label>
 				<pre id="settings-privateKey">${environment.privateKeyHolder.privateKey}</pre>
