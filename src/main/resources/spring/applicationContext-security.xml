@@ -28,12 +28,16 @@
 	<!-- Import the bits that are configurable -->
 	<beans:import resource="includes/applicationContext-security-${security.authentication.name}.xml"/>
 
+	<!-- ACL Configuration - More complicated, but a solid architecture
 	<beans:bean id="aclService" class="org.aon.esolutions.appconfig.security.Neo4jAclService">
 		<beans:property name="defaultGrantedPermissions">
 			<beans:map>
 				<beans:entry key="org.aon.esolutions.appconfig.model.Application">
 					<beans:array>
 						<util:constant static-field="org.springframework.security.acls.domain.BasePermission.READ"/>
+						<util:constant static-field="org.springframework.security.acls.domain.BasePermission.CREATE"/>
+						<util:constant static-field="org.springframework.security.acls.domain.BasePermission.WRITE"/>
+						<util:constant static-field="org.springframework.security.acls.domain.BasePermission.DELETE"/>
 					</beans:array>
 				</beans:entry>
 			</beans:map>
@@ -45,6 +49,14 @@
 	        <beans:bean id="permissionEvaluator" class="org.springframework.security.acls.AclPermissionEvaluator">
 	        	<beans:constructor-arg ref="aclService"/>
 	        </beans:bean>
+	    </beans:property>
+	</beans:bean>
+	-->
+	
+	<!-- Simple Permission Evaluator - inspects the contents of the object for security -->
+	<beans:bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+	    <beans:property name="permissionEvaluator">
+	        <beans:bean id="permissionEvaluator" class="org.aon.esolutions.appconfig.util.AppConfigPermissionEvaluator"/>
 	    </beans:property>
 	</beans:bean>
 	

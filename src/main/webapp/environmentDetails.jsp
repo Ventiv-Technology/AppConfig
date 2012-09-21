@@ -1,5 +1,6 @@
 <%@page import="org.aon.esolutions.appconfig.model.Environment"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<div id="alert-holder"></div>
 <div class="tabbable tabs-top">
 	<ul class="nav nav-tabs">
 		<li><a href="#settings" data-toggle="tab">Settings</a></li>
@@ -79,7 +80,7 @@
 				</select>
 				
 				<label>---- Private Key ----</label>
-				<pre id="settings-privateKey">${environment.privateKey}</pre>
+				<pre id="settings-privateKey">${environment.privateKeyHolder.privateKey}</pre>
 
 				<label>---- Public Key ----</label>
 				<pre id="settings-publicKey">${environment.publicKey}</pre>

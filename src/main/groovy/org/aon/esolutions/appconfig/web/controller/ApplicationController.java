@@ -24,6 +24,7 @@ import org.aon.esolutions.appconfig.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.conversion.EndResult;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,8 +42,12 @@ public class ApplicationController {
 	private ApplicationRepository applicationRepository;
 	
 	@Autowired
+	private EnvironmentController environmentController;
+	
+	@Autowired
 	private Neo4jTemplate template;
 	
+	@PostFilter("hasPermission(returnObject, 'READ')")
 	@RequestMapping(value= "/", method = RequestMethod.GET)
 	public List<Application> getAllApplications() {
 		List<Application> answer = new ArrayList<Application>();
@@ -72,16 +77,14 @@ public class ApplicationController {
 	}
 	
 	@RequestMapping(value= "/{applicationName}", method = RequestMethod.PUT)
-	public Application addApplication(@PathVariable String applicationName) {
+	public Application addApplication(@PathVariable String applicationName) throws Exception {
 		Application app = new Application();
 		app.setName(applicationName);
+		app = applicationRepository.save(app);
 		
-		// Create the default environment
-		Environment defaultEnv = new Environment();
-		defaultEnv.setName("Default");
-		app.addEnvironment(defaultEnv);		
+		environmentController.addEnvironment(applicationName, "Default", null);
 		
-		return applicationRepository.save(app);
+		return app;
 	}
 
 }

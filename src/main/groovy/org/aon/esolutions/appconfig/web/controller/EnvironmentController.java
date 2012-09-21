@@ -22,12 +22,16 @@ import java.util.Map;
 
 import org.aon.esolutions.appconfig.model.Application;
 import org.aon.esolutions.appconfig.model.Environment;
+import org.aon.esolutions.appconfig.model.PrivateKeyHolder;
 import org.aon.esolutions.appconfig.repository.ApplicationRepository;
 import org.aon.esolutions.appconfig.repository.EnvironmentRepository;
+import org.aon.esolutions.appconfig.repository.PrivateKeyRepository;
 import org.aon.esolutions.appconfig.util.InheritanceUtil;
 import org.aon.esolutions.appconfig.util.RSAEncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,40 +49,43 @@ public class EnvironmentController {
 	
 	@Autowired private ApplicationRepository applicationRepository;	
 	@Autowired private EnvironmentRepository environmentRepository;	
+	@Autowired private PrivateKeyRepository privateKeyRepository;
 	@Autowired private Neo4jTemplate template;
 	@Autowired private InheritanceUtil inheritanceUtil;
 
 	@RequestMapping(value = "/{environmentName}", method = RequestMethod.GET)
 	@ResponseMapping("environmentDetails")
 	public Environment getEnvironment(@PathVariable String applicationName, @PathVariable String environmentName) {
-		// TODO: Push this into the Repo by writing a query
-		Application app = applicationRepository.findByName(applicationName);
-		template.fetch(app.getEnvironments());
+		Environment env = environmentRepository.getEnvironment(applicationName, environmentName);
+		if (env == null)
+			throw new NotFoundException("Can not find envioronment");
 		
-		for (Environment anEnvironment : app.getEnvironments()) {
-			if (anEnvironment.getName().equals(environmentName)) {
-				RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+		populatePrivateKey(env);
+
+		RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+			
+		if (attributes != null)
+			attributes.setAttribute("allVariables", inheritanceUtil.getVariablesForEnvironment(env), RequestAttributes.SCOPE_REQUEST);
 				
-				if (attributes != null)
-					attributes.setAttribute("allVariables", inheritanceUtil.getVariablesForEnvironment(anEnvironment), RequestAttributes.SCOPE_REQUEST);
-					
-				return anEnvironment;
-			}
-		}
-		
-		return null;
+		return env;
 	}
 	
 	@Transactional
 	@RequestMapping(value = "/{environmentName}", method = RequestMethod.PUT)	
-	public Environment addEnvironment(@PathVariable String applicationName, @PathVariable String environmentName, @RequestParam("parentId") String parentId) {
+	public Environment addEnvironment(@PathVariable String applicationName, @PathVariable String environmentName, @RequestParam("parentId") String parentId) throws Exception {
 		Application app = applicationRepository.findByName(applicationName);
-		Environment parent = environmentRepository.findOne(Long.parseLong(parentId));
+		Environment parent = null;
+		
+		if (parentId != null)
+			parent = environmentRepository.findOne(Long.parseLong(parentId));
 		
 		Environment newEnv = new Environment();
 		newEnv.setName(environmentName);
 		newEnv.setParent(parent);
 		app.addEnvironment(newEnv);
+		
+		updateKeys(newEnv);
+		newEnv = environmentRepository.save(newEnv);
 		
 		return newEnv;
 	}
@@ -90,6 +97,7 @@ public class EnvironmentController {
 		
 		Map<String, String> answer = updateKeys(env);
 		environmentRepository.save(env);
+		
 		return answer;
 	}
 	
@@ -97,20 +105,29 @@ public class EnvironmentController {
 		Map<String, String> answer = new HashMap<String, String>();
 
 		if (env != null) {
-			// First, decrypt all values
-			Key key = RSAEncryptUtil.getPrivateKeyFromString(env.getPrivateKey());
-			for (String encryptedVariable : env.getEncryptedVariables()) {
-				String encryptedValue = env.get(encryptedVariable);
-				if (encryptedValue != null) {
-					String decryptedValue = RSAEncryptUtil.decrypt(encryptedValue, key);
-					env.put(encryptedVariable, decryptedValue);
+			// First, get private key - Performs ACL Checking
+			PrivateKeyHolder holder = null;
+			if (env.getPrivateKeyHolder() != null)
+				holder = privateKeyRepository.findOne(env.getPrivateKeyHolder().getId());
+			
+			if (holder != null) {
+				Key key = RSAEncryptUtil.getPrivateKeyFromString(holder.getPrivateKey());
+				for (String encryptedVariable : env.getEncryptedVariables()) {
+					String encryptedValue = env.get(encryptedVariable);
+					if (encryptedValue != null) {
+						String decryptedValue = RSAEncryptUtil.decrypt(encryptedValue, key);
+						env.put(encryptedVariable, decryptedValue);
+					}
 				}
+			} else {
+				holder = new PrivateKeyHolder();
+				env.setPrivateKeyHolder(holder);
 			}
 
 			// Generate the new keys
 			KeyPair keyPair = RSAEncryptUtil.generateKey();
 			env.setPublicKey(RSAEncryptUtil.getKeyAsString(keyPair.getPublic()));
-			env.setPrivateKey(RSAEncryptUtil.getKeyAsString(keyPair.getPrivate()));
+			holder.setPrivateKey(RSAEncryptUtil.getKeyAsString(keyPair.getPrivate()));
 			
 			// Re-encrypt with the new values
 			for (String encryptedVariable : env.getEncryptedVariables()) {
@@ -122,7 +139,7 @@ public class EnvironmentController {
 			}
 			
 			answer.put("publicKey", env.getPublicKey());
-			answer.put("privateKey", env.getPrivateKey());
+			answer.put("privateKey", holder.getPrivateKey());
 		}
 		
 		return answer;
@@ -168,8 +185,10 @@ public class EnvironmentController {
 	public  Map<String, String> decryptVariable(@PathVariable String applicationName, @PathVariable String environmentName, @PathVariable String existingKey) throws Exception {
 		Environment env = getEnvironment(applicationName, environmentName);
 		if (env != null) {
+			PrivateKeyHolder holder = privateKeyRepository.findOne(env.getPrivateKeyHolder().getId());
+			
 			String existingValue = env.get(existingKey);
-			Key key = RSAEncryptUtil.getPrivateKeyFromString(env.getPrivateKey());
+			Key key = RSAEncryptUtil.getPrivateKeyFromString(holder.getPrivateKey());
 			String decryptedValue = RSAEncryptUtil.decrypt(existingValue, key);
 			env.put(existingKey, decryptedValue);
 			env.getEncryptedVariables().remove(existingKey);
@@ -196,6 +215,15 @@ public class EnvironmentController {
 			env.getEncryptedVariables().remove(existingKey);
 			
 			environmentRepository.save(env);
+		}
+	}
+	
+	private void populatePrivateKey(Environment env) {
+		try {
+			PrivateKeyHolder holder = privateKeyRepository.findOne(env.getPrivateKeyHolder().getId());
+			env.setPrivateKeyHolder(holder);
+		} catch (AccessDeniedException e) {
+			// This is okay, they just can't see partial data
 		}
 	}
 }

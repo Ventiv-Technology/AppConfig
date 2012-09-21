@@ -8,6 +8,7 @@ $(function() {
 			url: contextRoot + 'application/' + applicationName,
 			type: "PUT",
 			dataType: "JSON",
+			error: handleAjaxError,
 			success: function(data) {
 				window.location.href = contextRoot + 'application/' + applicationName;
 			}
@@ -24,6 +25,7 @@ $(function() {
 			url: contextRoot + 'application/' + applicationName + "/environment/" + environmentName + "?parentId=" + parent,
 			type: "PUT",
 			dataType: "JSON",
+			error: handleAjaxError,
 			success: function(data) {
 				window.location.href = contextRoot + 'application/' + applicationName;
 			}
@@ -126,12 +128,13 @@ function onPropertySubmission(event) {
 			url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey + "?key=" + encodeURIComponent(key) + "&value=" + encodeURIComponent(value),
 			type: "POST",
 			dataType: "JSON",
+			error: handleAjaxError,
 			success: function(data) {
 				tableRow.find("input:first").replaceWith(key);
 				tableRow.find("input:last").replaceWith(value);
 				
 				resetPropertyRowClickHandlers();
-			}
+			}			
 		});
 	}
 }
@@ -146,6 +149,7 @@ function onPropertyDelete() {
 		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey,
 		type: "DELETE",
 		dataType: "JSON",
+		error: handleAjaxError,
 		success: function(data) {
 			loadNewEnvironment(activeEnvironmentName);
 		}
@@ -162,6 +166,7 @@ function onPropertyEncrypt() {
 		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey + "/encrypt",
 		type: "POST",
 		dataType: "JSON",
+		error: handleAjaxError,
 		success: function(data) {
 			loadNewEnvironment(activeEnvironmentName);
 		}
@@ -178,6 +183,7 @@ function onPropertyDecrypt() {
 		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/variable/" + originalKey + "/decrypt",
 		type: "POST",
 		dataType: "JSON",
+		error: handleAjaxError,
 		success: function(data) {
 			loadNewEnvironment(activeEnvironmentName);
 		}
@@ -189,6 +195,7 @@ function regenerateKeysForCurrentEnvironment() {
 		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName + "/keys",
 		type: "POST",
 		dataType: "JSON",
+		error: handleAjaxError,
 		success: function(data) {
 			$("#settings-privateKey").text(data.privateKey);
 			$("#settings-publicKey").text(data.publicKey);
@@ -196,4 +203,14 @@ function regenerateKeysForCurrentEnvironment() {
 			$("#confirmChangeKeys").modal('hide');
 		}
 	});
+}
+
+function handleAjaxError(jqXHR, textStatus) {
+	if (jqXHR.status == 403)
+		showAlert("Unauthorized Action")
+}
+
+
+function showAlert(message) {
+	$("#alert-holder").append("<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>×</button>" + message + "</div>")
 }

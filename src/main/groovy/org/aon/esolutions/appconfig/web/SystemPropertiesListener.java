@@ -24,6 +24,7 @@ import javax.servlet.ServletContextListener;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.ClassPathResource;
 
 /**
  * Application Lifecycle Listener implementation class SystemPropertiesListener
@@ -43,9 +44,28 @@ public class SystemPropertiesListener implements ServletContextListener {
      * @see ServletContextListener#contextInitialized(ServletContextEvent)
      */
     public void contextInitialized(ServletContextEvent evt) {
-    	String systemProperty = evt.getServletContext().getInitParameter("system.properties.property");
+    	loadPropsFromClasspath();    	
+    	
+    	String systemPropertyValue = evt.getServletContext().getInitParameter("system.properties.property");
+    	loadPropsFromSystem(systemPropertyValue);
+    }
+    
+    private void loadPropsFromClasspath() {
     	Properties props = System.getProperties();
-    	String fileLocation = props.getProperty(systemProperty);
+    	ClassPathResource appConfigResource = new ClassPathResource("appconfig.properties");
+    	if (appConfigResource.exists()) {
+    		
+    		try {
+    			props.load(appConfigResource.getInputStream());
+    		} catch (Exception e) {
+    			logger.error("Error loading properties", e);
+    		}
+    	}
+    }
+    
+    private void loadPropsFromSystem(String systemPropValue) {
+    	Properties props = System.getProperties();
+    	String fileLocation = props.getProperty(systemPropValue);
     	
     	try {
 			props.load(new FileReader(new File(fileLocation)));

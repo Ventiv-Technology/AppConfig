@@ -19,9 +19,15 @@ import org.aon.esolutions.appconfig.model.Application;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface ApplicationRepository extends GraphRepository<Application> {
-	@PostAuthorize("hasPermission(returnObject, 'read')")
+	@PostAuthorize("hasPermission(returnObject, 'READ')")
 	public Application findByName(String name);
+	
+	@Override
+	@Transactional
+	@PostAuthorize("hasPermission(returnObject, 'WRITE')")
+	public <U extends Application> U save(U application);
 }

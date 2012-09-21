@@ -22,6 +22,7 @@ import org.springframework.data.neo4j.annotation.NodeEntity
 import org.springframework.data.neo4j.annotation.RelatedTo
 import org.springframework.data.neo4j.fieldaccess.DynamicProperties
 import org.springframework.data.neo4j.fieldaccess.DynamicPropertiesContainer
+import org.springframework.security.access.prepost.PostAuthorize;
 
 @NodeEntity
 class Environment {
@@ -30,11 +31,13 @@ class Environment {
 	Long id;
 	
 	String name;
-	String privateKey;
 	String publicKey;
 	
 	@RelatedTo(type = "INHERITS_FROM")
 	Environment parent;
+	
+	@RelatedTo(type = "PROTECTED_BY")
+	PrivateKeyHolder privateKeyHolder;
 	
 	DynamicProperties variables;
 	List<String> encryptedVariables;
