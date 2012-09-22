@@ -18,10 +18,13 @@ package org.aon.esolutions.appconfig.util
 import org.aon.esolutions.appconfig.model.Application
 import org.aon.esolutions.appconfig.model.Environment
 import org.aon.esolutions.appconfig.model.PrivateKeyHolder
+import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.springframework.security.access.PermissionEvaluator
+import org.springframework.security.acls.domain.BasePermission;
 import org.springframework.security.acls.domain.DefaultPermissionFactory
+import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.PermissionFactory
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.domain.SidRetrievalStrategyImpl
@@ -62,15 +65,19 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 		return true;		// No authorization on applications - yet
 	}
 	
-	private boolean environmentHasPermission(Environment environment, List<Sid> sids, List<Permission> permission) {
-		if (environment.isVisibleToAll())
+	private boolean environmentHasPermission(Environment environment, List<Sid> sids, List<Permission> permission, boolean checkForVisible = true) {
+		if (checkForVisible && environment.isVisibleToAll() && permission.contains(BasePermission.READ))
+			return true;
+			
+		// If no security has been set up - default to allowing all
+		if (CollectionUtils.isEmpty(environment.getPermittedUsers()) && CollectionUtils.isEmpty(environment.getPermittedRoles()))
 			return true;
 			
 		def authorizedSid = sids.find {
 			if (it instanceof PrincipalSid)
 				return environment.getPermittedUsers()?.contains(it.getPrincipal());
-			
-			return  environment.getPermittedRoles()?.contains(it.getGrantedAuthority());
+			else if (it instanceof GrantedAuthoritySid)
+				return  environment.getPermittedRoles()?.contains(it.getGrantedAuthority());
 		}
 		
 		if (logger.debugEnabled && authorizedSid != null)
@@ -82,7 +89,9 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 	}
 	
 	private boolean privateKeyHasPermission(PrivateKeyHolder privateKey, List<Sid> sids, List<Permission> permission) {
-		return true;
+		Environment env = privateKey.getEnvironment();
+		
+		return environmentHasPermission(env, sids, permission, false);
 	}
 
 	/*

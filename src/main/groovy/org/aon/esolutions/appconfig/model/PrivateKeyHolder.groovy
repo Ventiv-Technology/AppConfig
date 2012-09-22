@@ -15,8 +15,11 @@
  */
 package org.aon.esolutions.appconfig.model
 
-import org.springframework.data.neo4j.annotation.GraphId;
-import org.springframework.data.neo4j.annotation.NodeEntity;
+import org.neo4j.graphdb.Direction
+import org.springframework.data.neo4j.annotation.Fetch
+import org.springframework.data.neo4j.annotation.GraphId
+import org.springframework.data.neo4j.annotation.NodeEntity
+import org.springframework.data.neo4j.annotation.RelatedTo
 
 @NodeEntity
 class PrivateKeyHolder {
@@ -25,4 +28,8 @@ class PrivateKeyHolder {
 	Long id;
 	
 	String privateKey;
+	
+	@Fetch
+	@RelatedTo(type = "PROTECTED_BY", direction = Direction.INCOMING )
+	Environment environment;
 }
