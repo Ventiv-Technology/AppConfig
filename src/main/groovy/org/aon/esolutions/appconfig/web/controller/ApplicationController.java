@@ -19,11 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aon.esolutions.appconfig.model.Application;
-import org.aon.esolutions.appconfig.model.Environment;
 import org.aon.esolutions.appconfig.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.conversion.EndResult;
-import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,9 +41,6 @@ public class ApplicationController {
 	
 	@Autowired
 	private EnvironmentController environmentController;
-	
-	@Autowired
-	private Neo4jTemplate template;
 	
 	@PostFilter("hasPermission(returnObject, 'READ')")
 	@RequestMapping(value= "/", method = RequestMethod.GET)
@@ -71,7 +66,7 @@ public class ApplicationController {
 			attributes.setAttribute("applicationList", getAllApplications(), RequestAttributes.SCOPE_REQUEST);
 		
 		Application answer = applicationRepository.findByName(applicationName);
-		template.fetch(answer.getEnvironments());
+		answer.setEnvironments(environmentController.getAllEnvironments(applicationName));	// Could use template.fetch - but this handles security
 		
 		return answer;
 	}

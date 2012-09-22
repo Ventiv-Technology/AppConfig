@@ -15,10 +15,13 @@
  */
 package org.aon.esolutions.appconfig.repository;
 
+import java.util.Set;
+
 import org.aon.esolutions.appconfig.model.Environment;
 import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +34,22 @@ public interface EnvironmentRepository extends GraphRepository<Environment> {
 	@PreAuthorize("hasPermission(#environment, 'WRITE')")
 	public <U extends Environment> U save(U envrionment);
 	
-	@PostAuthorize("hasPermission(returnObject, 'READ')")
 	@Query("START env=node(*) " +
 		   "MATCH (app)-[:USED_IN]-(env) " +
 		   "WHERE has(env.__type__) and " +
 		   "      env.__type__ = 'org.aon.esolutions.appconfig.model.Environment' and " +
 		   "      env.name = {1} and " +
 		   "      app.name = {0} " +
-		   "return env")	
+		   "return env")
+	@PostAuthorize("hasPermission(returnObject, 'READ')")
 	public Environment getEnvironment(String applicationName, String environmentName);
+	
+	@Query("START env=node(*) " +
+		   "MATCH (app)-[:USED_IN]-(env) " +
+		   "WHERE has(env.__type__) and " +
+		   "      env.__type__ = 'org.aon.esolutions.appconfig.model.Environment' and " +
+		   "      app.name = {0} " +
+		   "return env")
+	@PostFilter("hasPermission(filterObject, 'READ')")
+	public Set<Environment> getAllEnvironmentsForApplication(String applicationName);
 }

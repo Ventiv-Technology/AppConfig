@@ -19,6 +19,7 @@ import java.security.Key;
 import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.aon.esolutions.appconfig.model.Application;
 import org.aon.esolutions.appconfig.model.Environment;
@@ -52,6 +53,12 @@ public class EnvironmentController {
 	@Autowired private PrivateKeyRepository privateKeyRepository;
 	@Autowired private Neo4jTemplate template;
 	@Autowired private InheritanceUtil inheritanceUtil;
+	
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@ResponseMapping("environmentDetails")
+	public Set<Environment> getAllEnvironments(@PathVariable String applicationName) {
+		return environmentRepository.getAllEnvironmentsForApplication(applicationName);
+	}
 
 	@RequestMapping(value = "/{environmentName}", method = RequestMethod.GET)
 	@ResponseMapping("environmentDetails")

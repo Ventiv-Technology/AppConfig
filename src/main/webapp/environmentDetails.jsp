@@ -95,7 +95,12 @@
 				</div>
 				
 				<label class="checkbox">
-					<input type="checkbox"> Visible to All
+					<c:if test="${environment.visibleToAll}">
+						<input type="checkbox" checked="checked"> Visible to All
+					</c:if>
+					<c:if test="${environment.visibleToAll == false}">
+						<input type="checkbox"> Visible to All
+					</c:if>					
 				</label>
 				
 				<label>---- Private Key ----</label>
