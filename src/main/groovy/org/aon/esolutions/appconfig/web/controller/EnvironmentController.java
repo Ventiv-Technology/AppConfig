@@ -156,6 +156,8 @@ public class EnvironmentController {
 				}
 			}
 			
+			updateUtility.savePrivateKeyHolder(holder);
+			
 			answer.put("publicKey", env.getPublicKey());
 			answer.put("privateKey", holder.getPrivateKey());
 		}

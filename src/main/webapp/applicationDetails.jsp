@@ -18,6 +18,10 @@
 	    </style>
     	<link href="<c:url value="/static/css/bootstrap-responsive.min.css" />" rel="stylesheet">
     	
+    	<!--[if lt IE 9]>
+      		<script src="<c:url value="/static/js/html5.js" />"></script>
+    	<![endif]-->
+    	
     	<script type="text/javascript">
     		var contextRoot = '<%= request.getContextPath() %>/';
     		var activeApplicationId = '${application.id}';
