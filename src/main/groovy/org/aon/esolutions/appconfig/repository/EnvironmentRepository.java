@@ -22,17 +22,10 @@ import org.springframework.data.neo4j.annotation.Query;
 import org.springframework.data.neo4j.repository.GraphRepository;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PostFilter;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface EnvironmentRepository extends GraphRepository<Environment> {
-	
-	@Override
-	@Transactional
-	@PreAuthorize("hasPermission(#environment, 'WRITE')")
-	public <U extends Environment> U save(U envrionment);
 	
 	@Query("START env=node(*) " +
 		   "MATCH (app)-[:USED_IN]-(env) " +

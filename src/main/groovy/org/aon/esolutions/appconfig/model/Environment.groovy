@@ -79,4 +79,8 @@ class Environment {
 			
 		return encryptedVariables;
 	}
+	
+	public boolean isVisibleToAll() {
+		return visibleToAll
+	}
 }

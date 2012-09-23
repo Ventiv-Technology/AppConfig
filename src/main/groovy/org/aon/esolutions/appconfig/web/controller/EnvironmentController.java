@@ -29,8 +29,8 @@ import org.aon.esolutions.appconfig.repository.EnvironmentRepository;
 import org.aon.esolutions.appconfig.repository.PrivateKeyRepository;
 import org.aon.esolutions.appconfig.util.InheritanceUtil;
 import org.aon.esolutions.appconfig.util.RSAEncryptUtil;
+import org.aon.esolutions.appconfig.util.UpdateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Controller;
@@ -51,7 +51,7 @@ public class EnvironmentController {
 	@Autowired private ApplicationRepository applicationRepository;	
 	@Autowired private EnvironmentRepository environmentRepository;	
 	@Autowired private PrivateKeyRepository privateKeyRepository;
-	@Autowired private Neo4jTemplate template;
+	@Autowired private UpdateUtility updateUtility;
 	@Autowired private InheritanceUtil inheritanceUtil;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
@@ -75,6 +75,17 @@ public class EnvironmentController {
 			attributes.setAttribute("allVariables", inheritanceUtil.getVariablesForEnvironment(env), RequestAttributes.SCOPE_REQUEST);
 				
 		return env;
+	}
+	
+	@RequestMapping(value = "/{environmentName}", method = RequestMethod.POST)
+	public Environment updateEnvironmentDetails(@PathVariable String applicationName, @PathVariable String environmentName, Environment updatedEnv) {
+		Environment readEnv = getEnvironment(applicationName, environmentName);
+		readEnv.setName(updatedEnv.getName());
+		readEnv.setPermittedUsers(updatedEnv.getPermittedUsers());
+		readEnv.setPermittedRoles(updatedEnv.getPermittedRoles());
+		readEnv.setVisibleToAll(updatedEnv.isVisibleToAll());
+		
+		return updateUtility.saveEnvironment(readEnv);
 	}
 	
 	@Transactional

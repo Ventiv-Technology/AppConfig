@@ -1,5 +1,6 @@
 <%@page import="org.aon.esolutions.appconfig.model.Environment"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <div class="tabbable tabs-top">
 	<ul class="nav nav-tabs">
@@ -70,37 +71,33 @@
 		</div>
 
 		<div class="tab-pane" id="settings">
-			<form>
+			<form id="environmentDetails-form" action="<c:url value="/application/${applicationName}/environment/${environment.name}"/>" method="POST">
 				<legend id="settings-label">${environment.name} Settings</legend>
 				<label>Environment Name</label> 
-				<input type="text" name="name" id="environment-name" value="${environment.name}" />
+				<form:input path="environment.name"  />
 				
 				<div class="row-fluid">
 					<div class="span4">
 						<label>Permitted Users</label>
-						<select multiple="multiple">
-							<option selected="selected">jcrygier</option>
-							<option>cayres</option>
-							<option selected="selected">mlauer</option>
-						</select>
+						<form:select path="environment.permittedUsers" multiple="multiple"> <!-- Todo - items -->
+							<form:option value="jcrygier"/>
+							<form:option value="cayres"/>
+							<form:option value="maluer"/>
+							<form:option value="admin"/>
+						</form:select>
 					</div>
 					
 					<div class="span4">
 						<label>Permitted Roles</label>
-						<select multiple="multiple">
-							<option>ROLE_ADMIN</option>
-							<option selected="selected">ROLE_USER</option>
-						</select>
+						<form:select path="environment.permittedRoles" multiple="multiple"> <!-- Todo - items -->
+							<form:option value="ROLE_ADMIN"/>
+							<form:option value="ROLE_USER"/>
+						</form:select>
 					</div>
 				</div>
 				
 				<label class="checkbox">
-					<c:if test="${environment.visibleToAll}">
-						<input type="checkbox" checked="checked"> Visible to All
-					</c:if>
-					<c:if test="${environment.visibleToAll == false}">
-						<input type="checkbox"> Visible to All
-					</c:if>					
+					<form:checkbox path="environment.visibleToAll"/> Visible to All
 				</label>
 				
 				<label>---- Private Key ----</label>

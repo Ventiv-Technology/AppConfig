@@ -84,6 +84,7 @@ function initializeNewEnvironment() {
 	$(".property-decrypt").click(onPropertyDecrypt);
 	resetPropertyRowClickHandlers();
 	$("#confirmChangeKeys .btn-warning").click(regenerateKeysForCurrentEnvironment);
+	$("#environmentDetails-form").ajaxForm({dataType: 'JSON'});
 }
 
 function resetPropertyRowClickHandlers() {

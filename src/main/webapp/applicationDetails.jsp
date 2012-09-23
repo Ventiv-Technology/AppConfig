@@ -28,6 +28,7 @@
 		<script src="<c:url value="/static/js/jquery-1.8.1.min.js" />"></script>
 		<script src="<c:url value="/static/js/bootstrap.min.js" />"></script>
 		<script src="<c:url value="/static/js/application.js" />" ></script>
+		<script src="<c:url value="/static/js/jquery.form.js" />"></script> 
 		<title>Application Configuration</title>
 	</head>
 	<body>
