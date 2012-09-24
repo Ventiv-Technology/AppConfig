@@ -47,6 +47,8 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 		
 		if (targetDomainObject == null)
 			return true;
+		else if (isAdministrator(sids))
+			return true;
 		else if (targetDomainObject instanceof Application)
 			return applicationHasPermission(targetDomainObject, sids, requiredPermission)
 		else if (targetDomainObject instanceof Environment)
@@ -92,6 +94,20 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 		Environment env = privateKey.getEnvironment();
 		
 		return environmentHasPermission(env, sids, permission, false);
+	}
+	
+	private boolean isAdministrator(List<Sid> sids) {
+		List<String> principalAdmins = System.getProperty("security.authentication.administrators.users")?.split(",")
+		List<String> roleAdmins = System.getProperty("security.authentication.administrators.roles")?.split(",")
+		
+		def adminSid = sids.find {
+			if (it instanceof PrincipalSid)
+				return principalAdmins?.contains(it.getPrincipal());
+			else if (it instanceof GrantedAuthoritySid)
+				return  roleAdmins?.contains(it.getGrantedAuthority());
+		}
+		
+		return adminSid != null;
 	}
 
 	/*
