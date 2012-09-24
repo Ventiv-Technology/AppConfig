@@ -18,11 +18,10 @@ package org.aon.esolutions.appconfig.util
 import org.aon.esolutions.appconfig.model.Application
 import org.aon.esolutions.appconfig.model.Environment
 import org.aon.esolutions.appconfig.model.PrivateKeyHolder
-import org.apache.commons.collections.CollectionUtils
 import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.springframework.security.access.PermissionEvaluator
-import org.springframework.security.acls.domain.BasePermission;
+import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.DefaultPermissionFactory
 import org.springframework.security.acls.domain.GrantedAuthoritySid
 import org.springframework.security.acls.domain.PermissionFactory
@@ -72,7 +71,8 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 			return true;
 			
 		// If no security has been set up - default to allowing all
-		if (CollectionUtils.isEmpty(environment.getPermittedUsers()) && CollectionUtils.isEmpty(environment.getPermittedRoles()))
+		
+		if (environment.getPermittedUsers()?.isEmpty() && environment.getPermittedRoles()?.isEmpty())
 			return true;
 			
 		def authorizedSid = sids.find {
