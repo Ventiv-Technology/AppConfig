@@ -80,11 +80,11 @@ public class EnvironmentController {
 		}
 				
 		return env;
-	}
+	}	
 	
 	@RequestMapping(value = "/{environmentName}", method = RequestMethod.POST)
 	public Environment updateEnvironmentDetails(@PathVariable String applicationName, @PathVariable String environmentName, Environment updatedEnv) {
-		Environment readEnv = getEnvironment(applicationName, environmentName);
+		Environment readEnv = updateUtility.getEnvironmentForWrite(applicationName, environmentName);
 		readEnv.setName(updatedEnv.getName());
 		readEnv.setPermittedUsers(updatedEnv.getPermittedUsers());
 		readEnv.setPermittedRoles(updatedEnv.getPermittedRoles());

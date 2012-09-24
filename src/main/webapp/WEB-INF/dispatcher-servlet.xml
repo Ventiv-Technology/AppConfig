@@ -28,6 +28,5 @@
 	<mvc:resources mapping="/static/**" location="/" />
 	
 	<!-- View Setup -->
- 	<bean class="com.crygier.spring.util.web.MimeTypeViewResolver" />
-  
+ 	<bean class="com.crygier.spring.util.web.MimeTypeViewResolver" />  
 </beans>

@@ -6,6 +6,7 @@ import org.aon.esolutions.appconfig.repository.ApplicationRepository;
 import org.aon.esolutions.appconfig.repository.EnvironmentRepository;
 import org.aon.esolutions.appconfig.repository.PrivateKeyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,11 @@ public class UpdateUtility {
 	@PreAuthorize("hasPermission(#env, 'WRITE')")
 	public Environment saveEnvironment(Environment env) {
 		return environmentRepository.save(env);
+	}
+	
+	@PostAuthorize("hasPermission(returnObject, 'WRITE')")
+	public Environment getEnvironmentForWrite(String applicationName, String environmentName) {
+		return environmentRepository.getEnvironment(applicationName, environmentName);
 	}
 	
 	/**
