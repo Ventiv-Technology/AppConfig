@@ -27,6 +27,7 @@ import org.aon.esolutions.appconfig.model.PrivateKeyHolder;
 import org.aon.esolutions.appconfig.repository.ApplicationRepository;
 import org.aon.esolutions.appconfig.repository.EnvironmentRepository;
 import org.aon.esolutions.appconfig.repository.PrivateKeyRepository;
+import org.aon.esolutions.appconfig.util.AvailableUsersAndRolesProvider;
 import org.aon.esolutions.appconfig.util.InheritanceUtil;
 import org.aon.esolutions.appconfig.util.RSAEncryptUtil;
 import org.aon.esolutions.appconfig.util.UpdateUtility;
@@ -53,6 +54,7 @@ public class EnvironmentController {
 	@Autowired private PrivateKeyRepository privateKeyRepository;
 	@Autowired private UpdateUtility updateUtility;
 	@Autowired private InheritanceUtil inheritanceUtil;
+	@Autowired private AvailableUsersAndRolesProvider usersAndRolesProvider;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	@ResponseMapping("environmentDetails")
@@ -71,8 +73,11 @@ public class EnvironmentController {
 
 		RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
 			
-		if (attributes != null)
+		if (attributes != null) {
 			attributes.setAttribute("allVariables", inheritanceUtil.getVariablesForEnvironment(env), RequestAttributes.SCOPE_REQUEST);
+			attributes.setAttribute("availableUsers", usersAndRolesProvider.getAvailableUsers(), RequestAttributes.SCOPE_REQUEST);
+			attributes.setAttribute("availableRoles", usersAndRolesProvider.getAvailableRoles(), RequestAttributes.SCOPE_REQUEST);
+		}
 				
 		return env;
 	}

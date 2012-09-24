@@ -35,5 +35,7 @@
 		                              user-search-base="${security.ldap.user.search.base}"
 		                              user-search-filter="${security.ldap.user.search.filter}"/>
 	</authentication-manager>
+	
+	<beans:bean class="org.aon.esolutions.appconfig.util.LdapAvailableUsersAndRolesProvider"/>
 
 </beans:beans>

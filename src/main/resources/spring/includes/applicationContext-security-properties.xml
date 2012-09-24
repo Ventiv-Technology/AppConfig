@@ -31,5 +31,7 @@
 	</authentication-manager>
 	
 	<beans:bean id="propertiesAuthenticationProvider" class="org.aon.esolutions.appconfig.util.PropertiesAuthenticationProvider"/>
+	
+	<beans:bean class="org.aon.esolutions.appconfig.util.PropertiesAuthenticationProvider.PropertiesAvailableUsersAndRolesProvider"/>
 
 </beans:beans>

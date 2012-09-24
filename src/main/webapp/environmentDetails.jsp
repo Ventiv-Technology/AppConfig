@@ -79,20 +79,12 @@
 				<div class="row-fluid">
 					<div class="span4">
 						<label>Permitted Users</label>
-						<form:select path="environment.permittedUsers" multiple="multiple"> <!-- Todo - items -->
-							<form:option value="jcrygier"/>
-							<form:option value="cayres"/>
-							<form:option value="maluer"/>
-							<form:option value="admin"/>
-						</form:select>
+						<form:select path="environment.permittedUsers" items="${availableUsers}" multiple="multiple" />
 					</div>
 					
 					<div class="span4">
 						<label>Permitted Roles</label>
-						<form:select path="environment.permittedRoles" multiple="multiple"> <!-- Todo - items -->
-							<form:option value="ROLE_ADMIN"/>
-							<form:option value="ROLE_USER"/>
-						</form:select>
+						<form:select path="environment.permittedRoles" items="${availableRoles}" multiple="multiple" />
 					</div>
 				</div>
 				

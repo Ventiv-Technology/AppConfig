@@ -15,6 +15,8 @@
  */
 package org.aon.esolutions.appconfig.util
 
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.authentication.encoding.Md4PasswordEncoder
@@ -61,6 +63,35 @@ public class PropertiesAuthenticationProvider extends DaoAuthenticationProvider 
 			}
 								
 			new User(username, userPassword, grantedAuthorities);
+		}
+	}
+	
+	public static class PropertiesAvailableUsersAndRolesProvider implements AvailableUsersAndRolesProvider {
+
+		@Override
+		public Set<String> getAvailableUsers() {
+			Set<String> answer = new TreeSet<String>();
+			System.getProperties().stringPropertyNames().each {
+				if (it.startsWith("security.properties.user")) {
+					answer << it.split("\\.")[3]
+				}
+			}
+			
+			return answer;
+		}
+
+		@Override
+		public Set<String> getAvailableRoles() {
+			Set<String> answer = new TreeSet<String>();
+			
+			getAvailableUsers().each {
+				String userAuthorities = System.getProperty("security.properties.user.${it}.authorities");
+				userAuthorities.split(',').each {
+					answer << it.trim();
+				}
+			}
+			
+			return answer;
 		}
 		
 	}
