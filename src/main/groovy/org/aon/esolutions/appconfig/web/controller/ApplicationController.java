@@ -77,7 +77,7 @@ public class ApplicationController {
 		app.setName(applicationName);
 		app = applicationRepository.save(app);
 		
-		environmentController.addEnvironment(applicationName, "Default", null);
+		app.addEnvironment(environmentController.addEnvironment(applicationName, "Default", null));
 		
 		return app;
 	}

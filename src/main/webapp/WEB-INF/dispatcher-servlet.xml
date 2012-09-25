@@ -28,5 +28,13 @@
 	<mvc:resources mapping="/static/**" location="/" />
 	
 	<!-- View Setup -->
- 	<bean class="com.crygier.spring.util.web.MimeTypeViewResolver" />  
+	<bean id="javaPropertiesViewResolver" class="org.aon.esolutions.appconfig.web.JavaPropertiesViewResolver"/>
+	
+ 	<bean class="com.crygier.spring.util.web.MimeTypeViewResolver">
+ 		<property name="mimeTypeToViewResolver">
+ 			<map>
+ 				<entry key="text/plain" value-ref="javaPropertiesViewResolver"/>
+ 			</map>
+ 		</property>
+ 	</bean>  
 </beans>

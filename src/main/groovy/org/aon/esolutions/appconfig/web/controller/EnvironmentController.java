@@ -54,7 +54,7 @@ public class EnvironmentController {
 	@Autowired private PrivateKeyRepository privateKeyRepository;
 	@Autowired private UpdateUtility updateUtility;
 	@Autowired private InheritanceUtil inheritanceUtil;
-	@Autowired private AvailableUsersAndRolesProvider usersAndRolesProvider;
+	@Autowired(required = false) private AvailableUsersAndRolesProvider usersAndRolesProvider;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	@ResponseMapping("environmentDetails")
@@ -75,8 +75,11 @@ public class EnvironmentController {
 			
 		if (attributes != null) {
 			attributes.setAttribute("allVariables", inheritanceUtil.getVariablesForEnvironment(env), RequestAttributes.SCOPE_REQUEST);
-			attributes.setAttribute("availableUsers", usersAndRolesProvider.getAvailableUsers(), RequestAttributes.SCOPE_REQUEST);
-			attributes.setAttribute("availableRoles", usersAndRolesProvider.getAvailableRoles(), RequestAttributes.SCOPE_REQUEST);
+			
+			if (usersAndRolesProvider != null) {
+				attributes.setAttribute("availableUsers", usersAndRolesProvider.getAvailableUsers(), RequestAttributes.SCOPE_REQUEST);
+				attributes.setAttribute("availableRoles", usersAndRolesProvider.getAvailableRoles(), RequestAttributes.SCOPE_REQUEST);
+			}
 		}
 				
 		return env;
@@ -120,6 +123,17 @@ public class EnvironmentController {
 		
 		Map<String, String> answer = updateKeys(env);
 		environmentRepository.save(env);
+		
+		return answer;
+	}
+	
+	@RequestMapping(value = "/{environmentName}/keys", method = RequestMethod.GET)
+	public Map<String, String> getKeys(@PathVariable String applicationName, @PathVariable String environmentName) throws Exception {
+		Environment env = getEnvironment(applicationName, environmentName);
+		
+		Map<String, String> answer = new HashMap<String, String>();
+		answer.put("public", env.getPublicKey());
+		answer.put("private", env.getPrivateKeyHolder().getPrivateKey());
 		
 		return answer;
 	}

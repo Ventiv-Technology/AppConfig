@@ -29,8 +29,6 @@ class Application {
 	Set<Environment> environments;
 	
 	String name;
-	String privateKey;
-	String publicKey;
 	String[] ownerRoles;
 	String[] ownerLogins;
 	
