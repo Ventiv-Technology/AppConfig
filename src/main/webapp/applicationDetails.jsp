@@ -81,6 +81,7 @@
 		
 		<!-- Add application modal dialog -->
 		<div class="modal hide fadein" id="addApplicationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="alert-holder"></div>
 		  <div class="modal-header">
 		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		    <h3 id="myModalLabel">Add Application</h3>
@@ -99,6 +100,7 @@
 		
 		<!-- Add environment modal dialog -->
 		<div class="modal hide fadein" id="addEnvironmentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="alert-holder"></div>
 		  <div class="modal-header">
 		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		    <h3 id="myModalLabel">Add Environment</h3>

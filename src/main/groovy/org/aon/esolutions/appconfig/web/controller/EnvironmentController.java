@@ -33,6 +33,7 @@ import org.aon.esolutions.appconfig.util.RSAEncryptUtil;
 import org.aon.esolutions.appconfig.util.UpdateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.acls.model.AlreadyExistsException;
 import org.springframework.security.acls.model.NotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,6 +100,13 @@ public class EnvironmentController {
 	@Transactional
 	@RequestMapping(value = "/{environmentName}", method = RequestMethod.PUT)	
 	public Environment addEnvironment(@PathVariable String applicationName, @PathVariable String environmentName, @RequestParam("parentId") String parentId) throws Exception {
+		try {
+			getEnvironment(applicationName, environmentName);
+			throw new AlreadyExistsException("Environment " + environmentName + " already exists for Application " + applicationName);
+		} catch (NotFoundException e) {
+			// Good, it doesn't exist....lets go add one.
+		}
+		
 		Application app = applicationRepository.findByName(applicationName);
 		Environment parent = null;
 		

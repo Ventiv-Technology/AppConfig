@@ -6,9 +6,9 @@ $(function() {
 		dataType: 'JSON', 
 		error: handleAjaxError,
 		resetForm: true,
-		beforeSubmit: function(dataArray, form, options) { 
+		beforeSubmit: function(dataArray, form, options) {
 			this.url = this.url + dataArray[0].value;
-			return true;
+			return checkName(dataArray[0].value);
 		},
 		success: function() {
 			window.location.href = contextRoot + 'application/' + activeApplicationName;
@@ -21,7 +21,7 @@ $(function() {
 		resetForm: true,
 		beforeSubmit: function(dataArray, form, options) { 
 			this.url = this.url + dataArray[0].value + "?parentId=" + dataArray[1].value;
-			return true;
+			return checkName(dataArray[0].value);
 		},
 		success: function() {
 			window.location.href = contextRoot + 'application/' + activeApplicationName;
@@ -78,7 +78,7 @@ function initializeNewEnvironment() {
 	$(".property-decrypt").click(onPropertyDecrypt);
 	resetPropertyRowClickHandlers();
 	$("#confirmChangeKeys .btn-warning").click(regenerateKeysForCurrentEnvironment);
-	$("#environmentDetails-form").ajaxForm({dataType: 'JSON', error: handleAjaxError});
+	$("#environmentDetails-form").ajaxForm({dataType: 'JSON', error: handleAjaxError, beforeSubmit: function(dataArray) { return checkName(dataArray[0].value); } });
 }
 
 function resetPropertyRowClickHandlers() {
@@ -208,13 +208,28 @@ function handleAjaxError(jqXHR, textStatus) {
 	if (jqXHR.status == 403) {
 		showAlert("Unauthorized Action")
 		return false;
+	} else if (jqXHR.status == 500) {
+		showAlert(jqXHR.responseText.trim())
 	}
 	
 	return true;
 }
 
-
 function showAlert(message) {
-	$("#alert-holder").empty();
-	$("#alert-holder").append("<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>×</button>" + message + "</div>")
+	var alertHolder = $(".modal.in .alert-holder")[0];
+	alertHolder = typeof alertHolder !== 'undefined' ? $(alertHolder) : $("#alert-holder");
+	
+	alertHolder.empty();
+	alertHolder.append("<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>×</button>" + message + "</div>")
+}
+
+function checkName(name) {
+	var validNameRegex = /^[\d\w]*$/
+	if (validNameRegex.test(name)) {
+		return true;
+	} else {
+		showAlert("Invalid Name.  Please do not use special characters or spaces.");
+		return false;
+	}
+	
 }

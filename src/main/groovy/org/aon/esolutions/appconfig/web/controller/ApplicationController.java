@@ -23,6 +23,7 @@ import org.aon.esolutions.appconfig.repository.ApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.conversion.EndResult;
 import org.springframework.security.access.prepost.PostFilter;
+import org.springframework.security.acls.model.AlreadyExistsException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -66,13 +67,18 @@ public class ApplicationController {
 			attributes.setAttribute("applicationList", getAllApplications(), RequestAttributes.SCOPE_REQUEST);
 		
 		Application answer = applicationRepository.findByName(applicationName);
-		answer.setEnvironments(environmentController.getAllEnvironments(applicationName));	// Could use template.fetch - but this handles security
+		if (answer != null)
+			answer.setEnvironments(environmentController.getAllEnvironments(applicationName));	// Could use template.fetch - but this handles security
 		
 		return answer;
 	}
 	
 	@RequestMapping(value= "/{applicationName}", method = RequestMethod.PUT)
 	public Application addApplication(@PathVariable String applicationName) throws Exception {
+		if (getApplicationDetail(applicationName) != null) {
+			throw new AlreadyExistsException("Application " + applicationName + " already exists.");
+		}
+		
 		Application app = new Application();
 		app.setName(applicationName);
 		app = applicationRepository.save(app);
