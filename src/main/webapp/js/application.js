@@ -2,37 +2,31 @@ $(function() {
 	$('.tooltip-holder').tooltip();
 	
 	// Handle Adding an Application
-	$('#addApplicationModal .btn-primary').click(function() {
-		var applicationName = $("#addApplicationName").val();
-		$.ajax({
-			url: contextRoot + 'application/' + applicationName,
-			type: "PUT",
-			dataType: "JSON",
-			error: handleAjaxError,
-			success: function(data) {
-				window.location.href = contextRoot + 'application/' + applicationName;
-			}
-		});
+	$("#addApplicationModal form").ajaxForm({
+		dataType: 'JSON', 
+		error: handleAjaxError,
+		resetForm: true,
+		beforeSubmit: function(dataArray, form, options) { 
+			this.url = this.url + dataArray[0].value;
+			return true;
+		},
+		success: function() {
+			window.location.href = contextRoot + 'application/' + activeApplicationName;
+		}
 	});
 	
-	// Handle Adding an Environment
-	$('#addEnvironmentModal .btn-primary').click(function() {
-		var environmentName = $("#addEnvironmentName").val();
-		var applicationName = $("#applicationName").val();
-		var parent = $("#environment-parent option:selected").val();
-		
-		$.ajax({
-			url: contextRoot + 'application/' + applicationName + "/environment/" + environmentName + "?parentId=" + parent,
-			type: "PUT",
-			dataType: "JSON",
-			error: handleAjaxError,
-			success: function(data) {
-				window.location.href = contextRoot + 'application/' + applicationName;
-			}
-		});
-	});
-	
-	
+	$("#addEnvironmentModal form").ajaxForm({
+		dataType: 'JSON', 
+		error: handleAjaxError,
+		resetForm: true,
+		beforeSubmit: function(dataArray, form, options) { 
+			this.url = this.url + dataArray[0].value + "?parentId=" + dataArray[1].value;
+			return true;
+		},
+		success: function() {
+			window.location.href = contextRoot + 'application/' + activeApplicationName;
+		}
+	});	
 	
 	// Highlight the active application
 	$("#application-selector-" + activeApplicationId).addClass("active");

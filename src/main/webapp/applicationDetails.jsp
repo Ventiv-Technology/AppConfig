@@ -85,16 +85,16 @@
 		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		    <h3 id="myModalLabel">Add Application</h3>
 		  </div>
-		  <div class="modal-body">
-		    <form>
+		  <form action="<c:url value="/application/"/>" method="PUT">
+			  <div class="modal-body">
 		    	<label>Application Name</label>
-		    	<input id="addApplicationName" type="text" />
-		    </form>
-		  </div>
-		  <div class="modal-footer">
-		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		    <button class="btn btn-primary">Save changes</button>
-		  </div>
+		    	<input id="name" name="name" type="text" />
+			  </div>
+			  <div class="modal-footer">
+			    <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+			    <button class="btn btn-primary" type="submit">Save changes</button>
+			  </div>
+		  </form>
 		</div>
 		
 		<!-- Add environment modal dialog -->
@@ -103,24 +103,23 @@
 		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		    <h3 id="myModalLabel">Add Environment</h3>
 		  </div>
-		  <div class="modal-body">
-		    <form>
-		    	<input type="hidden" name="applicationName" id="applicationName" value="${application.name}"/>
+		  <form action="<c:url value="/application/${application.name}/environment/"/>" method="PUT">
+		  	<div class="modal-body">
 		    	<label>Environment Name</label>
-		    	<input id="addEnvironmentName" type="text" />
+		    	<input id="name" name="name" type="text" />
 		    	
 		    	<label>Extends</label>
-		    	<select name="environment-parent" id="environment-parent">
+		    	<select name="parentId" id="parentId">
 		    		<c:forEach items="${application.environments}" var="environment">
 						<option value="${environment.id}">${environment.name}</option>
 					</c:forEach>
 		    	</select>
-		    </form>
-		  </div>
-		  <div class="modal-footer">
-		    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-		    <button class="btn btn-primary">Save changes</button>
-		  </div>
+			  </div>
+			  <div class="modal-footer">
+			    <a href="#" class="btn" data-dismiss="modal" aria-hidden="true">Close</a>
+			    <button class="btn btn-primary" type="submit">Save changes</button>
+			  </div>
+		  </form>
 		</div>
 		
 		<!-- Confirm Change Keys Dialog -->

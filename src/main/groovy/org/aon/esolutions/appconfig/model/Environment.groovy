@@ -83,4 +83,18 @@ class Environment {
 	public boolean isVisibleToAll() {
 		return visibleToAll
 	}
+	
+	List<String> getPermittedUsers() {
+		if (permittedUsers == null)
+			permittedUsers = new ArrayList<String>();
+		
+		return permittedUsers;
+	}
+	
+	List<String> getPermittedRoles() {
+		if (permittedRoles == null)
+			permittedRoles = new ArrayList<String>();
+			
+		return permittedRoles
+	}
 }

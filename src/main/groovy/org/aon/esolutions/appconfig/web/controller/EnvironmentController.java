@@ -159,6 +159,7 @@ public class EnvironmentController {
 			} else {
 				holder = new PrivateKeyHolder();
 				env.setPrivateKeyHolder(holder);
+				holder.setEnvironment(env);
 			}
 
 			// Generate the new keys

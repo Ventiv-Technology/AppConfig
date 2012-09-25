@@ -19,25 +19,28 @@ body {
 </style>
 <link href="<c:url value="/static/css/bootstrap-responsive.min.css" />" rel="stylesheet">
 
+<script src="<c:url value="/static/js/jquery-1.8.1.min.js" />"></script>
+<script src="<c:url value="/static/js/jquery.form.js" />"></script>
+<script src="<c:url value="/static/js/bootstrap.min.js" />"></script>
 <script type="text/javascript">
 	var contextRoot = '<%=request.getContextPath()%>/';
-	$(function() {
-		$("#saveApplication").click(function() {
-			$.ajax({
-				url: contextRoot + 'application/' + $("#addApplicationName").val(),
-				type: "PUT",
-				dataType: "JSON",
-				success: function(data) {
-					window.location.href = contextRoot + 'application/' + $("#addApplicationName").val();
-				}
-			});
-		});
-	});
+	
+	$("#addApplicationModal form").ajaxForm({
+		dataType: 'JSON', 
+		error: function() {
+			alert("Error Saving, Please Check Logs.");
+		},
+		resetForm: true,
+		beforeSubmit: function(dataArray, form, options) { 
+			this.url = this.url + $("#addApplicationModal #name").val();
+			return true;
+		},
+		success: function(data) {
+			window.location.href = this.url;
+		}
+	});	
 </script>
 
-<script src="<c:url value="/static/js/jquery-1.8.1.min.js" />"></script>
-<script src="<c:url value="/static/js/bootstrap.min.js" />"></script>
-<script src="<c:url value="/static/js/application.js" />"></script>
 <title>Application Configuration</title>
 </head>
 <body>
@@ -45,14 +48,14 @@ body {
 
 	<div class="container-fluid">
 		<div class="" id="addApplicationModal" >
-			<form action="<c:url value="/application"/>" method="PUT">
+			<form action="<c:url value="/application/"/>" method="PUT">
 				<legend>Add Application</legend>
 				<label>Application Name</label> 
-				<input id="addApplicationName" type="text" />
+				<input id="name" type="text" />
 				
 				<br>
 				
-				<a href="#" class="btn btn-primary" id="saveApplication" >Save</a>
+				<button type="submit" class="btn btn-primary" id="save" >Save</a>
 			</form>
 
 		</div>
