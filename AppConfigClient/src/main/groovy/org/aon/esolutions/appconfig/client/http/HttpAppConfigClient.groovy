@@ -18,6 +18,12 @@ package org.aon.esolutions.appconfig.client.http
 import org.aon.esolutions.appconfig.client.AbstractAppConfigClient
 import org.aon.esolutions.appconfig.client.util.HttpUtil
 
+/**
+ * Http Client for the AppConfig application.  This client will always get the properties from the remote
+ * server, but has the option (via constructors) to get the private key locally
+ *  
+ * @author John Crygier
+ */
 class HttpAppConfigClient extends AbstractAppConfigClient {
 	
 	private File privateKeyFile;
@@ -25,19 +31,53 @@ class HttpAppConfigClient extends AbstractAppConfigClient {
 	private String userName;
 	private String password;
 	
+	/**
+	 * Construct the HttpAppConfigClient to get everything remotely, and not using authentication.
+	 * 
+	 * @param url The Endpoint of AppConfig (i.e. http://localhost:8080/AppConfig)
+	 */
 	public HttpAppConfigClient(String url) {
 		this.remoteUrl = url;
 	}
 	
+	/**
+	 * Construct the HttpAppConfigClient to get everything remotely, and using BASIC authentication with the
+	 * supplied credentials
+	 *
+	 * @param url The Endpoint of AppConfig (i.e. http://localhost:8080/AppConfig)
+	 * @param userName User Name for the credentials
+	 * @param password Password for the credentials
+	 */
 	public HttpAppConfigClient(String url, String userName, String password) {
 		this.remoteUrl = url;
 		this.password = password;
 		this.userName = userName;		
 	}
 	
+	/**
+	 * Construct the HttpAppConfigClient to get properties remotely, using no credentials.  It will read
+	 * the private key locally
+	 * 
+	 * @param url The Endpoint of AppConfig (i.e. http://localhost:8080/AppConfig)
+	 * @param privateKeyFile Location of the private key, stored on the file system
+	 */
 	public HttpAppConfigClient(String url, File privateKeyFile) {
 		this.remoteUrl = url;	
 		this.privateKeyFile = privateKeyFile;	
+	}
+	
+	/**
+	 * Construct the HttpAppConfigClient to get properties remotely, using BASIC authentication with the
+	 * supplied credentials.  It will read the private key locally
+	 *
+	 * @param url The Endpoint of AppConfig (i.e. http://localhost:8080/AppConfig)
+	 * @param privateKeyFile Location of the private key, stored on the file system
+	 */
+	public HttpAppConfigClient(String url, String userName, String password, File privateKeyFile) {
+		this.remoteUrl = url;
+		this.password = password;
+		this.userName = userName;
+		this.privateKeyFile = privateKeyFile;
 	}
 	
 	@Override
