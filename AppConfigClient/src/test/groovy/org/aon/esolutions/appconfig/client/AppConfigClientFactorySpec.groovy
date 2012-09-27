@@ -124,8 +124,6 @@ class AppConfigClientFactorySpec extends Specification {
 	def "url only"() {
 		when:
 		def factory = new AppConfigClientFactory();
-		factory.setUserName("user")
-		factory.setPassword("pass")
 		factory.setServerUrl("http://localhost:8080/AppConfig")
 		def client = factory.getAppConfigClient();
 		
@@ -134,7 +132,7 @@ class AppConfigClientFactorySpec extends Specification {
 		client instanceof HttpAppConfigClient
 		client.privateKeyFile == null
 		client.remoteUrl == "http://localhost:8080/AppConfig"
-		client.userName == "user"
-		client.password == "pass"
+		client.userName == null
+		client.password == null
 	}
 }

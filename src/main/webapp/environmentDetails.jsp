@@ -67,7 +67,7 @@
 			</table>
 
 			<button class="btn" id="addProperty">Add Property</button>
-			<button class="btn btn-danger">Delete Environment</button>
+			<a href="#confirmDelete" role="button" class="btn btn-danger" data-toggle="modal">Delete Environment</a>
 		</div>
 
 		<div class="tab-pane" id="settings">

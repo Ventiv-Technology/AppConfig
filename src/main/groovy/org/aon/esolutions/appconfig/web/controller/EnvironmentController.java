@@ -32,6 +32,7 @@ import org.aon.esolutions.appconfig.util.InheritanceUtil;
 import org.aon.esolutions.appconfig.util.RSAEncryptUtil;
 import org.aon.esolutions.appconfig.util.UpdateUtility;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.acls.model.AlreadyExistsException;
 import org.springframework.security.acls.model.NotFoundException;
@@ -55,6 +56,7 @@ public class EnvironmentController {
 	@Autowired private PrivateKeyRepository privateKeyRepository;
 	@Autowired private UpdateUtility updateUtility;
 	@Autowired private InheritanceUtil inheritanceUtil;
+	@Autowired private Neo4jTemplate template;
 	@Autowired(required = false) private AvailableUsersAndRolesProvider usersAndRolesProvider;
 	
 	@RequestMapping(value = "/", method = RequestMethod.GET)
@@ -123,6 +125,21 @@ public class EnvironmentController {
 		
 		return newEnv;
 	}
+	
+	@Transactional
+	@RequestMapping(value = "/{environmentName}", method = RequestMethod.DELETE)	
+	public void deleteEnvironment(@PathVariable String applicationName, @PathVariable String environmentName) {
+		Environment readEnv = updateUtility.getEnvironmentForWrite(applicationName, environmentName);
+		
+		if (readEnv.getChildren().isEmpty() == false) {
+			template.fetch(readEnv.getChildren().iterator().next());
+			throw new IllegalStateException("Environment " + readEnv.getChildren().iterator().next().getName() + " is extending " + readEnv.getName() + ".  Cannot delete " + readEnv.getName() + ".");
+		}
+
+		privateKeyRepository.delete(readEnv.getPrivateKeyHolder());
+		environmentRepository.delete(readEnv);
+	}
+	
 	
 	@Transactional
 	@RequestMapping(value = "/{environmentName}/keys", method = RequestMethod.POST)

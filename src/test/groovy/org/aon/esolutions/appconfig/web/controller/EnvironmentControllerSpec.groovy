@@ -16,9 +16,12 @@
 package org.aon.esolutions.appconfig.web.controller
 
 import org.aon.esolutions.appconfig.model.Environment
+import org.aon.esolutions.appconfig.repository.ApplicationRepository
+import org.aon.esolutions.appconfig.repository.PrivateKeyRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.acls.model.NotFoundException
 import org.springframework.test.context.ContextConfiguration
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Transactional
 
 import spock.lang.Specification
 
@@ -32,6 +35,8 @@ class EnvironmentControllerSpec extends Specification {
 
 	@Autowired private EnvironmentController envController;
 	@Autowired private ApplicationController appController;
+	@Autowired private PrivateKeyRepository pkRepository;
+	@Autowired private ApplicationRepository appRepository;
 	
 	@Transactional
 	def "get environment keys"() {
@@ -45,6 +50,42 @@ class EnvironmentControllerSpec extends Specification {
 		keys
 		keys['private'].length() > 10
 		keys['public'].length() > 10
+	}
+	
+	@Transactional
+	def "delete environment"() {
+		given:
+		def setupEnvironment = setupEnvironment();
+		
+		when:
+		envController.deleteEnvironment("TestingApplication", "Default")
+		envController.getEnvironment("TestingApplication", "Default")
+		
+		then:		
+		def e = thrown(IllegalStateException)	// Node4j throws this - same txn
+		e.getMessage() == "Node[${setupEnvironment.getId()}] has been deleted in this tx"
+		
+		when:
+		pkRepository.findOne(setupEnvironment.getPrivateKeyHolder().getId()) == null
+		
+		then:
+		def e2 = thrown(IllegalStateException)
+		e2.getMessage() == "Node[${setupEnvironment.getPrivateKeyHolder().getId()}] has been deleted in this tx"
+	}
+	
+	@Transactional
+	def "delete environment where there is a child"() {
+		given:
+		def setupEnvironment = setupEnvironment();
+		envController.addEnvironment("TestingApplication", "ExtendsDefault", setupEnvironment.getId().toString())
+		
+		when:
+		envController.deleteEnvironment("TestingApplication", "Default")
+		
+		then:
+		def e = thrown(IllegalStateException)	// Node4j throws this - same txn
+		e.getMessage() == "Environment ExtendsDefault is extending Default.  Cannot delete Default."
+		
 	}
 	
 	private Environment setupEnvironment() {

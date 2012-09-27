@@ -78,6 +78,7 @@ function initializeNewEnvironment() {
 	$(".property-decrypt").click(onPropertyDecrypt);
 	resetPropertyRowClickHandlers();
 	$("#confirmChangeKeys .btn-warning").click(regenerateKeysForCurrentEnvironment);
+	$("#confirmDelete .btn-warning").click(deleteCurrentEnvironment);
 	$("#environmentDetails-form").ajaxForm({dataType: 'JSON', error: handleAjaxError, beforeSubmit: function(dataArray) { return checkName(dataArray[0].value); } });
 }
 
@@ -200,6 +201,21 @@ function regenerateKeysForCurrentEnvironment() {
 			$("#settings-publicKey").text(data.publicKey);
 			
 			$("#confirmChangeKeys").modal('hide');
+		}
+	});
+}
+
+function deleteCurrentEnvironment() {
+	$.ajax({
+		url: contextRoot + 'application/' + activeApplicationName + "/environment/" + activeEnvironmentName,
+		type: "DELETE",
+		dataType: "JSON",
+		error: function(jqXHR, textStatus) {
+			$("#confirmDelete").modal('hide');
+			handleAjaxError(jqXHR, textStatus)
+		},
+		success: function(data) {
+			window.location.href = contextRoot + 'application/' + activeApplicationName;
 		}
 	});
 }
