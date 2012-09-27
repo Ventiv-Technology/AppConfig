@@ -73,7 +73,7 @@ class HttpAppConfigClient extends AbstractAppConfigClient {
 	 * @param url The Endpoint of AppConfig (i.e. http://localhost:8080/AppConfig)
 	 * @param privateKeyFile Location of the private key, stored on the file system
 	 */
-	public HttpAppConfigClient(String url, String userName, String password, File privateKeyFile) {
+	public HttpAppConfigClient(String url, File privateKeyFile, String userName, String password) {
 		this.remoteUrl = url;
 		this.password = password;
 		this.userName = userName;

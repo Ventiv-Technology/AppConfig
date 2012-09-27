@@ -15,6 +15,8 @@
  */
 package org.aon.esolutions.appconfig.client.http
 
+import org.aon.esolutions.appconfig.client.local.LocalAppConfigClient;
+
 import spock.lang.Specification;
 import spock.lang.Unroll;
 
