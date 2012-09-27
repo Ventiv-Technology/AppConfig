@@ -31,6 +31,7 @@ import org.springframework.security.acls.model.Permission
 import org.springframework.security.acls.model.Sid
 import org.springframework.security.acls.model.SidRetrievalStrategy
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 
 class AppConfigPermissionEvaluator implements PermissionEvaluator {
 	
@@ -38,6 +39,11 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 	
 	private SidRetrievalStrategy sidRetrievalStrategy = new SidRetrievalStrategyImpl();
     private PermissionFactory permissionFactory = new DefaultPermissionFactory();
+	
+	public boolean hasPermission(Object targetDomainObject, Object permission) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		return hasPermission(auth, targetDomainObject, permission);
+	}
 
 	@Override
 	public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {

@@ -15,14 +15,24 @@
  */
 package org.aon.esolutions.appconfig.util
 
+import java.security.PrivateKey
+import java.security.PublicKey
+
 import org.aon.esolutions.appconfig.model.Environment
 import org.aon.esolutions.appconfig.model.Variable
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.neo4j.support.Neo4jTemplate
+import org.springframework.security.access.AccessDeniedException
+import org.springframework.security.access.PermissionEvaluator
+import org.springframework.security.acls.domain.BasePermission
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
 class InheritanceUtil {
+		
+	@Autowired(required = false)
+	private PermissionEvaluator permissionEvaluator;
 	
 	@Autowired
 	private Neo4jTemplate template;
@@ -31,25 +41,41 @@ class InheritanceUtil {
 		Map<String, Variable> answer = [:];
 		
 		Environment currentEnv = env;
+		PublicKey encryptingKey = env.getPublicKey() != null ? RSAEncryptUtil.getPublicKeyFromString(env.getPublicKey()) : null
+		boolean currentlyReadable = true;
+		
 		while (currentEnv != null) {
 			currentEnv.getVariableEntries().each {
-				if (answer.containsKey(it.key) == false) {
+				if (currentlyReadable == false) {
+					if (currentEnv?.getEncryptedVariables()?.contains(it.key))
+						it.value = RSAEncryptUtil.encrypt("[UNAUTHORIZED]", getPublicKeyForEnvironment(currentEnv));
+					else
+						it.value = "[UNAUTHORIZED]";
+				}
+				
+				if (answer.containsKey(it.key) == false) {		// Doesn't exist yet, so this environment created this key
 					def inheritedFrom = env == currentEnv ? null : currentEnv;
 					answer.put(it.key, new Variable([key: it.key, value: it.value, inheritedFrom: inheritedFrom]))
 					
-					if (currentEnv?.getEncryptedVariables()?.contains(it.key))
+					if (currentEnv?.getEncryptedVariables()?.contains(it.key)) {
 						answer.get(it.key).setEncrypted(Boolean.TRUE);
-				} else {
+						if (env != currentEnv) { 				// We're overriding an encrypted value, re-encrypt it
+							PrivateKey decryptingKey = getPrivateKeyForEnvironment(currentEnv);
+							String reencryptedValue = reencryptValue(it.value, encryptingKey, decryptingKey)
+							answer.get(it.key).setValue(reencryptedValue)
+						}
+					}
+				} else {										// Already exists, this environment overrode the key
 					answer.get(it.key).overrides = currentEnv
 					answer.get(it.key).overrideValue = it.value
 					
-					if (currentEnv?.getEncryptedVariables()?.contains(it.key))
+					if (currentEnv?.getEncryptedVariables()?.contains(it.key)) 	
 						answer.get(it.key).setOverrideEncrypted(Boolean.TRUE);
 				}
 			}
 			
 			currentEnv = currentEnv.getParent();
-			fetchPersistable(currentEnv);
+			currentlyReadable = fetchPersistable(currentEnv);
 		}
 		
 		answer.values().sort { a, b ->
@@ -57,7 +83,34 @@ class InheritanceUtil {
 		}
 	}
 	
-	protected void fetchPersistable(def persistable) {
+	protected String reencryptValue(String encryptedValue, PublicKey encryptingKey, PrivateKey decryptingKey) {
+		if (decryptingKey) {
+			String unEncrypted = RSAEncryptUtil.decrypt(encryptedValue, decryptingKey);
+			return RSAEncryptUtil.encrypt(unEncrypted, encryptingKey);
+		}
+		
+		return null;
+	}
+	
+	protected PrivateKey getPrivateKeyForEnvironment(Environment env) {
+		fetchPersistable(env.getPrivateKeyHolder());
+		if (env.getPrivateKeyHolder()?.getPrivateKey()) {
+			return RSAEncryptUtil.getPrivateKeyFromString(env.getPrivateKeyHolder().getPrivateKey());
+		}
+		
+		return null;
+	}
+	
+	protected PublicKey getPublicKeyForEnvironment(Environment env) {
+		return RSAEncryptUtil.getPublicKeyFromString(env.getPublicKey());
+	}
+	
+	protected boolean fetchPersistable(def persistable) {
 		template.fetch(persistable);
+		
+		if (permissionEvaluator)
+			return permissionEvaluator.hasPermission(SecurityContextHolder.getContext().getAuthentication(), persistable, BasePermission.READ)
+		else
+			return true;
 	}
 }

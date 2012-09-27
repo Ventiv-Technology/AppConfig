@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.aon.esolutions.appconfig.util;
+package org.aon.esolutions.appconfig.client.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -120,7 +120,6 @@ public class RSAEncryptUtil
         }
         catch (Exception e)
         {
-            _log.error(e, e);
             throw e;
         }
         return cipherText;
@@ -147,7 +146,6 @@ public class RSAEncryptUtil
         }
         catch (Exception e)
         {
-            _log.error(e, e);
             throw e;
         }
         return encryptedText;
@@ -173,7 +171,6 @@ public class RSAEncryptUtil
         }
         catch (Exception e)
         {
-            _log.error(e, e);
             throw e;
         }
         return dectyptedText;
@@ -203,7 +200,6 @@ public class RSAEncryptUtil
         }
         catch (Exception e)
         {
-            _log.error(e, e);
             throw e;
         }
         return result;
@@ -231,9 +227,6 @@ public class RSAEncryptUtil
      */
     public static PrivateKey getPrivateKeyFromString(String key) throws Exception
     {
-    	if (key == null)
-    		return null;
-    	
         KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
         EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(decodeBASE64(key));
         PrivateKey privateKey = keyFactory.generatePrivate(privateKeySpec);
@@ -248,9 +241,6 @@ public class RSAEncryptUtil
      */
     public static PublicKey getPublicKeyFromString(String key) throws Exception
     {
-    	if (key == null)
-    		return null;
-    	
         KeyFactory keyFactory = KeyFactory.getInstance(ALGORITHM);
         EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(decodeBASE64(key));
         PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
@@ -474,7 +464,6 @@ public class RSAEncryptUtil
         }
         catch (Exception e)
         {
-            _log.error(e,e);
             throw e;
         }
         finally

@@ -55,7 +55,10 @@ class JavaPropertiesViewResolver implements ViewResolver {
 		private void renderEnvironment(Environment env, HttpServletResponse response) throws Exception {
 			Collection<Variable> variables = inheritanceUtil.getVariablesForEnvironment(env);
 			variables.each {
-				response.getOutputStream() << "${it.key}=${it.value}\r\n"
+				if (it.value)
+					response.getOutputStream() << "${it.key}=${it.value}\r\n"
+				else
+					response.getOutputStream() << "${it.key}=\r\n"
 			}
 		}
 		

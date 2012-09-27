@@ -54,11 +54,14 @@
 	-->
 	
 	<!-- Simple Permission Evaluator - inspects the contents of the object for security -->
+	<beans:bean id="permissionEvaluator" class="org.aon.esolutions.appconfig.util.AppConfigPermissionEvaluator"/>
+	
 	<beans:bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
-	    <beans:property name="permissionEvaluator">
-	        <beans:bean id="permissionEvaluator" class="org.aon.esolutions.appconfig.util.AppConfigPermissionEvaluator"/>
-	    </beans:property>
+	    <beans:property name="permissionEvaluator" ref="permissionEvaluator" />
 	</beans:bean>
+	
+	<!-- Sets it up so we don't get a login form, but get an http 403 for anonymous users -->
+	<beans:bean id="forbiddenEntryPoint" class="org.springframework.security.web.authentication.Http403ForbiddenEntryPoint"/>
 	
 	<!-- Web Application Security -->
 	<global-method-security secured-annotations="enabled" pre-post-annotations="enabled">
@@ -67,9 +70,7 @@
 	
 	<http pattern="/static/**" security="none"/>
 	
-	<http auto-config="true" use-expressions="true" >
-<!-- 		<http-basic /> -->
-<!-- 	    <logout /> -->
+	<http auto-config="true" use-expressions="true" entry-point-ref="forbiddenEntryPoint">
 		<intercept-url pattern="/" access="permitAll"/>
 		<intercept-url pattern="/**" access="permitAll" />
 	</http>

@@ -45,4 +45,8 @@ public interface EnvironmentRepository extends GraphRepository<Environment> {
 		   "return env")
 	@PostFilter("hasPermission(filterObject, 'READ')")
 	public Set<Environment> getAllEnvironmentsForApplication(String applicationName);
+	
+	@Override
+	@PostAuthorize("hasPermission(returnObject, 'READ')")
+	public Environment findOne(Long id);
 }
