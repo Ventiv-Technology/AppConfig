@@ -94,7 +94,8 @@ public class EnvironmentController {
 		readEnv.setName(updatedEnv.getName());
 		readEnv.setPermittedUsers(updatedEnv.getPermittedUsers());
 		readEnv.setPermittedRoles(updatedEnv.getPermittedRoles());
-		readEnv.setVisibleToAll(updatedEnv.isVisibleToAll());
+		readEnv.setPermittedMachines(updatedEnv.getPermittedMachines());
+		readEnv.setVisibleToAll(updatedEnv.isVisibleToAll());		
 		
 		return updateUtility.saveEnvironment(readEnv);
 	}

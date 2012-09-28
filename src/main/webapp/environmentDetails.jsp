@@ -77,14 +77,25 @@
 				<form:input path="environment.name"  />
 				
 				<div class="row-fluid">
-					<div class="span4">
+					<div class="span3">
 						<label>Permitted Users</label>
-						<form:select path="environment.permittedUsers" items="${availableUsers}" multiple="multiple" />
+						<form:select cssStyle="width: 100%" size="6" path="environment.permittedUsers" items="${availableUsers}" multiple="multiple" />
 					</div>
 					
-					<div class="span4">
+					<div class="span3">
 						<label>Permitted Roles</label>
-						<form:select path="environment.permittedRoles" items="${availableRoles}" multiple="multiple" />
+						<form:select cssStyle="width: 100%" size="6" path="environment.permittedRoles" items="${availableRoles}" multiple="multiple" />
+					</div>
+					
+					<div class="span3 manual-list">
+						<label>Permitted Machines</label>
+						<div class="input-append">
+							<input type="text" style="width: 94%"/><a class="add-on add-manual-list" href="#"><i class="icon-plus"></i></a>
+						</div>
+						<div class="input-append">
+							<form:select cssStyle="width: 100%" size="4" path="environment.permittedMachines" items="${environment.permittedMachines}" multiple="multiple" />
+							<a class="add-on remove-manual-list" href="#"><i class="icon-trash"></i></a>
+						</div>
 					</div>
 				</div>
 				

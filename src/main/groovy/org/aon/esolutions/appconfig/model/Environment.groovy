@@ -35,6 +35,7 @@ class Environment {
 	
 	List<String> permittedUsers;
 	List<String> permittedRoles;
+	List<String> permittedMachines;
 	boolean visibleToAll = true;
 	
 	@RelatedTo(type = "INHERITS_FROM")

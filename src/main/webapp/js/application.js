@@ -79,7 +79,8 @@ function initializeNewEnvironment() {
 	resetPropertyRowClickHandlers();
 	$("#confirmChangeKeys .btn-warning").click(regenerateKeysForCurrentEnvironment);
 	$("#confirmDelete .btn-warning").click(deleteCurrentEnvironment);
-	$("#environmentDetails-form").ajaxForm({dataType: 'JSON', error: handleAjaxError, beforeSubmit: function(dataArray) { return checkName(dataArray[0].value); } });
+	setupEnvironmentAjaxForm();
+	attachManualLists();
 }
 
 function resetPropertyRowClickHandlers() {
@@ -87,6 +88,42 @@ function resetPropertyRowClickHandlers() {
 	$(".property-value").off('click');
 	$(".property-key").click(onPropertyRowClick);
 	$(".property-value").click(onPropertyRowClick);
+}
+
+function setupEnvironmentAjaxForm() {
+	$("#environmentDetails-form").ajaxForm({
+		dataType: 'JSON', 
+		error: handleAjaxError, 
+		beforeSerialize : function() {
+			$(".manual-list").find("select option").attr('selected', 'selected');
+			return true;
+		}, 
+		beforeSubmit: function(dataArray) { 
+			return checkName(dataArray[0].value); 
+		},
+		success: function() {
+			showAlert("Data Saved", "success");
+		}		
+	});
+}
+
+function attachManualLists() {
+	$(".manual-list").each(function() {
+		var manualListContainer = $(this);
+		var addingValueInput = manualListContainer.find("input");
+		var currentValuesList = manualListContainer.find("select");
+		
+		manualListContainer.find(".add-manual-list").click(function() {
+			if (addingValueInput.val().length > 0) {
+				currentValuesList.append("<option value='" + addingValueInput.val() + "'>" + addingValueInput.val() + "</option>");
+				addingValueInput.val("");
+			}
+		});
+		
+		manualListContainer.find(".remove-manual-list").click(function() {
+			currentValuesList.find("option:selected").remove();
+		});
+	});
 }
 
 
@@ -231,12 +268,13 @@ function handleAjaxError(jqXHR, textStatus) {
 	return true;
 }
 
-function showAlert(message) {
+function showAlert(message, alertType) {
 	var alertHolder = $(".modal.in .alert-holder")[0];
 	alertHolder = typeof alertHolder !== 'undefined' ? $(alertHolder) : $("#alert-holder");
+	alertType = typeof alertType !== 'undefined' ? alertType : "error";
 	
 	alertHolder.empty();
-	alertHolder.append("<div class='alert alert-error'><button type='button' class='close' data-dismiss='alert'>×</button>" + message + "</div>")
+	alertHolder.append("<div class='alert alert-" + alertType + "'><button type='button' class='close' data-dismiss='alert'>×</button>" + message + "</div>")
 }
 
 function checkName(name) {

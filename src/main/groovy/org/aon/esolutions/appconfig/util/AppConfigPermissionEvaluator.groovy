@@ -32,6 +32,7 @@ import org.springframework.security.acls.model.Sid
 import org.springframework.security.acls.model.SidRetrievalStrategy
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.web.context.request.RequestContextHolder;
 
 class AppConfigPermissionEvaluator implements PermissionEvaluator {
 	
@@ -84,14 +85,18 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 		def authorizedSid = sids.find {
 			if (it instanceof PrincipalSid)
 				return environment.getPermittedUsers()?.contains(it.getPrincipal());
-			else if (it instanceof GrantedAuthoritySid)
-				return  environment.getPermittedRoles()?.contains(it.getGrantedAuthority());
+			else if (it instanceof GrantedAuthoritySid) {
+				if (it.getGrantedAuthority().startsWith("ROLE"))
+					return environment.getPermittedRoles()?.contains(it.getGrantedAuthority());
+				else if (it.getGrantedAuthority().startsWith("MACHINE"))
+					return environment.getPermittedMachines()?.contains(it.getGrantedAuthority().replace("MACHINE_", ""));
+			}
 		}
 		
 		if (logger.debugEnabled && authorizedSid != null)
 			logger.debug("Found an authorized SID for Environment(${environment.id}) ${environment.name}: $authorizedSid");
 		else
-			logger.debug("No authorized SID for Environment(${environment.id}) ${environment.name}");
+			logger.debug("No authorized SID for Environment(${environment.id}) ${environment.name}.  Authorized sids: ${sids}");
 			
 		return authorizedSid != null;
 	}
@@ -148,5 +153,9 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 
 		}
 		throw new IllegalArgumentException("Unsupported permission: " + permission);
+	}
+	
+	public void setSidRetrievalStrategy(SidRetrievalStrategy value) {
+		this.sidRetrievalStrategy = value;
 	}
 }

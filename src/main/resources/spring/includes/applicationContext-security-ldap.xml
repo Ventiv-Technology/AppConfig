@@ -29,7 +29,7 @@
 	             manager-dn="${security.ldap.server.manager.dn}" 
 	             manager-password="${security.ldap.server.manager.password}"/>
 	             
-	<authentication-manager>
+	<authentication-manager >
 		<ldap-authentication-provider group-search-base="${security.ldap.group.search.base}"
 		                              group-search-filter="${security.ldap.group.search.filter}"
 		                              user-search-base="${security.ldap.user.search.base}"

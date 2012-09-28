@@ -32,6 +32,7 @@ dependencies {
 	compile group: 'commons-codec', name: 'commons-codec', version: '1.7'
 	compile group: 'commons-io', name: 'commons-io', version: '2.4'
 	compile group: 'bouncycastle', name: 'bcprov-jdk16', version: '140'
+	compile group: 'dnsjava', name: 'dnsjava', version: '2.1.1'
 	
 	// Security
 	compile group: 'org.springframework.security', name: 'spring-security-core', version: '3.1.2.RELEASE'
