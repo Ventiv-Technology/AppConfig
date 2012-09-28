@@ -2,9 +2,9 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:security="http://www.springframework.org/schema/security"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
@@ -28,12 +28,16 @@
 	<mvc:resources mapping="/static/**" location="/" />
 	
 	<!-- View Setup -->
-	<bean id="javaPropertiesViewResolver" class="org.aon.esolutions.appconfig.web.JavaPropertiesViewResolver"/>
+	<bean id="javaPropertiesViewResolver" class="org.aon.esolutions.appconfig.web.SimpleMappingViewResolver" p:contentType="text/plain" p:mappingCharacter="="/>
+	<bean id="yamlViewResolver" class="org.aon.esolutions.appconfig.web.SimpleMappingViewResolver" p:contentType="text/x-yaml" p:mappingCharacter=": " p:documentBegin="---"/>
 	
  	<bean class="com.crygier.spring.util.web.MimeTypeViewResolver">
  		<property name="mimeTypeToViewResolver">
  			<map>
  				<entry key="text/plain" value-ref="javaPropertiesViewResolver"/>
+ 				<entry key="text/x-yaml" value-ref="yamlViewResolver"/>
+ 				<entry key="text/yaml" value-ref="yamlViewResolver"/>
+ 				<entry key="application/x-yaml" value-ref="yamlViewResolver"/>
  			</map>
  		</property>
  	</bean>  

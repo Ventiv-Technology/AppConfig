@@ -8,3 +8,4 @@ bin/
 *.log*
 data/
 database-test/
+.buildpath
