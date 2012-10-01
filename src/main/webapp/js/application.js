@@ -102,7 +102,7 @@ function setupEnvironmentAjaxForm() {
 			return checkName(dataArray[0].value); 
 		},
 		success: function() {
-			showAlert("Data Saved", "success");
+			showAlert(labelDataSaved, "success");
 		}		
 	});
 }
@@ -282,7 +282,7 @@ function checkName(name) {
 	if (validNameRegex.test(name)) {
 		return true;
 	} else {
-		showAlert("Invalid Name.  Please do not use special characters or spaces.");
+		showAlert(labelInvalidName);
 		return false;
 	}
 	

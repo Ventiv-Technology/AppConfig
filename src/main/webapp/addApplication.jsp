@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,7 +42,7 @@ body {
 	});	
 </script>
 
-<title>Application Configuration</title>
+<title><s:message code="labels.common.applicationConfiguration"/></title>
 </head>
 <body>
 	<jsp:include page="includes/header.jsp" />
@@ -49,13 +50,13 @@ body {
 	<div class="container-fluid">
 		<div class="" id="addApplicationModal" >
 			<form action="<c:url value="/application/"/>" method="PUT">
-				<legend>Add Application</legend>
-				<label>Application Name</label> 
+				<legend><s:message code="labels.application.addApplication"/></legend>
+				<label><s:message code="labels.application.applicationName"/></label> 
 				<input id="name" type="text" />
 				
 				<br>
 				
-				<button type="submit" class="btn btn-primary" id="save" >Save</a>
+				<button type="submit" class="btn btn-primary" id="save" ><s:message code="labels.common.save"/></a>
 			</form>
 
 		</div>
