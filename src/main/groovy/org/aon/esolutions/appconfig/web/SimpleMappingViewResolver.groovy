@@ -58,7 +58,7 @@ class SimpleMappingViewResolver implements ViewResolver {
 			
 			model.each { modelName, modelValue ->
 				if (modelValue instanceof Environment)
-					renderEnvironment(modelValue, response)
+					renderEnvironment(modelValue, request, response)
 				else if (modelValue != null && modelName.startsWith("org.springframework") == false)	// Don't print spring injected variables
 					response.getOutputStream() << "${modelName}${mappingCharacter}${modelValue}${propertySeparator}"
 			}
@@ -67,8 +67,10 @@ class SimpleMappingViewResolver implements ViewResolver {
 				response.getOutputStream() << documentEnd + "\r\n";
 		}
 	
-		private void renderEnvironment(Environment env, HttpServletResponse response) throws Exception {
-			Collection<Variable> variables = inheritanceUtil.getVariablesForEnvironment(env);
+		private void renderEnvironment(Environment env, HttpServletRequest request, HttpServletResponse response) throws Exception {
+			boolean decrypt = "true".equalsIgnoreCase(request.getParameter("decrypt"));			
+			Collection<Variable> variables = inheritanceUtil.getVariablesForEnvironment(env, decrypt);
+			
 			variables.each {
 				if (it.value)
 					response.getOutputStream() << "${it.key}${mappingCharacter}${it.value}${propertySeparator}"

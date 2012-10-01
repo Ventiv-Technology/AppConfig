@@ -37,7 +37,7 @@ class InheritanceUtil {
 	@Autowired
 	private Neo4jTemplate template;
 	
-	public Collection<Variable> getVariablesForEnvironment(Environment env) {
+	public Collection<Variable> getVariablesForEnvironment(Environment env, boolean decrypt = false) {
 		Map<String, Variable> answer = [:];
 		
 		Environment currentEnv = env;
@@ -59,10 +59,17 @@ class InheritanceUtil {
 					
 					if (currentEnv?.getEncryptedVariables()?.contains(it.key)) {
 						answer.get(it.key).setEncrypted(Boolean.TRUE);
-						if (env != currentEnv) { 				// We're overriding an encrypted value, re-encrypt it
-							PrivateKey decryptingKey = getPrivateKeyForEnvironment(currentEnv);
-							String reencryptedValue = reencryptValue(it.value, encryptingKey, decryptingKey)
-							answer.get(it.key).setValue(reencryptedValue)
+						PrivateKey decryptingKey = getPrivateKeyForEnvironment(currentEnv);
+						
+						if (env != currentEnv) { 				// We're overriding an encrypted value, re-encrypt it							
+							if (decrypt == false) {
+								String reencryptedValue = reencryptValue(it.value, encryptingKey, decryptingKey)
+								answer.get(it.key).setValue(reencryptedValue)
+							} else {
+								answer.get(it.key).setValue(decryptValue(it.value, decryptingKey))
+							}
+						} else if (decrypt) {
+							answer.get(it.key).setValue(decryptValue(it.value, decryptingKey))
 						}
 					}
 				} else {										// Already exists, this environment overrode the key
@@ -85,11 +92,19 @@ class InheritanceUtil {
 	
 	protected String reencryptValue(String encryptedValue, PublicKey encryptingKey, PrivateKey decryptingKey) {
 		if (decryptingKey) {
-			String unEncrypted = RSAEncryptUtil.decrypt(encryptedValue, decryptingKey);
+			String unEncrypted = decryptValue(encryptedValue, decryptingKey)
 			return RSAEncryptUtil.encrypt(unEncrypted, encryptingKey);
 		}
 		
 		return null;
+	}
+	
+	protected String decryptValue(String encryptedValue, PrivateKey decryptingKey) {
+		if (decryptingKey) {
+			return RSAEncryptUtil.decrypt(encryptedValue, decryptingKey);
+		} else {
+			return null
+		}
 	}
 	
 	protected PrivateKey getPrivateKeyForEnvironment(Environment env) {
