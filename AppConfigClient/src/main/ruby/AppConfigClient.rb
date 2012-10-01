@@ -1,5 +1,5 @@
 # Custom Client intended for use in Puppet's Facter - http://docs.puppetlabs.com/guides/custom_facts.html
-# Put this ruby file on the file system somewhere and point facter libs at it: export FACTERLIB="/path/to/facter/libraries"
+# Put this ruby file on the file system somewhere and point facter libs at it: export FACTERLIB="/path/to/facter/libraries" (Or in Ruby's Load Path - follow facter's instructions)
 # MUST export environment variables: APPCONFIG_SERVERURL, APPCONFIG_APPLICATION, APPCONFIG_ENVIRONMENT.  APPCONFIG_USERNAME / APPCONFIG_PASSEWORD are optional
 # Variables may also come from a YAML file in the same directory called AppConfigClient.yaml.  Should be a map with the following: serverUrl, userName, password, applicationName, environmentName
 require 'net/http'
@@ -77,9 +77,10 @@ userName = ENV["APPCONFIG_USERNAME"]
 password = ENV["APPCONFIG_PASSWORD"]
 applicationName = ENV["APPCONFIG_APPLICATION"]
 environmentName = ENV["APPCONFIG_ENVIRONMENT"]
-
-if (File.exist?('AppConfigClient.yaml'))
-  propertiesFromFile = YAML::load_file( 'AppConfigClient.yaml' )
+yamlFile = File.dirname(__FILE__) + '/AppConfigClient.yaml'
+  
+if (File.exist?(yamlFile))
+  propertiesFromFile = YAML::load_file( yamlFile )
 
   if (serverUrl.nil?)
     serverUrl = propertiesFromFile['serverUrl']
