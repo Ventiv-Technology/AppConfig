@@ -17,6 +17,7 @@ package org.aon.esolutions.appconfig.util
 
 import java.security.KeyPair
 
+import org.aon.esolutions.appconfig.client.util.RSAEncryptUtil
 import org.aon.esolutions.appconfig.model.Environment
 import org.aon.esolutions.appconfig.model.PrivateKeyHolder
 import org.aon.esolutions.appconfig.model.Variable

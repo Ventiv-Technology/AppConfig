@@ -45,7 +45,7 @@
 	<mvc:resources mapping="/static/**" location="/" />
 	
 	<!-- View Setup -->
-	<bean id="javaPropertiesViewResolver" class="org.aon.esolutions.appconfig.web.JavaPropertiesViewResolver"/>
+	<bean id="javaPropertiesViewResolver" class="org.aon.esolutions.appconfig.web.SimpleMappingViewResolver" p:contentType="text/plain" p:mappingCharacter="="/>
 	
  	<bean class="com.crygier.spring.util.web.MimeTypeViewResolver">
  		<property name="mimeTypeToViewResolver">

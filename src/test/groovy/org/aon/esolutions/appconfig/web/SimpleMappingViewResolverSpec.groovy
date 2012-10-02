@@ -16,6 +16,7 @@
 package org.aon.esolutions.appconfig.web
 
 import javax.servlet.ServletOutputStream
+import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 import org.aon.esolutions.appconfig.web.controller.ApplicationController
@@ -27,11 +28,11 @@ import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
 @ContextConfiguration(locations = ["/spring/applicationContext.xml", "/spring/applicationContext-data.xml", "/spring/test/dispatcher-servlet.xml"])
-class JavaPropertiesViewResolverSpec extends Specification {
+class SimpleMappingViewResolverSpec extends Specification {
 	
 	@Autowired private EnvironmentController envController;
 	@Autowired private ApplicationController appController;
-	@Autowired private JavaPropertiesViewResolver viewResolver;
+	@Autowired private SimpleMappingViewResolver viewResolver;
 	
 	private OutputStream outputStream;
 	private StringWriter w;
@@ -56,7 +57,7 @@ class JavaPropertiesViewResolverSpec extends Specification {
 		defaultEnv.put("testing.variable.3", "testing.value.3")
 		
 		when:
-		viewResolver.resolveViewName("whoCares", Locale.getDefault()).render(["environment" : defaultEnv, "org.springframework.bindingresult" : "test"], null, getMockedResponse())
+		viewResolver.resolveViewName("whoCares", Locale.getDefault()).render(["environment" : defaultEnv, "org.springframework.bindingresult" : "test"], getMockedRequest(), getMockedResponse())
 		
 		then:
 		w.toString().length() == 108
@@ -73,7 +74,7 @@ class JavaPropertiesViewResolverSpec extends Specification {
 		def keyMap = envController.getKeys("TestingApplication", "Default");
 		
 		when:
-		viewResolver.resolveViewName("whoCares", Locale.getDefault()).render(keyMap, null, getMockedResponse())
+		viewResolver.resolveViewName("whoCares", Locale.getDefault()).render(keyMap, getMockedRequest(), getMockedResponse())
 		
 		then:
 		w.toString().length() > 1050 && w.toString().length() < 1100
@@ -83,5 +84,9 @@ class JavaPropertiesViewResolverSpec extends Specification {
 	
 	def getMockedResponse() {
 		return [getOutputStream : { this.outputStream }] as HttpServletResponse
+	}
+	
+	def getMockedRequest() {
+		return [getParameter : { "false" }] as HttpServletRequest
 	}
 }

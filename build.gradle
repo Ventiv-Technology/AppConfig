@@ -3,23 +3,30 @@ buildscript {
 	dependencies { classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' }
 }
 
-apply plugin: 'java'
-apply plugin: 'groovy'
 apply plugin: 'war'
 apply plugin: 'eclipse-wtp'
-apply plugin: 'license'
-apply plugin: 'project-report'
 
-repositories {
-    mavenCentral()
-	maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
-	maven { url "http://m2.neo4j.org/releases" }
-	maven { url "http://repo.springsource.org/libs-milestone" }
+allprojects {
+	apply plugin: 'java'
+	apply plugin: 'groovy'
+	apply plugin: 'license'
+	apply plugin: 'project-report'
+	
+	repositories {
+		mavenCentral()
+		maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
+		maven { url "http://m2.neo4j.org/releases" }
+		maven { url "http://repo.springsource.org/libs-milestone" }
+	}
+	
+	group = 'org.aon.esolutions'
+	version = '0.1.0'
 }
 
 dependencies {
 	groovy (group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.7')
 	
+	compile project(":AppConfigClient")
 	compile group: 'org.springframework', name: 'spring-webmvc', version: '3.1.2.RELEASE'
 	compile group: 'org.springframework', name: 'spring-core', version: '3.1.2.RELEASE'
 	compile group: 'org.springframework', name: 'spring-context', version: '3.1.2.RELEASE'
@@ -55,27 +62,6 @@ dependencies {
 	testCompile group: 'org.springframework', name: 'spring-test', version: '3.1.2.RELEASE'
 	testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-1.8-SNAPSHOT'
 	testRuntime group: 'org.spockframework', name: 'spock-spring', version: '0.7-groovy-1.8-SNAPSHOT'
-}
-
-task "initialize-project" << {
-   new File("src/main/groovy").mkdirs()
-   new File("src/main/resources").mkdirs()
-   new File("src/test/groovy").mkdirs()
-   new File("src/test/resources").mkdirs()
-   new File("license").mkdirs()
-   new File("license/HEADER") << """Copyright (c) \${year} \${name}
-
-Licensed under the Apache License, Version 2.0 (the "License"); you may not
-use this file except in compliance with the License. You may obtain a copy of
-the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-License for the specific language governing permissions and limitations under
-the License."""
 }
 
 license {

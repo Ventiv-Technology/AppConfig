@@ -3,18 +3,7 @@ buildscript {
 	dependencies { classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' }
 }
 
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'war'
-apply plugin: 'eclipse-wtp'
-apply plugin: 'license'
-apply plugin: 'project-report'
-
-repositories {
-    mavenCentral()
-	maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
-	maven { url "http://repository.codehaus.org" }
-}
+apply plugin: 'eclipse'
 
 dependencies {
 	groovy (group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.7')

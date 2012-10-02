@@ -63,14 +63,14 @@ class EnvironmentControllerSpec extends Specification {
 		
 		then:		
 		def e = thrown(IllegalStateException)	// Node4j throws this - same txn
-		e.getMessage() == "Node[${setupEnvironment.getId()}] has been deleted in this tx"
+		e.getMessage() =~ /Node\[\d*\] has been deleted in this tx/
 		
 		when:
 		pkRepository.findOne(setupEnvironment.getPrivateKeyHolder().getId()) == null
 		
 		then:
 		def e2 = thrown(IllegalStateException)
-		e2.getMessage() == "Node[${setupEnvironment.getPrivateKeyHolder().getId()}] has been deleted in this tx"
+		e2.getMessage() =~ /Node\[\d*\] has been deleted in this tx/
 	}
 	
 	@Transactional
