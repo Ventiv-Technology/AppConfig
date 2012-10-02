@@ -42,10 +42,10 @@ class LocalAppConfigClient extends AbstractAppConfigClient {
 
 	@Override
 	protected String loadPrivateKey(String applicationName, String environmentName) {
-		if (privateKeyFile.isDirectory())
+		if (privateKeyFile?.isDirectory())
 			return new File(privateKeyFile, "${applicationName}/${environmentName}.private.key").text
 		else
-			return privateKeyFile.text
+			return privateKeyFile?.text
 	}
 
 	@Override

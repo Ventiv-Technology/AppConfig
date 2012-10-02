@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee 
 	http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
  
-	<display-name>OSSGovernance - Governing Your Use of Open Source Software</display-name>
+	<display-name>AppConfig</display-name>
  
 	<context-param>
 	    <param-name>contextConfigLocation</param-name>
@@ -12,12 +12,28 @@
 	</context-param>
 	
 	<context-param>
-	    <param-name>system.properties.property</param-name>
+	    <param-name>properties.location.property</param-name>
 	    <param-value>appconfig.properties.location</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>privatekey.location.property</param-name>
+	    <param-value>appconfig.privatekey.location</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>application.name</param-name>
+	    <param-value>AppConfig</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>environment.name</param-name>
+	    <param-value>Default</param-value>
+	</context-param>
+	<context-param>
+	    <param-name>classpath.file.location</param-name>
+	    <param-value>appconfig.properties</param-value>
 	</context-param>
 	
 	<listener>
-		<listener-class>org.aon.esolutions.appconfig.web.SystemPropertiesListener</listener-class>
+		<listener-class>org.aon.esolutions.appconfig.client.web.SystemPropertiesListener</listener-class>
 	</listener>
 	
 	<listener>

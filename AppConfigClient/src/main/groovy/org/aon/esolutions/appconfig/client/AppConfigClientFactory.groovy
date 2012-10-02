@@ -59,7 +59,7 @@ class AppConfigClientFactory {
 	
 	public AppConfigClient getAppConfigClient() {
 		// Priority One - Lets try with Properties / PK Files
-		if (getPropertiesFile()?.exists() && getPrivateKeyFile()?.exists()) {
+		if (getPropertiesFile()?.exists()) {
 			return new LocalAppConfigClient(getPropertiesFile(), getPrivateKeyFile());
 		}
 		// Take Two...Let's try getting the Properties remotely, and the PK locally

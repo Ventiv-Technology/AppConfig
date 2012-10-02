@@ -19,6 +19,7 @@ import java.security.PrivateKey
 import java.util.Map.Entry;
 
 import org.aon.esolutions.appconfig.client.util.RSAEncryptUtil
+import org.apache.commons.lang.StringUtils;
 
 abstract class AbstractAppConfigClient implements AppConfigClient {
 	
@@ -53,7 +54,7 @@ abstract class AbstractAppConfigClient implements AppConfigClient {
 	
 	private void decryptProperties(Properties props, String applicationName, String environmentName) {
 		String privateKeyStr = loadPrivateKey(applicationName, environmentName)
-		if (privateKeyStr != null) {
+		if (StringUtils.isNotEmpty(privateKeyStr)) {
 			PrivateKey key = RSAEncryptUtil.getPrivateKeyFromString(loadPrivateKey(applicationName, environmentName));
 			
 			props.each { Entry<String, String> e ->

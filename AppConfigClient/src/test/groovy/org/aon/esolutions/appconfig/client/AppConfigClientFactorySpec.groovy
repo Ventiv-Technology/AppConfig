@@ -47,7 +47,8 @@ class AppConfigClientFactorySpec extends Specification {
 		def client = factory.getAppConfigClient();
 		
 		then:
-		thrown(IllegalArgumentException)
+		client
+		client instanceof LocalAppConfigClient
 	}
 	
 	def "only properties file (from system), missing privatekey"() {
@@ -57,7 +58,8 @@ class AppConfigClientFactorySpec extends Specification {
 		def client = factory.getAppConfigClient();
 		
 		then:
-		thrown(IllegalArgumentException)
+		client
+		client instanceof LocalAppConfigClient
 	}
 	
 	def "valid local configuration"() {
