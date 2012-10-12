@@ -15,6 +15,17 @@ $(function() {
 		}
 	});
 	
+	$("#application-contents form").ajaxForm({
+		dataType: 'JSON', 
+		error: handleAjaxError,
+		beforeSubmit: function(dataArray, form, options) {
+			return checkName(dataArray[0].value);
+		},
+		success: function(responseXml) {
+			window.location.href = contextRoot + 'application/' + responseXml.application.name;
+		}
+	});
+	
 	$("#addEnvironmentModal form").ajaxForm({
 		dataType: 'JSON', 
 		error: handleAjaxError,

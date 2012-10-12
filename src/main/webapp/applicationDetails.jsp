@@ -71,7 +71,7 @@
               	</div><!-- End Sidebar -->
               	
               	<div class="span10" id="application-contents">
-              		<form>
+              		<form action="<c:url value="/application/${application.name}"/>" method="POST">
 						<legend>${application.name} <s:message code="labels.common.settings"/></legend>
 						<label><s:message code="labels.application.applicationName"/></label>
 						<input type="text" value="${application.name}" name="name"/>

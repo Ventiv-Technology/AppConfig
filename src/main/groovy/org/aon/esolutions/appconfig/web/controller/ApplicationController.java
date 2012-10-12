@@ -28,6 +28,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -86,6 +87,18 @@ public class ApplicationController {
 		app.addEnvironment(environmentController.addEnvironment(applicationName, "Default", null));
 		
 		return app;
+	}
+	
+	@RequestMapping(value= "/{applicationName}", method = RequestMethod.POST)
+	public Application updateApplication(@PathVariable String applicationName, @RequestParam("name") String name) throws Exception {
+		Application appDetail = getApplicationDetail(applicationName);
+		if (appDetail == null)
+			throw new IllegalArgumentException("Application " + applicationName + " does not exist");
+		
+		appDetail.setName(name);
+		applicationRepository.save(appDetail);
+		
+		return appDetail;
 	}
 
 }
