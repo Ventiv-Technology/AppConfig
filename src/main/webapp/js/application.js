@@ -64,10 +64,7 @@ $(function() {
 	// Handle pressing escape to reset forms
 	$("body").keyup(function() {
 		if (event.which == 27) {
-			$("#properties-body input").replaceWith(function() {
-				return $(this).attr("originalValue");
-			});
-			resetPropertyRowClickHandlers();
+			loadNewEnvironment(activeEnvironmentName);
 		}
 	});
 	
@@ -192,10 +189,7 @@ function onPropertySubmission(event) {
 			dataType: "JSON",
 			error: handleAjaxError,
 			success: function(data) {
-				tableRow.find("input:first").replaceWith(key);
-				tableRow.find("input:last").replaceWith(value);
-				
-				resetPropertyRowClickHandlers();
+				loadNewEnvironment(activeEnvironmentName);
 			}			
 		});
 	}

@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <div class="tabbable tabs-top">
 	<ul class="nav nav-tabs">
@@ -27,15 +28,15 @@
 				<tbody id="properties-body">
 					<c:forEach items="${allVariables}" var="aVariable">
 						<tr class="property-row">
-							<td class="property-key">${aVariable.key}</td>
-							<td class="property-value">${aVariable.valueDisplay}</td>
+							<td class="property-key"><c:out value="${aVariable.key}"/></td>
+							<td class="property-value"><c:out value="${aVariable.valueDisplay}"/></td>
 							
 							<%-- Inherited / Overrides Column (Can't be both)  --%>
 							<c:if test="${aVariable.inherited}"> <%-- Inherited --%>
-								<td><i class="icon-arrow-up tooltip-holder" rel="tooltip" data-placement="left" title="<s:message code="labels.common.inheritsFrom"/> ${aVariable.inheritedFrom.name}"></i></td>
+								<td><i class="icon-arrow-up tooltip-holder" rel="tooltip" data-placement="left" title="<s:message code="labels.common.inheritsFrom"/> <c:out value="${aVariable.inheritedFrom.name}"/>"></i></td>
 							</c:if>
 							<c:if test="${aVariable.overridden}"> <%-- Overridden --%>
-								<td><i class="icon-share-alt tooltip-holder" rel="tooltip" data-placement="left" title="<s:message code="labels.environment.overrideTooltip" arguments="${aVariable.overrideValueDisplay},${aVariable.overrides.name}"/>"></i></td>
+								<td><i class="icon-share-alt tooltip-holder" rel="tooltip" data-placement="left" title="<s:message code="labels.environment.overrideTooltip" arguments="${fn:escapeXml(aVariable.overrideValueDisplay)},${fn:escapeXml(aVariable.overrides.name)}"/>"></i></td>
 							</c:if>
 							<c:if test="${aVariable.ownedProperty}"> <%-- Neither Inherited or Overridden - so it's our own  --%>
 								<td></td>
@@ -43,7 +44,7 @@
 							
 							<%-- Delete Column --%>
 							<c:if test="${aVariable.overridden}">
-								<td class="tooltip-holder property-delete" rel="tooltip" data-placement="left" title="<s:message code="labels.environment.deleteOverriddenTooltip" arguments="${aVariable.overrides.name},${aVariable.overrideValueDisplay}"/>"><i class="icon-trash"></i></td>
+								<td class="tooltip-holder property-delete" rel="tooltip" data-placement="left" title="<s:message code="labels.environment.deleteOverriddenTooltip" arguments="${fn:escapeXml(aVariable.overrides.name)},${fn:escapeXml(aVariable.overrideValueDisplay)}"/>"><i class="icon-trash"></i></td>
 							</c:if>
 							<c:if test="${aVariable.ownedProperty}">
 								<td class="tooltip-holder property-delete" rel="tooltip" data-placement="left" title="<s:message code="labels.environment.deletePermanentlyTooltip"/> "><i class="icon-trash"></i></td>
