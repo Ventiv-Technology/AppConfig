@@ -24,7 +24,7 @@ allprojects {
 }
 
 dependencies {
-	groovy (group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.7')
+	groovy (group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.8')
 	
 	compile project(":AppConfigClient")
 	compile group: 'org.springframework', name: 'spring-webmvc', version: '3.1.2.RELEASE'
@@ -37,7 +37,7 @@ dependencies {
 	compile group: 'com.crygier', name: 'SpringUtils', version: '1.0.1'
 	compile group: 'jstl', name: 'jstl', version: '1.2'
 	compile group: 'commons-codec', name: 'commons-codec', version: '1.7'
-	compile group: 'commons-io', name: 'commons-io', version: '2.4'
+	compile group: 'commons-io', name: 'commons-io', version: '2.4'	
 	compile group: 'bouncycastle', name: 'bcprov-jdk16', version: '140'
 	compile group: 'dnsjava', name: 'dnsjava', version: '2.1.1'
 	
@@ -57,11 +57,12 @@ dependencies {
 	//runtime group: 'org.neo4j', name: 'neo4j-cypher', version: '1.8.RC1'	// Tied to spring-data-neo4j and it's dependencies	
 	
 	runtime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.6.1'
+	runtime group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.2'
     
 	testCompile group: 'junit', name: 'junit', version: '4.10'
 	testCompile group: 'org.springframework', name: 'spring-test', version: '3.1.2.RELEASE'
-	testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-1.8-SNAPSHOT'
-	testRuntime group: 'org.spockframework', name: 'spock-spring', version: '0.7-groovy-1.8-SNAPSHOT'
+	testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-1.8'
+	testRuntime group: 'org.spockframework', name: 'spock-spring', version: '0.7-groovy-1.8'
 }
 
 license {

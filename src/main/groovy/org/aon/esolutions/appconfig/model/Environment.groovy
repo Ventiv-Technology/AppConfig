@@ -69,6 +69,10 @@ class Environment {
 		return variables;
 	}
 	
+	public void clearVariables() {
+		variables = new DynamicPropertiesContainer();
+	}
+	
 	public Set<Entry<String, String>> getVariableEntries() {
 		getVariables().asMap().entrySet();
 	}

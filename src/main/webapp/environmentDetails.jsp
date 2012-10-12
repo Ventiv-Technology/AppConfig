@@ -69,6 +69,7 @@
 
 			<button class="btn" id="addProperty"><s:message code="labels.environment.addProperty"/></button>
 			<a href="#confirmDelete" role="button" class="btn btn-danger" data-toggle="modal"><s:message code="labels.environment.deleteEnvironment"/></a>
+			<a href="#importEnvironment" role="button" class="btn" data-toggle="modal"><s:message code="labels.environment.import"/></a>
 		</div>
 
 		<div class="tab-pane" id="settings">

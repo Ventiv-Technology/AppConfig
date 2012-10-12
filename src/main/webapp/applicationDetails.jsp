@@ -159,5 +159,38 @@
 		  </div>
 		</div>
 		
+		<!-- Import Environment Modal -->
+		<div class="modal hide fadein" id="importEnvironment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="alert-holder"></div>
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3 id="myModalLabel"><s:message code="labels.environment.importPropertiesFile"/></h3>
+		  </div>
+		    <form action="<c:url value="/application/${application.name}/environment/"/>" method="POST">
+			  	<div class="modal-body">
+			    	<label><h4><s:message code="labels.environment.importPropertiesFile"/></h4></label>
+			    	<input id="file" name="file" type="file" />
+			    	
+			    	<label><h4><s:message code="labels.environment.importMode"/></h4></label>
+			    	<label class="radio">
+  						<input type="radio" name="importMode" id="importMode-merge" value="merge" checked>
+  						<s:message code="labels.environment.importModeMerge"/>
+					</label>
+					<label class="radio">
+  						<input type="radio" name="importMode" id="importMode-full" value="full">
+  						<s:message code="labels.environment.importModeFull"/>
+					</label>
+					<label class="radio">
+  						<input type="radio" name="importMode" id="importMode-newOnly" value="newOnly">
+  						<s:message code="labels.environment.importModeNewOnly"/>
+					</label>
+			  </div>
+			  <div class="modal-footer">
+			    <a href="#" class="btn" data-dismiss="modal" aria-hidden="true"><s:message code="labels.common.close"/></a>
+			    <button class="btn btn-primary" type="submit"><s:message code="labels.environment.import"/></button>
+			  </div>
+		  </form>
+		</div>
+		
 	</body>
 </html>

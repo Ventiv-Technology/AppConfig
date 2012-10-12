@@ -39,6 +39,20 @@ $(function() {
 		}
 	});	
 	
+	$("#importEnvironment form").ajaxForm({
+		dataType: 'JSON', 
+		error: handleAjaxError,
+		resetForm: true,
+		beforeSubmit: function(dataArray, form, options) { 
+			this.url = this.url + activeEnvironmentName + "/import";
+			return true;
+		},
+		success: function() {
+			$("#importEnvironment").modal('hide');
+			loadNewEnvironment(activeEnvironmentName);
+		}
+	});	
+	
 	// Highlight the active application
 	$("#application-selector-" + activeApplicationId).addClass("active");
 	

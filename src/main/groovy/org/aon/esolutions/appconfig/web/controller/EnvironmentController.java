@@ -15,10 +15,13 @@
  */
 package org.aon.esolutions.appconfig.web.controller;
 
+import java.io.IOException;
 import java.security.Key;
 import java.security.KeyPair;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import org.aon.esolutions.appconfig.client.util.RSAEncryptUtil;
@@ -31,6 +34,8 @@ import org.aon.esolutions.appconfig.repository.PrivateKeyRepository;
 import org.aon.esolutions.appconfig.util.AvailableUsersAndRolesProvider;
 import org.aon.esolutions.appconfig.util.InheritanceUtil;
 import org.aon.esolutions.appconfig.util.UpdateUtility;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.support.Neo4jTemplate;
 import org.springframework.security.access.AccessDeniedException;
@@ -44,12 +49,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.crygier.spring.util.web.MimeTypeViewResolver.ResponseMapping;
 
 @Controller
 @RequestMapping("/application/{applicationName}/environment")
 public class EnvironmentController {
+	
+	public static final Log logger = LogFactory.getLog(EnvironmentController.class);
 	
 	@Autowired private ApplicationRepository applicationRepository;	
 	@Autowired private EnvironmentRepository environmentRepository;	
@@ -281,6 +289,38 @@ public class EnvironmentController {
 			env.getEncryptedVariables().remove(existingKey);
 			
 			environmentRepository.save(env);
+		}
+	}
+	
+	@Transactional
+	@RequestMapping(value = "/{environmentName}/import", method = RequestMethod.POST)
+	public void importProperties(@PathVariable String applicationName, @PathVariable String environmentName, 
+			@RequestParam(value = "file") MultipartFile multipartFile, @RequestParam(value = "importMode") String importMode) {
+		Environment env = updateUtility.getEnvironmentForWrite(applicationName, environmentName);
+		if (env != null) {
+			Properties props = new Properties();
+			
+			try {
+				props.load(multipartFile.getInputStream());
+			} catch (IOException e) {
+				logger.error("Error importing properties", e);
+				throw new IllegalArgumentException("Uploaded file does not look like a properties file");
+			}
+			
+			if ("full".equals(importMode)) {
+				env.clearVariables();
+			} else if ("newOnly".equals(importMode)) {
+				for (Entry<String, String> entry : env.getVariableEntries()) {
+					props.remove(entry.getKey());
+				}
+			}
+			
+			for (Object key : props.keySet()) {
+				env.put((String) key, props.getProperty((String) key));
+				env.getEncryptedVariables().remove((String) key);
+			}
+			
+			updateUtility.saveEnvironment(env);
 		}
 	}
 	
