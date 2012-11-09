@@ -15,6 +15,8 @@
  */
 package org.aon.esolutions.appconfig.model
 
+import groovy.transform.ToString;
+
 import java.util.Map.Entry
 
 import org.neo4j.graphdb.Direction;
@@ -25,6 +27,7 @@ import org.springframework.data.neo4j.fieldaccess.DynamicProperties
 import org.springframework.data.neo4j.fieldaccess.DynamicPropertiesContainer
 
 @NodeEntity
+@ToString(excludes = "children,parent")
 class Environment {
 	
 	@GraphId
@@ -88,7 +91,7 @@ class Environment {
 		return encryptedVariables;
 	}
 	
-	public boolean isVisibleToAll() {
+	public boolean getVisibleToAll() {
 		return visibleToAll
 	}
 	

@@ -74,7 +74,7 @@ class AppConfigPermissionEvaluator implements PermissionEvaluator {
 	}
 	
 	private boolean environmentHasPermission(Environment environment, List<Sid> sids, List<Permission> permission, boolean checkForVisible = true) {
-		if (checkForVisible && environment.isVisibleToAll() && permission.contains(BasePermission.READ))
+		if (checkForVisible && environment.getVisibleToAll() && permission.contains(BasePermission.READ))
 			return true;
 			
 		// If no security has been set up - default to allowing all

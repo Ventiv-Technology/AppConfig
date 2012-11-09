@@ -34,6 +34,7 @@ import org.aon.esolutions.appconfig.repository.PrivateKeyRepository;
 import org.aon.esolutions.appconfig.util.AvailableUsersAndRolesProvider;
 import org.aon.esolutions.appconfig.util.InheritanceUtil;
 import org.aon.esolutions.appconfig.util.UpdateUtility;
+import org.aon.esolutions.appconfig.util.XmlImporter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +104,7 @@ public class EnvironmentController {
 		readEnv.setPermittedUsers(updatedEnv.getPermittedUsers());
 		readEnv.setPermittedRoles(updatedEnv.getPermittedRoles());
 		readEnv.setPermittedMachines(updatedEnv.getPermittedMachines());
-		readEnv.setVisibleToAll(updatedEnv.isVisibleToAll());		
+		readEnv.setVisibleToAll(updatedEnv.getVisibleToAll());		
 		
 		return updateUtility.saveEnvironment(readEnv);
 	}
@@ -296,7 +297,14 @@ public class EnvironmentController {
 	@RequestMapping(value = "/{environmentName}/import", method = RequestMethod.POST)
 	public void importProperties(@PathVariable String applicationName, @PathVariable String environmentName, 
 			@RequestParam(value = "file") MultipartFile multipartFile, @RequestParam(value = "importMode") String importMode) {
+		
+		if (multipartFile.getName().endsWith(".xml") || multipartFile.getOriginalFilename().endsWith(".xml")) {
+			new XmlImporter(applicationRepository, environmentRepository, updateUtility).importFromXml(multipartFile, importMode);
+			return;
+		}
+		
 		Environment env = updateUtility.getEnvironmentForWrite(applicationName, environmentName);
+		
 		if (env != null) {
 			Properties props = new Properties();
 			

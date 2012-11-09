@@ -15,11 +15,14 @@
  */
 package org.aon.esolutions.appconfig.model
 
+import groovy.transform.ToString;
+
 import org.springframework.data.neo4j.annotation.GraphId
 import org.springframework.data.neo4j.annotation.NodeEntity
 import org.springframework.data.neo4j.annotation.RelatedTo
 
 @NodeEntity
+@ToString
 class Application {
 	
 	@GraphId
