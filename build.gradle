@@ -5,6 +5,8 @@ buildscript {
 
 apply plugin: 'war'
 apply plugin: 'eclipse-wtp'
+apply plugin: 'jetty'
+apply plugin: 'idea'
 
 allprojects {
 	apply plugin: 'java'
@@ -34,12 +36,17 @@ dependencies {
 	compile group: 'org.springframework', name: 'spring-aspects', version: '3.1.2.RELEASE'
 	compile group: 'org.springframework', name: 'spring-tx', version: '3.1.2.RELEASE'
 	compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.3.0.Final'
-	compile group: 'com.crygier', name: 'SpringUtils', version: '1.0.1'
+	compile (group: 'com.crygier', name: 'SpringUtils', version: '1.0.1') {
+        exclude module: 'slf4j-log4j12'
+        exclude module: 'servletapi'
+    }
 	compile group: 'jstl', name: 'jstl', version: '1.2'
 	compile group: 'commons-codec', name: 'commons-codec', version: '1.7'
 	compile group: 'commons-io', name: 'commons-io', version: '2.4'	
 	compile group: 'bouncycastle', name: 'bcprov-jdk16', version: '140'
 	compile group: 'dnsjava', name: 'dnsjava', version: '2.1.1'
+
+    compile 'org.eclipse.jetty.orbit:javax.servlet:3.0.0.v201112011016'
 	
 	// Security
 	compile group: 'org.springframework.security', name: 'spring-security-core', version: '3.1.2.RELEASE'
@@ -63,6 +70,10 @@ dependencies {
 	testCompile group: 'org.springframework', name: 'spring-test', version: '3.1.2.RELEASE'
 	testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-1.8'
 	testRuntime group: 'org.spockframework', name: 'spock-spring', version: '0.7-groovy-1.8'
+    testRuntime group: 'org.eclipse.jetty', name: 'jetty-xml', version: '8.1.10.v20130312'
+    testRuntime group: 'org.eclipse.jetty', name: 'jetty-server', version: '8.1.10.v20130312'
+    testRuntime group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '8.1.10.v20130312'
+    testRuntime group: 'org.mortbay.jetty', name: 'jetty-runner', version: '8.1.10.v20130312'
 }
 
 license {

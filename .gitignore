@@ -9,3 +9,9 @@ bin/
 data/
 database-test/
 .buildpath
+
+
+# IntelliJ Ignores
+AppConfig.iml
+AppConfigClient.iml
+.idea
