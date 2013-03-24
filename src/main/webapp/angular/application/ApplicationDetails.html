@@ -1,0 +1,9 @@
+<form>
+    <legend>{{data.activeApp.name}} <span i18n-code="labels.common.settings">Settings</span></legend>
+    <label><div i18n-code="labels.application.applicationName">Application Name</div></label>
+    <input type="text" ng-model="data.activeApp.name" name="name"/>
+
+    <br>
+
+    <button ng-click="saveApplication()" class="btn btn-primary"><div i18n-code="labels.common.save">Save</div></button>
+</form>

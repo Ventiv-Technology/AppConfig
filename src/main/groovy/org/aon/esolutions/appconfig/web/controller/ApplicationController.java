@@ -45,7 +45,7 @@ public class ApplicationController {
 	private EnvironmentController environmentController;
 	
 	@PostFilter("hasPermission(returnObject, 'READ')")
-	@RequestMapping(value= "/", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	public List<Application> getAllApplications() {
 		List<Application> answer = new ArrayList<Application>();
 		EndResult<Application> searchResults = applicationRepository.findAll();
@@ -74,29 +74,22 @@ public class ApplicationController {
 		return answer;
 	}
 	
-	@RequestMapping(value= "/{applicationName}", method = RequestMethod.PUT)
-	public Application addApplication(@PathVariable String applicationName) throws Exception {
-		if (getApplicationDetail(applicationName) != null) {
-			throw new AlreadyExistsException("Application " + applicationName + " already exists.");
-		}
-		
-		Application app = new Application();
-		app.setName(applicationName);
-		app = applicationRepository.save(app);
-		
-		app.addEnvironment(environmentController.addEnvironment(applicationName, "Default", null));
-		
-		return app;
-	}
-	
 	@RequestMapping(value= "/{applicationName}", method = RequestMethod.POST)
-	public Application updateApplication(@PathVariable String applicationName, @RequestParam("name") String name) throws Exception {
+	public Application saveApplication(@PathVariable String applicationName, @RequestParam(value = "name", required = false) String name) throws Exception {
 		Application appDetail = getApplicationDetail(applicationName);
-		if (appDetail == null)
-			throw new IllegalArgumentException("Application " + applicationName + " does not exist");
-		
-		appDetail.setName(name);
-		applicationRepository.save(appDetail);
+        boolean isAdd = appDetail == null;
+		if (isAdd) {
+            appDetail = new Application();
+            appDetail.setName(applicationName);
+        }
+
+        if (name != null && name.trim().length() > 0)
+		    appDetail.setName(name);
+
+        appDetail = applicationRepository.save(appDetail);
+
+        if (isAdd)
+            appDetail.addEnvironment(environmentController.addEnvironment(applicationName, "Default", null));
 		
 		return appDetail;
 	}

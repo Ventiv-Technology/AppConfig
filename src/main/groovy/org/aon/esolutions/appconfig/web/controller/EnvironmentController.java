@@ -68,7 +68,7 @@ public class EnvironmentController {
 	@Autowired private Neo4jTemplate template;
 	@Autowired(required = false) private AvailableUsersAndRolesProvider usersAndRolesProvider;
 	
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	@ResponseMapping("environmentDetails")
 	public Set<Environment> getAllEnvironments(@PathVariable String applicationName) {
 		return environmentRepository.getAllEnvironmentsForApplication(applicationName);

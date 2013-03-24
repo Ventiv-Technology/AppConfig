@@ -1,0 +1,13 @@
+<div class="container-fluid">
+    <form>
+        <legend><div i18n-code="labels.application.addApplication">Add Application</div></legend>
+        <label><div i18n-code="labels.application.applicationName">Application</div></label>
+        <input id="name" type="text" ng-model="currentApplication.name" />
+
+        <br>
+
+        <button class="btn btn-primary" id="save" type="submit" ng-click="addApplication(currentApplication.name)" >
+            <div i18n-code="labels.common.save">Save</div>
+        </button>
+    </form>
+</div>
