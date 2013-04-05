@@ -28,6 +28,7 @@
     <script src="ui-bootstrap/ui-bootstrap-0.2.0.js"></script>
     <script src="main.js"></script>
     <script src="Resources.js"></script>
+    <script src="Directives.js"></script>
 </head>
 <body ng-controller="AppConfigCtrl">
 
@@ -56,9 +57,9 @@
                     <a href="#" ng-click="selectApplication($index)">{{application.name}}</a>
                 </li>
                 <li class="divider"></li>
-                <li class="nav-header">{{data.activeApp.name}} <span i18n-code="labels.common.environments">ENVIRONMENTS</span></li>
+                <li class="nav-header">{{data.applicationList[data.activeAppIndex].name}} <span i18n-code="labels.common.environments">ENVIRONMENTS</span></li>
                 <li class="application-environment" ng-repeat="environment in data.activeApp.environments">
-                    <a href="#">{{environment.name}}</a>
+                    <a href="#/env/{{environment.name}}">{{environment.name}}</a>
                 </li>
             </ul>
         </div>

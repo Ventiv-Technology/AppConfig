@@ -1,4 +1,4 @@
-angular.module('AppConfig', ['Resources', 'ui.bootstrap.modal'])
+angular.module('AppConfig', ['Resources', 'AppConfigDirectives', 'ui.bootstrap.modal'])
     .controller("AppConfigCtrl", function($scope, $dialog, ApplicationController, AppConfigModel) {
 
         $scope.data = AppConfigModel;
@@ -62,5 +62,6 @@ angular.module('AppConfig', ['Resources', 'ui.bootstrap.modal'])
     .config(function($routeProvider) {
         $routeProvider.
             when('/', {controller:'AppConfigCtrl', templateUrl:'application/ApplicationDetails.html'}).
+            when('/env/:environmentId', {controller:'AppConfigCtrl', templateUrl:'environment/EnvironmentDetails.html'}).
             otherwise({redirectTo:'/'});
     });
