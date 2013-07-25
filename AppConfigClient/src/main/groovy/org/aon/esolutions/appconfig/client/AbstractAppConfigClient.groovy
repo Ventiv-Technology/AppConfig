@@ -58,11 +58,13 @@ abstract class AbstractAppConfigClient implements AppConfigClient {
 			PrivateKey key = RSAEncryptUtil.getPrivateKeyFromString(loadPrivateKey(applicationName, environmentName));
 			
 			props.each { Entry<String, String> e ->
-				try {
-					String decrypted = RSAEncryptUtil.decrypt(e.value, key)
-					e.setValue(decrypted);
-				} catch (any) {
-					// Probably just not encrypted...
+				if (e.value.length() > 25) {											// Only check if the length is > 25, since an encrypted key will be at least that
+					try {
+						String decrypted = RSAEncryptUtil.decrypt(e.value, key)
+						e.setValue(decrypted);
+					} catch (any) {
+						// Probably just not encrypted...
+					}
 				}
 			}
 		}
