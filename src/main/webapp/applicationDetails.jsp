@@ -67,6 +67,7 @@
               		</div>
               		
               		<a href="#addApplicationModal" role="button" class="btn" data-toggle="modal"><s:message code="labels.application.addApplicationShort"/></a>
+              		<a href="#deleteApplicationModal" role="button" class="btn" data-toggle="modal"><s:message code="labels.application.deleteApplicationShort"/></a>
               		<a href="#addEnvironmentModal" role="button" class="btn" data-toggle="modal"><s:message code="labels.application.addEnvironmentShort"/></a>
               	</div><!-- End Sidebar -->
               	
@@ -101,6 +102,21 @@
 			    <button class="btn btn-primary" type="submit"><s:message code="labels.common.save"/></button>
 			  </div>
 		  </form>
+		</div>
+		
+		<!-- Delete application modal dialog -->
+		<div class="modal hide fadein" id="deleteApplicationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-header">
+		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		    <h3 id="myModalLabel"><s:message code="labels.common.confirmDelete"/></h3>
+		  </div>
+		  <div class="modal-body">
+		    <p><s:message code="labels.application.deleteApplicationWarning" arguments="${application.name}"/></p>
+		  </div>
+		  <div class="modal-footer">
+		    <button class="btn" data-dismiss="modal" aria-hidden="true"><s:message code="labels.common.close"/></button>
+		    <button class="btn btn-warning"><s:message code="labels.common.delete"/></button>
+		  </div>
 		</div>
 		
 		<!-- Add environment modal dialog -->

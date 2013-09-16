@@ -19,12 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.aon.esolutions.appconfig.model.Application;
+import org.aon.esolutions.appconfig.model.Environment;
 import org.aon.esolutions.appconfig.repository.ApplicationRepository;
+import org.aon.esolutions.appconfig.repository.EnvironmentRepository;
+import org.aon.esolutions.appconfig.repository.PrivateKeyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.neo4j.conversion.EndResult;
 import org.springframework.security.access.prepost.PostFilter;
 import org.springframework.security.acls.model.AlreadyExistsException;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +44,11 @@ public class ApplicationController {
 	
 	@Autowired
 	private ApplicationRepository applicationRepository;
-	
+	@Autowired 
+	private EnvironmentRepository environmentRepository;
+	@Autowired 
+	private PrivateKeyRepository privateKeyRepository;
+
 	@Autowired
 	private EnvironmentController environmentController;
 	
@@ -101,4 +109,21 @@ public class ApplicationController {
 		return appDetail;
 	}
 
+	@Transactional
+	@RequestMapping(value= "/{applicationName}", method = RequestMethod.DELETE)
+	public void deleteApplication(@PathVariable String applicationName) throws Exception {
+		Application appDetail = getApplicationDetail(applicationName);
+		if (appDetail == null)
+			throw new IllegalArgumentException("Application " + applicationName + " does not exist");
+		
+		if(appDetail.getEnvironments() != null) {
+			for(final Environment environment : appDetail.getEnvironments()) {
+				privateKeyRepository.delete(environment.getPrivateKeyHolder());
+				environmentRepository.delete(environment);
+			}
+		}
+	
+		
+		applicationRepository.delete(appDetail);
+	}
 }

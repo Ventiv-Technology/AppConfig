@@ -30,4 +30,9 @@ public interface ApplicationRepository extends GraphRepository<Application> {
 	@Transactional
 	@PostAuthorize("hasPermission(returnObject, 'WRITE')")
 	public <U extends Application> U save(U application);
+	
+	@Override
+	@Transactional
+	@PostAuthorize("hasPermission(returnObject, 'WRITE')")
+	public void delete(Application application);
 }

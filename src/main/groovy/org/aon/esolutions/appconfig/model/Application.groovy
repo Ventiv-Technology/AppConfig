@@ -41,4 +41,8 @@ class Application {
 			
 		environments.add(env);
 	}
+	
+	public Set<Environment> getEnvironments() {
+		return environments
+	}
 }

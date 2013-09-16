@@ -68,7 +68,7 @@ $(function() {
 		}
 	});
 	
-	
+	$("#deleteApplicationModal .btn-warning").click(deleteCurrentApplication);
 });
 
 /**
@@ -272,6 +272,21 @@ function deleteCurrentEnvironment() {
 		},
 		success: function(data) {
 			window.location.href = contextRoot + 'application/' + activeApplicationName;
+		}
+	});
+}
+
+function deleteCurrentApplication() {
+	$.ajax({
+		url: contextRoot + 'application/' + activeApplicationName,
+		type: "DELETE",
+		dataType: "JSON",
+		error: function(jqXHR, textStatus) {
+			$("#deleteApplicationModal").modal('hide');
+			handleAjaxError(jqXHR, textStatus)
+		},
+		success: function(data) {
+			window.location.href = contextRoot;
 		}
 	});
 }
