@@ -58,12 +58,16 @@
 	
 	<servlet-mapping>
 		<servlet-name>dispatcher</servlet-name>
-		<url-pattern>/</url-pattern>
+		<url-pattern>/app/*</url-pattern>
 	</servlet-mapping>
 	
 	<error-page>
 		<error-code>500</error-code>
 		<location>/error/500.jsp</location>
 	</error-page>
+	
+	<welcome-file-list>
+		<welcome-file>angular/main.html</welcome-file>
+	</welcome-file-list>
  
 </web-app>

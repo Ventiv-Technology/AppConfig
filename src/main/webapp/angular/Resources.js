@@ -1,8 +1,12 @@
 angular.module('Resources', ['ngResource']).
     factory('ApplicationController', function($resource) {
-        var allApplications = $resource('/AppConfig/application/');
-        var applicationResource = $resource('/AppConfig/application/:applicationName', { applicationName: '@applicationName'})
-        var saveResource = $resource('/AppConfig/application/:applicationName', { applicationName: '@applicationName', name: '@name'})
+    	var baseUrl = "";
+    	if (window.isDetached)
+    		baseUrl = "http://localhost:8080"
+    	
+        var allApplications = $resource(baseUrl + '/AppConfig/app/application/');
+        var applicationResource = $resource(baseUrl + '/AppConfig/app/application/:applicationName', { applicationName: '@applicationName'})
+        var saveResource = $resource(baseUrl + '/AppConfig/app/application/:applicationName', { applicationName: '@applicationName', name: '@name'})
 
         return {
             getAllApplications: function(successCallback, errorCallback) {

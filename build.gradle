@@ -1,12 +1,19 @@
 buildscript {
-	repositories { mavenCentral() }
-	dependencies { classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' }
+	repositories { 
+		mavenCentral()
+		maven { url = "http://dl.bintray.com/jcrygier/maven" }
+	}
+	dependencies { 
+		classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' 
+		classpath 'org.aon.esolutions:aon-buildtools:0.1.6'
+	}
 }
 
 apply plugin: 'war'
 apply plugin: 'eclipse-wtp'
 apply plugin: 'jetty'
 apply plugin: 'idea'
+apply plugin: 'exec'
 
 allprojects {
 	apply plugin: 'java'
@@ -26,7 +33,7 @@ allprojects {
 }
 
 dependencies {
-	groovy (group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.8')
+	groovy (group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.0.7')
 	
 	compile project(":AppConfigClient")
 	compile group: 'org.springframework', name: 'spring-webmvc', version: '3.1.2.RELEASE'
@@ -68,8 +75,8 @@ dependencies {
     
 	testCompile group: 'junit', name: 'junit', version: '4.10'
 	testCompile group: 'org.springframework', name: 'spring-test', version: '3.1.2.RELEASE'
-	testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-1.8'
-	testRuntime group: 'org.spockframework', name: 'spock-spring', version: '0.7-groovy-1.8'
+	testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-2.0'
+	testRuntime group: 'org.spockframework', name: 'spock-spring', version: '0.7-groovy-2.0'
     testRuntime group: 'org.eclipse.jetty', name: 'jetty-xml', version: '8.1.10.v20130312'
     testRuntime group: 'org.eclipse.jetty', name: 'jetty-server', version: '8.1.10.v20130312'
     testRuntime group: 'org.eclipse.jetty', name: 'jetty-webapp', version: '8.1.10.v20130312'
@@ -81,4 +88,14 @@ license {
     strictCheck true
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
     ext.name = 'Aon eSolutions'
+}
+
+nodeJsScripts {
+	bower {
+		global = true
+	}
+}
+
+task getJs << {
+	nodeJsScripts.bower.run("install")
 }

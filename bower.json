@@ -1,0 +1,29 @@
+{
+  "name": "AppConfig",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Aon-eSolutions/AppConfig",
+  "authors": [
+    "John Crygier <john.crygier@aon.com>"
+  ],
+  "description": "Application to configure applications for various environments",
+  "keywords": [
+    "configuration",
+    "management",
+    "properties"
+  ],
+  "license": "Apache-2.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  	"angular": "1.2.0-rc.2",
+  	"angular-resource": "1.2.0-rc.2",
+    "angular-route": "1.2.0-rc.2",
+    "angular-ui-bootstrap-bower": "0.6.0"
+  }
+}
