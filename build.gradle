@@ -1,73 +1,64 @@
 buildscript {
-	repositories { mavenCentral() }
-	dependencies { classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.6.0' }
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.1.6.RELEASE")
+    }
 }
 
-apply plugin: 'war'
-apply plugin: 'eclipse-wtp'
+plugins {
+	id "com.github.hierynomus.license" version "0.11.0"
+}
 
 allprojects {
 	apply plugin: 'java'
 	apply plugin: 'groovy'
-	apply plugin: 'license'
 	apply plugin: 'project-report'
+	apply plugin: 'spring-boot'
 	
 	repositories {
-		mavenCentral()
-		maven { url "http://oss.sonatype.org/content/repositories/snapshots/" }
-		maven { url "http://m2.neo4j.org/releases" }
-		maven { url "http://repo.springsource.org/libs-milestone" }
+		jcenter()
 	}
 	
-	group = 'org.aon.esolutions'
-	version = '0.1.2'
+	group = 'org.ventiv'
+	version = '2.0.0-SNAPSHOT'
 }
 
 dependencies {
-	groovy (group: 'org.codehaus.groovy', name: 'groovy', version: '1.8.8')
+	compile ('org.codehaus.groovy:groovy:2.3.6')
 	
 	compile project(":AppConfigClient")
-	compile group: 'org.springframework', name: 'spring-webmvc', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework', name: 'spring-core', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework', name: 'spring-context', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework', name: 'spring-aop', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework', name: 'spring-aspects', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework', name: 'spring-tx', version: '3.1.2.RELEASE'
-	compile group: 'org.hibernate', name: 'hibernate-validator', version: '4.3.0.Final'
-	compile group: 'com.crygier', name: 'SpringUtils', version: '1.0.1'
-	compile group: 'jstl', name: 'jstl', version: '1.2'
-	compile group: 'commons-codec', name: 'commons-codec', version: '1.7'
-	compile group: 'commons-io', name: 'commons-io', version: '2.4'	
-	compile group: 'bouncycastle', name: 'bcprov-jdk16', version: '140'
-	compile group: 'dnsjava', name: 'dnsjava', version: '2.1.1'
-	
-	// Security
-	compile group: 'org.springframework.security', name: 'spring-security-core', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework.security', name: 'spring-security-web', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework.security', name: 'spring-security-taglibs', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework.security', name: 'spring-security-config', version: '3.1.2.RELEASE'
-	compile group: 'org.springframework.security', name: 'spring-security-ldap', version: '3.1.2.RELEASE'	
-	runtime group: 'org.springframework.ldap', name: 'spring-ldap-core', version: '1.3.1.RELEASE'
-	runtime group: 'org.springframework.ldap', name: 'spring-ldap-core-tiger', version: '1.3.1.RELEASE'
-	runtime group: 'org.springframework.ldap', name: 'spring-ldap-odm', version: '1.3.1.RELEASE'
-	
-	// Neo4j
-	compile group: 'org.springframework.data', name: 'spring-data-neo4j', version: '2.1.0.RC3'
-	runtime group: 'org.springframework.data', name: 'spring-data-neo4j-rest', version: '2.1.0.RC3'
-	//runtime group: 'org.neo4j', name: 'neo4j-cypher', version: '1.8.RC1'	// Tied to spring-data-neo4j and it's dependencies	
-	
-	runtime group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.6.1'
-	runtime group: 'commons-fileupload', name: 'commons-fileupload', version: '1.2.2'
-    
-	testCompile group: 'junit', name: 'junit', version: '4.10'
-	testCompile group: 'org.springframework', name: 'spring-test', version: '3.1.2.RELEASE'
-	testCompile group: 'org.spockframework', name: 'spock-core', version: '0.7-groovy-1.8'
-	testRuntime group: 'org.spockframework', name: 'spock-spring', version: '0.7-groovy-1.8'
+
+    // Spring Boot
+	compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+    compile "org.springframework.boot:spring-boot-starter-data-rest"
+
+    // Database
+    compile "com.h2database:h2"
+
+    // Swagger (API Documentation)
+    compile 'com.mangofactory:swagger-springmvc:0.8.8'
+
+    // Web Jars
+    compile 'org.webjars:swagger-ui:2.0.22'
+
+	// Testing Stack
+	testCompile 'junit:junit:4.10'
+	testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+    testCompile "org.springframework.boot:spring-boot-starter-test"
+	testRuntime 'org.spockframework:spock-spring:0.7-groovy-2.0'
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.1-rc-4'
 }
 
 license {
     header rootProject.file('license/HEADER')
     strictCheck true
     ext.year = Calendar.getInstance().get(Calendar.YEAR)
-    ext.name = 'Aon eSolutions'
+    ext.name = 'Ventiv Technology'
 }

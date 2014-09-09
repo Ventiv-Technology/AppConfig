@@ -9,3 +9,5 @@ bin/
 data/
 database-test/
 .buildpath
+.idea
+*.iml
