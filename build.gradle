@@ -31,7 +31,7 @@ allprojects {
 dependencies {
 	compile ('org.codehaus.groovy:groovy:2.3.6')
 	
-	compile project(":AppConfigClient")
+	//compile project(":AppConfigClient")
 
     // Spring Boot
 	compile "org.springframework.boot:spring-boot-starter-web"
