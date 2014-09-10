@@ -29,7 +29,7 @@ allprojects {
 }
 
 dependencies {
-	compile ('org.codehaus.groovy:groovy:2.3.6')
+	compile ('org.codehaus.groovy:groovy')
 	
 	//compile project(":AppConfigClient")
 
@@ -41,9 +41,9 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-security"
 
     // Spring Security
-    compile 'org.springframework.security:spring-security-web:3.2.5.RELEASE'
-    compile 'org.springframework.security:spring-security-config:3.2.5.RELEASE'
-    compile 'org.springframework.security:spring-security-ldap:3.2.5.RELEASE'
+    compile 'org.springframework.security:spring-security-web'
+    compile 'org.springframework.security:spring-security-config'
+    compile 'org.springframework.security:spring-security-ldap'
 
     // Database
     compile "com.h2database:h2"
@@ -55,10 +55,10 @@ dependencies {
     compile 'org.webjars:swagger-ui:2.0.22'
 
 	// Testing Stack
-	testCompile 'junit:junit:4.10'
-	testCompile 'org.spockframework:spock-core:0.7-groovy-2.0'
+	testCompile 'junit:junit'
+	testCompile 'org.spockframework:spock-core'
     testCompile "org.springframework.boot:spring-boot-starter-test"
-	testRuntime 'org.spockframework:spock-spring:0.7-groovy-2.0'
+	testCompile 'org.spockframework:spock-spring'
 }
 
 task wrapper(type: Wrapper) {
