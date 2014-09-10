@@ -35,11 +35,17 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-actuator"
     compile "org.springframework.boot:spring-boot-starter-data-jpa"
     compile "org.springframework.boot:spring-boot-starter-data-rest"
+    compile "org.springframework.boot:spring-boot-starter-security"
+
+    // Spring Security
+    compile 'org.springframework.security:spring-security-web:3.2.5.RELEASE'
+    compile 'org.springframework.security:spring-security-config:3.2.5.RELEASE'
+    compile 'org.springframework.security:spring-security-ldap:3.2.5.RELEASE'
 
     // Database
     compile "com.h2database:h2"
 
-    // Swagger (API Documentation)
+    // Misc
     compile 'com.mangofactory:swagger-springmvc:0.8.8'
 
     // Web Jars

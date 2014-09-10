@@ -2,14 +2,8 @@ package org.ventiv.appconfig.exception
 
 import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes
 import org.springframework.stereotype.Component
-import org.springframework.web.bind.annotation.ControllerAdvice
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.context.request.RequestAttributes
-import org.springframework.web.servlet.ModelAndView
-
-import javax.servlet.ServletException
-import javax.servlet.http.HttpServletRequest
 
 /**
  *
@@ -33,7 +27,7 @@ public class ResponseStatusFindingErrorAttributes extends DefaultErrorAttributes
         Throwable ex = super.getError(requestAttributes);
 
         // Search until we find one with @ResponseStatus
-        while (ex.getClass().getAnnotation(ResponseStatus) == null && ex.getCause() != null) {
+        while (ex != null && ex.getClass().getAnnotation(ResponseStatus) == null && ex.getCause() != null) {
             ex = ex.getCause();
         }
 
