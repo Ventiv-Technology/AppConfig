@@ -17,8 +17,6 @@ package org.ventiv.appconfig.model
 
 import javax.persistence.ElementCollection
 import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
 import javax.persistence.Id
 
 /**
@@ -28,8 +26,7 @@ import javax.persistence.Id
 public class Application {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    Long id;
+    String id;
 
     String name;
 

@@ -50,7 +50,7 @@ define(['angular', 'ui-bootstrap-tpls', 'restangular'], function (angular, uiBoo
         })
 
         .controller('AddApplicationController', function($scope, $modalInstance, applicationInterface) {
-            $scope.application = { name: undefined };
+            $scope.application = { id: undefined, name: undefined };
             $scope.alerts = [];
 
             $scope.save = function() {
