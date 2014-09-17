@@ -1,0 +1,93 @@
+<!--
+
+    Copyright (c) 2014 Ventiv Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not
+    use this file except in compliance with the License. You may obtain a copy of
+    the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and limitations under
+    the License.
+
+-->
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<head lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Application Configuration</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/webjars/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/app/css/app.css">
+
+    <!-- Kick off RequireJS -->
+    <script data-main="scripts/config" data-app="main" data-base-url="/app/js" src="/webjars/requirejs/2.1.14-3/require.min.js"></script>
+</head>
+<body ng-controller="MainCtrl">
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Application Configuration</a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <form id="login-form" class="form-inline pull-right" role="form" action="/j_spring_security_check" method="post">
+                    <div class="form-group">
+                        <label class="sr-only" for="j_username">User Name</label>
+                        <input type="text" class="form-control" id="j_username" placeholder="Enter User Name">
+
+                        <label class="sr-only" for="j_password">Password</label>
+                        <input type="password" class="form-control" id="j_password" placeholder="Password">
+
+                        <button type="submit" class="btn btn-default">Sign in</button>
+                    </div>
+                </form>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+
+    <!-- Body Of Page -->
+    <div class="container-fluid">
+        <div class="row">
+
+            <!-- Side Bar Navigation -->
+            <div class="col-sm-3 col-md-2 sidebar">
+                <accordion close-others="true">
+                    <accordion-group ng-repeat="application in applications">
+                        <accordion-heading>
+                            {{application.name}} <i class="pull-right glyphicon glyphicon-plus"></i>
+                        </accordion-heading>
+                        <ul class="nav nav-sidebar">
+                            <li><a href="#">Default</a></li>
+                        </ul>
+                    </accordion-group>
+                </accordion>
+
+                <button type="button" class="btn btn-success" ng-click="addApplication();">Add Application</button>
+            </div>
+
+            <!-- Details -->
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+                Contents Here
+            </div>
+        </div>
+    </div>
+</body>
+</html>
