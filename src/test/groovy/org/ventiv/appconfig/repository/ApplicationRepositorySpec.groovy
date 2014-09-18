@@ -52,20 +52,20 @@ class ApplicationRepositorySpec extends Specification {
     def "test add duplicate"() {
         when:
         def response = mockMvc.perform(
-                post("/application")
-                    .content('{ "name": "TestApplication" }')
+                post("/api/application")
+                    .content('{ "id": "Test_Application", "name": "Test Application" }')
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
         )
 
         then:
         response.andExpect(status().isCreated())
-        response.andExpect(header().string("Location", "http://localhost/application/1"))
+        response.andExpect(header().string("Location", "http://localhost/api/application/Test_Application"))
 
         when:
         def repost = mockMvc.perform(
-                post("/application")
-                        .content('{ "name": "TestApplication" }')
+                post("/api/application")
+                        .content('{ "id": "Test_Application", "name": "Test Application" }')
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         )

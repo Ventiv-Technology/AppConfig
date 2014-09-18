@@ -59,6 +59,7 @@ dependencies {
     compile 'org.webjars:jquery:2.1.1'
     compile 'org.webjars:restangular:1.4.0-2'
     compile 'org.webjars:lodash:2.4.1-6'
+    compile 'org.webjars:angular-translate:2.3.0'
 
 	// Testing Stack
 	testCompile 'junit:junit'

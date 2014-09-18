@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (c) 2014 Ventiv Technology
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -13,21 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.ventiv.appconfig.repository;
-
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.ventiv.appconfig.model.Application;
-
-import java.util.List;
-
-/**
- * @author John Crygier
- */
-@RepositoryRestResource(collectionResourceRel = "application", path = "application")
-public interface ApplicationRepository extends CrudRepository<Application, String> {
-
-    List<Application> findByName(@Param("name") String name);
-
-}
+define([], function() {
+    return {
+        APPLICATION_CONFIG: 'Application Configuration',
+        USER_NAME: 'User Name',
+        PASSWORD: 'Password',
+        SIGN_IN: 'Sign In',
+        SAVE: 'Save',
+        CANCEL: 'Cancel',
+        ADD_APPLICATION: 'Add Application',
+        APPLICATION_ID: 'Application Id',
+        APPLICATION_NAME: 'Application Name',
+        REQUIRED_FIELD_ERROR: 'This field is required, please populate it',
+        APP_ID_PATTERN_ERROR: 'This field can only contain the following characters: A-Z, a-z, 0-9, _.  No spaces allowed.'
+    }
+});

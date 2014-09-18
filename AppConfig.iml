@@ -143,6 +143,7 @@
     <orderEntry type="library" exported="" name="Gradle: jquery-2.1.1" level="project" />
     <orderEntry type="library" exported="" name="Gradle: restangular-1.4.0-2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: lodash-2.4.1-6" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: angular-translate-2.3.0" level="project" />
   </component>
 </module>
 

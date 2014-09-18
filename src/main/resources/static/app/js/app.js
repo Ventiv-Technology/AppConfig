@@ -15,12 +15,12 @@
  */
 'use strict';
 
-define(['angular', 'ui-bootstrap-tpls', 'restangular'], function (angular, uiBootstrapTpls, restangular) {
+define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angular-translate'], function (angular, translations) {
 
     // Declare app level module which depends on filters, and services
 
-    return angular.module('myApp', ['ui.bootstrap', 'restangular'])
-        .config(function(RestangularProvider) {
+    return angular.module('myApp', ['ui.bootstrap', 'restangular', 'pascalprecht.translate'])
+        .config(function(RestangularProvider, $translateProvider) {
             RestangularProvider.setBaseUrl("/api");
             RestangularProvider.setResponseExtractor(function(response, operation, what) {
                 if (response['_embedded'])
@@ -28,6 +28,8 @@ define(['angular', 'ui-bootstrap-tpls', 'restangular'], function (angular, uiBoo
                 else
                     return response;
             });
+
+            $translateProvider.translations('en', translations).preferredLanguage('en');
         })
 
         .controller('MainCtrl', function($scope, $modal, Restangular) {

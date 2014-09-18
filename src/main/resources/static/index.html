@@ -23,7 +23,7 @@
 <head lang="en">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Application Configuration</title>
+    <title translate="APPLICATION_CONFIG">Application Configuration</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -45,18 +45,18 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Application Configuration</a>
+                <a class="navbar-brand" href="#" translate="APPLICATION_CONFIG">Application Configuration</a>
             </div>
             <div class="navbar-collapse collapse">
                 <form id="login-form" class="form-inline pull-right" role="form" action="/j_spring_security_check" method="post">
                     <div class="form-group">
-                        <label class="sr-only" for="j_username">User Name</label>
-                        <input type="text" class="form-control" id="j_username" placeholder="Enter User Name">
+                        <label class="sr-only" for="j_username" translate="USER_NAME">User Name</label>
+                        <input type="text" class="form-control" id="j_username" placeholder="{{ 'USER_NAME' | translate }}">
 
-                        <label class="sr-only" for="j_password">Password</label>
-                        <input type="password" class="form-control" id="j_password" placeholder="Password">
+                        <label class="sr-only" for="j_password" translate="PASSWORD">Password</label>
+                        <input type="password" class="form-control" id="j_password" placeholder="{{ 'PASSWORD' | translate }}">
 
-                        <button type="submit" class="btn btn-default">Sign in</button>
+                        <button type="submit" class="btn btn-default" translate="SIGN_IN">Sign in</button>
                     </div>
                 </form>
             </div><!--/.nav-collapse -->
