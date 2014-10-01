@@ -22,15 +22,13 @@ import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
-import org.springframework.web.util.NestedServletException
 import org.ventiv.appconfig.App
-import org.ventiv.appconfig.exception.AlreadyExistsException
 import spock.lang.Specification
 
 import javax.annotation.Resource
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 /**
@@ -52,7 +50,7 @@ class ApplicationRepositorySpec extends Specification {
     def "test add duplicate"() {
         when:
         def response = mockMvc.perform(
-                post("/api/application")
+                put("/api/application")
                     .content('{ "id": "Test_Application", "name": "Test Application" }')
                     .contentType(MediaType.APPLICATION_JSON)
                     .accept(MediaType.APPLICATION_JSON)
@@ -60,19 +58,25 @@ class ApplicationRepositorySpec extends Specification {
 
         then:
         response.andExpect(status().isCreated())
-        response.andExpect(header().string("Location", "http://localhost/api/application/Test_Application"))
 
-        when:
+        when:   "RePost with the same name / different ID"
         def repost = mockMvc.perform(
-                post("/api/application")
-                        .content('{ "id": "Test_Application", "name": "Test Application" }')
+                put("/api/application")
+                        .content('{ "id": "Test_Application_2", "name": "Test Application" }')
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON)
         )
 
         then:
-        def e = thrown(NestedServletException)
-        e.getCause().getCause().getCause() instanceof AlreadyExistsException
+        repost.andExpect(status().isConflict())
+
+        when:   "Fetch the persisted"
+        def fetched = mockMvc.perform(
+                get("/api/application/Test_Application")
+        )
+
+        then:
+        fetched.andExpect(status().isOk())
     }
 
 }

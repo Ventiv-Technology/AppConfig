@@ -17,7 +17,7 @@ package org.ventiv.appconfig.repository;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Repository;
 import org.ventiv.appconfig.model.Application;
 
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * @author John Crygier
  */
-@RepositoryRestResource(collectionResourceRel = "application", path = "application")
+@Repository
 public interface ApplicationRepository extends CrudRepository<Application, String> {
 
     List<Application> findByName(@Param("name") String name);

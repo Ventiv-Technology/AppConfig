@@ -75,7 +75,7 @@
                             {{application.name}} <i class="pull-right glyphicon glyphicon-plus"></i>
                         </accordion-heading>
                         <ul class="nav nav-sidebar">
-                            <li><a href="#">Default</a></li>
+                            <li ng-repeat="environment in application.environments"><a href="#">{{environment.name}}</a></li>
                         </ul>
                     </accordion-group>
                 </accordion>

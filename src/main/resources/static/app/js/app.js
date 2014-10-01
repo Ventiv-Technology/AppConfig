@@ -56,7 +56,7 @@ define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angul
             $scope.alerts = [];
 
             $scope.save = function() {
-                applicationInterface.post($scope.application).then(
+                applicationInterface.customPUT($scope.application).then(
                     function success() {
                         $modalInstance.close();
                     },

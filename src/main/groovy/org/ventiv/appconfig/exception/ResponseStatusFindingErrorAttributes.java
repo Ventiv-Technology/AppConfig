@@ -46,12 +46,13 @@ public class ResponseStatusFindingErrorAttributes extends DefaultErrorAttributes
             ex = ex.getCause();
         }
 
-        // If we found one, set the error code in the RequestAttributes
-        if (ex != null && ex.getClass().getAnnotation(ResponseStatus.class) != null)
+        if (ex != null && ex.getClass().getAnnotation(ResponseStatus.class) != null) {
+            // If we found one, set the error code in the RequestAttributes
             requestAttributes.setAttribute("javax.servlet.error.status_code", ex.getClass().getAnnotation(ResponseStatus.class).value().value(), RequestAttributes.SCOPE_REQUEST);
 
-        // Override the exception that the super class expects
-        requestAttributes.setAttribute(ERROR_ATTRIBUTE, ex, RequestAttributes.SCOPE_REQUEST);
+            // Override the exception that the super class expects
+            requestAttributes.setAttribute(ERROR_ATTRIBUTE, ex, RequestAttributes.SCOPE_REQUEST);
+        }
 
         return super.getErrorAttributes(requestAttributes, includeStackTrace);
     }

@@ -15,34 +15,39 @@
  */
 package org.ventiv.appconfig.model
 
-import com.fasterxml.jackson.annotation.JsonManagedReference
+import com.fasterxml.jackson.annotation.JsonBackReference
 
 import javax.persistence.CascadeType
-import javax.persistence.ElementCollection
 import javax.persistence.Entity
-import javax.persistence.FetchType
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
-import javax.persistence.OneToMany
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.OneToOne
 
 /**
+ *
+ *
  * @author John Crygier
  */
 @Entity
-public class Application {
+class Environment {
 
     @Id
-    String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Long id;
 
     String name;
 
-    @JsonManagedReference("application")
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="application", fetch = FetchType.EAGER)
-    Set<Environment> environments;
 
-    @ElementCollection
-    List<String> ownerRoles;
+    @JsonBackReference("parent")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "PARENT_ENVIRONMENT_ID", nullable = true)
+    Environment parent;
 
-    @ElementCollection
-    List<String> ownerLogins;
-
+    @JsonBackReference("application")
+    @ManyToOne
+    @JoinColumn(name = "APPLICATION_ID", nullable = false)
+    Application application;
 }
