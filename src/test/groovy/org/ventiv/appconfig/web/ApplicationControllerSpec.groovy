@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package org.ventiv.appconfig.repository
+package org.ventiv.appconfig.web
 
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.MediaType
@@ -38,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @WebAppConfiguration
 @ContextConfiguration(loader = SpringApplicationContextLoader, classes = App)
-class ApplicationRepositorySpec extends Specification {
+class ApplicationControllerSpec extends Specification {
 
     @Resource WebApplicationContext webApplicationContext;
     MockMvc mockMvc;
