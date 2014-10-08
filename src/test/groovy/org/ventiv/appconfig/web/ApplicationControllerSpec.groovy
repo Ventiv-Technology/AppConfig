@@ -90,14 +90,14 @@ class ApplicationControllerSpec extends Specification {
         def resp = mockMvc.perform(
                 put("/api/application")
                     .content('''{
-                        "id": "Test_App", "name": "Test Application",
+                        "id": "Test_App_Full", "name": "Test Application Full",
                         "environments": [
                             {
                                 "name": "Default",
                                 "propertyGroups": [
                                     {
                                         "name": null,
-                                        "properties": [
+                                        "allProperties": [
                                             { "key": "database.url", "value": "jdbc:thin:hello" },
                                             { "key": "database.user", "value": "john" }
                                         ]
@@ -115,20 +115,20 @@ class ApplicationControllerSpec extends Specification {
 
         when:   "Fetch the persisted"
         def fetched = mockMvc.perform(
-                get("/api/application/Test_App")
+                get("/api/application/Test_App_Full")
         )
 
         then:
         fetched.andExpect(status().isOk())
-        fetched.andExpect(jsonPath('$.id').value("Test_App"))
-        fetched.andExpect(jsonPath('$.name').value("Test Application"))
+        fetched.andExpect(jsonPath('$.id').value("Test_App_Full"))
+        fetched.andExpect(jsonPath('$.name').value("Test Application Full"))
         fetched.andExpect(jsonPath('$.environments').isArray())
         fetched.andExpect(jsonPath('$.environments[0].name').value("Default"))
         fetched.andExpect(jsonPath('$.environments[0].propertyGroups').isArray())
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].properties[0].key').value("database.url"))
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].properties[0].value').value("jdbc:thin:hello"))
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].properties[1].key').value("database.user"))
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].properties[1].value').value("john"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].allProperties[0].key').value("database.url"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].allProperties[0].value').value("jdbc:thin:hello"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].allProperties[1].key').value("database.user"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].allProperties[1].value').value("john"))
     }
 
 }

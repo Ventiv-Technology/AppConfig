@@ -34,6 +34,7 @@ frameworks like Spring Boot, AngularJS, and more while changing some fundamental
 - Code reduction by using libraries instead of custom code (Angular vs JQuery should help here with data binding)
 - The following are additional features that may be tackled
     - Properties Grouping.  Ability to group properties together, instead of just having them alphabetical
+    - Sorting ability.  Sort Groups as well as Properties within groups.
     - Versioning.  Have a log of all changes done to an Application / Environment by user (if logged in) or by other information such as IP
     - Comparing 2 environments (http://ejohn.org/projects/javascript-diff-algorithm/)
     - Better Visual Comparison when overridden - Maybe use http://ejohn.org/projects/javascript-diff-algorithm/ or https://github.com/webjars/diff

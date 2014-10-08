@@ -16,6 +16,7 @@
 package org.ventiv.appconfig.model
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonManagedReference
 
 import javax.persistence.CascadeType
@@ -43,7 +44,6 @@ class Environment {
 
     String name;
 
-
     @JsonBackReference("parent")
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "PARENT_ENVIRONMENT_ID", nullable = true)
@@ -55,6 +55,18 @@ class Environment {
     Application application;
 
     @JsonManagedReference("environment")
-    @OneToMany(cascade=CascadeType.ALL, mappedBy="environment", fetch = FetchType.EAGER)
-    Set<PropertyGroup> propertyGroups;
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="environment", fetch = FetchType.LAZY)
+    Set<PropertyGroup> propertyGroups = [];
+
+    public PropertyGroup addPropertyGroup(PropertyGroup propertyGroup) {
+        propertyGroup.setEnvironment(this)
+        getPropertyGroups().add(propertyGroup)
+
+        return propertyGroup;
+    }
+
+    @JsonIgnore
+    public List<Property> getAllProperties() {
+        return propertyGroups.allProperties.flatten()
+    }
 }

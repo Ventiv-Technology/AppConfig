@@ -37,12 +37,19 @@ public class Application {
 
     @JsonManagedReference("application")
     @OneToMany(cascade=CascadeType.ALL, mappedBy="application", fetch = FetchType.EAGER)
-    Set<Environment> environments;
+    Set<Environment> environments = [];
 
     @ElementCollection
     List<String> ownerRoles;
 
     @ElementCollection
     List<String> ownerLogins;
+
+    public Environment addEnvironment(Environment environment) {
+        environment.setApplication(this);
+        getEnvironments().add(environment);
+
+        return environment;
+    }
 
 }
