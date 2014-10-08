@@ -25,7 +25,6 @@
     <orderEntry type="library" exported="" name="Gradle: spring-boot-starter-web-1.1.6.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-boot-starter-1.1.6.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-boot-starter-tomcat-1.1.6.RELEASE" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: jackson-databind-2.3.4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: hibernate-validator-5.0.3.Final" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-web-4.0.7.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-webmvc-4.0.7.RELEASE" level="project" />
@@ -36,7 +35,6 @@
     <orderEntry type="library" exported="" name="Gradle: tomcat-embed-core-7.0.55" level="project" />
     <orderEntry type="library" exported="" name="Gradle: tomcat-embed-el-7.0.55" level="project" />
     <orderEntry type="library" exported="" name="Gradle: tomcat-embed-logging-juli-7.0.55" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: jackson-core-2.3.4" level="project" />
     <orderEntry type="library" exported="" name="Gradle: validation-api-1.1.0.Final" level="project" />
     <orderEntry type="library" exported="" name="Gradle: classmate-1.0.0" level="project" />
     <orderEntry type="library" exported="" name="Gradle: spring-aop-4.0.7.RELEASE" level="project" />
@@ -136,10 +134,13 @@
     <orderEntry type="library" exported="" name="Gradle: restangular-1.4.0-2" level="project" />
     <orderEntry type="library" exported="" name="Gradle: lodash-2.4.1-6" level="project" />
     <orderEntry type="library" exported="" name="Gradle: angular-translate-2.3.0" level="project" />
-    <orderEntry type="library" exported="" name="Gradle: jackson-annotations-2.3.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: objenesis-1.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: json-path-0.9.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: json-smart-1.2" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jackson-datatype-hibernate4-2.4.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jackson-core-2.4.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jackson-databind-2.4.3" level="project" />
+    <orderEntry type="library" exported="" name="Gradle: jackson-annotations-2.4.0" level="project" />
   </component>
 </module>
 

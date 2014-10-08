@@ -49,6 +49,7 @@ dependencies {
     compile 'com.mangofactory:swagger-springmvc:0.8.8'
     compile 'org.webjars:webjars-locator:0.17'
     compile 'org.ventiv:spring-boot-webjars-requirejs:1.0.0'
+    compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.3'
 
     // Web Jars
     compile 'org.webjars:swagger-ui:2.0.22'

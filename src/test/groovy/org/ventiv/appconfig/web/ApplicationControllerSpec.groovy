@@ -124,11 +124,20 @@ class ApplicationControllerSpec extends Specification {
         fetched.andExpect(jsonPath('$.name').value("Test Application Full"))
         fetched.andExpect(jsonPath('$.environments').isArray())
         fetched.andExpect(jsonPath('$.environments[0].name').value("Default"))
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups').isArray())
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].allProperties[0].key').value("database.url"))
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].allProperties[0].value').value("jdbc:thin:hello"))
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].allProperties[1].key').value("database.user"))
-        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].allProperties[1].value').value("john"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups').doesNotExist())
+
+        when: "get the environment level information"
+        fetched = mockMvc.perform(
+                get("/api/application/Test_App_Full/Default")
+        )
+
+        then:
+        fetched.andExpect(status().isOk())
+        fetched.andExpect(jsonPath('$.propertyGroups').isArray())
+        fetched.andExpect(jsonPath('$.propertyGroups[0].allProperties[0].key').value("database.url"))
+        fetched.andExpect(jsonPath('$.propertyGroups[0].allProperties[0].value').value("jdbc:thin:hello"))
+        fetched.andExpect(jsonPath('$.propertyGroups[0].allProperties[1].key').value("database.user"))
+        fetched.andExpect(jsonPath('$.propertyGroups[0].allProperties[1].value').value("john"))
     }
 
 }
