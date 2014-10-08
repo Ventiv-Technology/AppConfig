@@ -63,7 +63,38 @@ class EnvironmentControllerSpec extends Specification {
         parsedResult.propertyGroups.size() == 2
 
         parsedResult.propertyGroups[1].name == null
-        parsedResult.propertyGroups[1].allProperties.size() == 3
+        parsedResult.propertyGroups[1].allProperties.size() == 4
+        parsedResult.propertyGroups[1].allProperties[0].key == 'database.url'
+        parsedResult.propertyGroups[1].allProperties[0].value == 'jdbc:thin:hello'
+        parsedResult.propertyGroups[1].allProperties[0].inheritanceType == 'Inherited'
+        parsedResult.propertyGroups[1].allProperties[1].key == 'property.1'
+        parsedResult.propertyGroups[1].allProperties[1].value == 'one'
+        parsedResult.propertyGroups[1].allProperties[1].inheritanceType == 'Inherited'
+        parsedResult.propertyGroups[1].allProperties[2].key == 'database.user'
+        parsedResult.propertyGroups[1].allProperties[2].value == 'devuser'
+        parsedResult.propertyGroups[1].allProperties[2].inheritanceType == 'Overridden'
+        parsedResult.propertyGroups[1].allProperties[3].key == 'database.password'
+        parsedResult.propertyGroups[1].allProperties[3].value == 'password'
+        parsedResult.propertyGroups[1].allProperties[3].inheritanceType == 'OverriddenUnchanged'
+
+        parsedResult.propertyGroups[0].name == "LonePropertyGroup"
+        parsedResult.propertyGroups[0].allProperties.size() == 1
+        parsedResult.propertyGroups[0].allProperties[0].key == 'lone.property.group'
+        parsedResult.propertyGroups[0].allProperties[0].value == 'hello world'
+        parsedResult.propertyGroups[0].allProperties[0].inheritanceType == 'Inherited'
+
+        when: "get 3rd level (Default -> Development -> Super_Development"
+        fetched = mockMvc.perform(
+                get("/api/application/EnvironmentControllerSpec/Super_Development")
+        )
+        parsedResult = new JsonSlurper().parseText(fetched.andReturn().getResponse().getContentAsString())
+
+        then:
+        fetched.andExpect(status().isOk())
+        parsedResult.propertyGroups.size() == 2
+
+        parsedResult.propertyGroups[1].name == null
+        parsedResult.propertyGroups[1].allProperties.size() == 4
         parsedResult.propertyGroups[1].allProperties[0].key == 'database.url'
         parsedResult.propertyGroups[1].allProperties[0].value == 'jdbc:thin:hello'
         parsedResult.propertyGroups[1].allProperties[0].inheritanceType == 'Inherited'
@@ -73,6 +104,9 @@ class EnvironmentControllerSpec extends Specification {
         parsedResult.propertyGroups[1].allProperties[2].key == 'database.password'
         parsedResult.propertyGroups[1].allProperties[2].value == 'password'
         parsedResult.propertyGroups[1].allProperties[2].inheritanceType == 'OverriddenUnchanged'
+        parsedResult.propertyGroups[1].allProperties[3].key == 'property.1'
+        parsedResult.propertyGroups[1].allProperties[3].value == 'one override'
+        parsedResult.propertyGroups[1].allProperties[3].inheritanceType == 'Overridden'
 
         parsedResult.propertyGroups[0].name == "LonePropertyGroup"
         parsedResult.propertyGroups[0].allProperties.size() == 1
@@ -110,7 +144,8 @@ class EnvironmentControllerSpec extends Specification {
         defaultEnv.addPropertyGroup(new PropertyGroup([
                 'database.url': 'jdbc:thin:hello',
                 'database.user': 'john',
-                'database.password': 'password'
+                'database.password': 'password',
+                'property.1': "one"
         ]))
         defaultEnv.addPropertyGroup(new PropertyGroup([
                 'lone.property.group': 'hello world'
@@ -120,6 +155,11 @@ class EnvironmentControllerSpec extends Specification {
         devEnv.addPropertyGroup(new PropertyGroup([
                 'database.user': 'devuser',
                 'database.password': 'password'
+        ]))
+
+        Environment superDevEnv = app.addEnvironment(new Environment([name: "Super_Development", parent: devEnv]))
+        superDevEnv.addPropertyGroup(new PropertyGroup([
+                'property.1': "one override"
         ]))
 
         applicationController.insert(app);

@@ -54,11 +54,13 @@ class EnvironmentController {
                     // Check if it's a new property
                     Property foundProperty = currentEnv.getAllProperties().find { it.getKey() == currentProp.getKey() }
                     if (foundProperty) {
-                        // Set the InheritanceType to Overridden or OverriddenUnchanged
-                        if (foundProperty.getValue() == currentProp.getValue())
-                            foundProperty.setInheritanceType(InheritanceType.OverriddenUnchanged);
-                        else
-                            foundProperty.setInheritanceType(InheritanceType.Overridden);
+                        if (foundProperty.getInheritanceType() == InheritanceType.New) {
+                            // Set the InheritanceType to Overridden or OverriddenUnchanged
+                            if (foundProperty.getValue() == currentProp.getValue())
+                                foundProperty.setInheritanceType(InheritanceType.OverriddenUnchanged);
+                            else
+                                foundProperty.setInheritanceType(InheritanceType.Overridden);
+                        }
                     } else {
                         // We have a new property, see if the property group already exists, or else add it
                         PropertyGroup groupToAddTo = currentEnv.getPropertyGroups().find {
@@ -71,9 +73,14 @@ class EnvironmentController {
                             currentEnv.addPropertyGroup(groupToAddTo);
                         }
 
-                        groupToAddTo.addProperty((Property) currentProp.clone()).setInheritanceType(InheritanceType.Inherited);
+                        if (currentProp.getInheritanceType() == InheritanceType.New)
+                            groupToAddTo.addProperty((Property) currentProp.clone()).setInheritanceType(InheritanceType.Inherited);
+                        else
+                            groupToAddTo.addProperty((Property) currentProp.clone());
                     }
                 }
+
+                currentPropertyList = currentEnv.getAllProperties();
             }
         }
 
