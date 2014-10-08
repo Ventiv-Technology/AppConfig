@@ -16,14 +16,17 @@
 package org.ventiv.appconfig.model
 
 import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
 
 import javax.persistence.CascadeType
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 import javax.persistence.OneToOne
 
 /**
@@ -50,4 +53,8 @@ class Environment {
     @ManyToOne
     @JoinColumn(name = "APPLICATION_ID", nullable = false)
     Application application;
+
+    @JsonManagedReference("environment")
+    @OneToMany(cascade=CascadeType.ALL, mappedBy="environment", fetch = FetchType.EAGER)
+    Set<PropertyGroup> propertyGroups;
 }

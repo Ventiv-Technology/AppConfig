@@ -29,6 +29,7 @@ import javax.annotation.Resource
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 /**
@@ -77,6 +78,57 @@ class ApplicationControllerSpec extends Specification {
 
         then:
         fetched.andExpect(status().isOk())
+        fetched.andExpect(jsonPath('$.id').value("Test_Application"))
+
+        // Ensure that the Default environment got auto-created
+        fetched.andExpect(jsonPath('$.environments[0].id').value(1))
+        fetched.andExpect(jsonPath('$.environments[0].name').value("Default"))
+    }
+
+    def "insert a full application"() {
+        when:
+        def resp = mockMvc.perform(
+                put("/api/application")
+                    .content('''{
+                        "id": "Test_App", "name": "Test Application",
+                        "environments": [
+                            {
+                                "name": "Default",
+                                "propertyGroups": [
+                                    {
+                                        "name": null,
+                                        "properties": [
+                                            { "key": "database.url", "value": "jdbc:thin:hello" },
+                                            { "key": "database.user", "value": "john" }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }''')
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON)
+        )
+
+        then:
+        resp.andExpect(status().isCreated())
+
+        when:   "Fetch the persisted"
+        def fetched = mockMvc.perform(
+                get("/api/application/Test_App")
+        )
+
+        then:
+        fetched.andExpect(status().isOk())
+        fetched.andExpect(jsonPath('$.id').value("Test_App"))
+        fetched.andExpect(jsonPath('$.name').value("Test Application"))
+        fetched.andExpect(jsonPath('$.environments').isArray())
+        fetched.andExpect(jsonPath('$.environments[0].name').value("Default"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups').isArray())
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].properties[0].key').value("database.url"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].properties[0].value').value("jdbc:thin:hello"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].properties[1].key').value("database.user"))
+        fetched.andExpect(jsonPath('$.environments[0].propertyGroups[0].properties[1].value').value("john"))
     }
 
 }
