@@ -75,7 +75,9 @@
                             {{application.name}} <i class="pull-right glyphicon glyphicon-plus"></i>
                         </accordion-heading>
                         <ul class="nav nav-sidebar">
-                            <li ng-repeat="environment in application.environments"><a href="#">{{environment.name}}</a></li>
+                            <li ng-repeat="environment in application.environments" ui-sref-active="active" class="item">
+                                <a href ui-sref="environment({applicationId: application.id, environmentId: environment.name})">{{environment.name}}</a>
+                            </li>
                         </ul>
                     </accordion-group>
                 </accordion>
@@ -84,9 +86,7 @@
             </div>
 
             <!-- Details -->
-            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-                Contents Here
-            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main" ui-view></div>
         </div>
     </div>
 </body>

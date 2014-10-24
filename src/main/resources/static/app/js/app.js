@@ -15,12 +15,13 @@
  */
 'use strict';
 
-define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angular-translate'], function (angular, translations) {
+define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angular-translate', 'angular-ui-router'], function (angular, translations) {
 
     // Declare app level module which depends on filters, and services
 
-    return angular.module('myApp', ['ui.bootstrap', 'restangular', 'pascalprecht.translate'])
-        .config(function(RestangularProvider, $translateProvider) {
+    return angular.module('myApp', ['ui.bootstrap', 'restangular', 'pascalprecht.translate', 'ui.router'])
+        .config(function(RestangularProvider, $translateProvider, $stateProvider) {
+            // Configure RESTAngular
             RestangularProvider.setBaseUrl("/api");
             RestangularProvider.setResponseExtractor(function(response, operation, what) {
                 if (response['_embedded'])
@@ -29,7 +30,20 @@ define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angul
                     return response;
             });
 
+            // Configure Translations
             $translateProvider.translations('en', translations).preferredLanguage('en');
+
+            // Configure UI-Router
+            $stateProvider
+                .state('application', {
+                    url: '/{applicationId}',
+                    templateUrl: '/app/partials/application.html'
+                })
+                .state('environment', {
+                    url: '/{applicationId}/{environmentId}',
+                    templateUrl: '/app/partials/environment.html',
+                    controller: 'EnvironmentController'
+                });
         })
 
         .controller('MainCtrl', function($scope, $modal, Restangular) {
@@ -74,5 +88,10 @@ define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angul
             $scope.cancel = function() {
                 $modalInstance.dismiss('cancel');
             }
+        })
+
+        .controller('EnvironmentController', function($scope, Restangular, $stateParams) {
+            var applicationInterface = Restangular.all('application');
+            $scope.environment = applicationInterface.one($stateParams.applicationId).one($stateParams.environmentId).get();
         });
 });
