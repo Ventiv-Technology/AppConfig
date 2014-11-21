@@ -25,7 +25,7 @@
         <form role="form" ng-model="applicationForm" name="applicationForm">
             <div class="form-group has-feedback" ng-class="{'has-error' : applicationForm.applicationId.$invalid}">
                 <label for="applicationName" translate="APPLICATION_ID">Application Id</label>
-                <input type="text" ng-model="application.id" class="form-control" id="applicationId" name="applicationId" placeholder="Enter Application Id" required ng-pattern="/^\w*$/">
+                <input type="text" ng-model="addingObject.id" class="form-control" id="applicationId" name="applicationId" placeholder="Enter Application Id" required ng-pattern="/^\w*$/">
                 <span ng-show="applicationForm.applicationId.$invalid" class="glyphicon glyphicon-remove form-control-feedback"></span>
                 <span ng-show="applicationForm.applicationId.$error.required" class="help-block" translate="REQUIRED_FIELD_ERROR">This field is required, please populate it</span>
                 <span ng-show="applicationForm.applicationId.$error.pattern" class="help-block" translate="APP_ID_PATTERN_ERROR">This field can only contain the following characters: A-Z, a-z, 0-9, _.  No spaces allowed.</span>
@@ -33,7 +33,7 @@
 
             <div class="form-group has-feedback" ng-class="{'has-error' : applicationForm.applicationName.$invalid}">
                 <label for="applicationName" translate="APPLICATION_NAME">Application Name</label>
-                <input type="text" ng-model="application.name" class="form-control" id="applicationName"name="applicationName" placeholder="Enter Application Name" required>
+                <input type="text" ng-model="addingObject.name" class="form-control" id="applicationName"name="applicationName" placeholder="Enter Application Name" required>
                 <span ng-show="applicationForm.applicationName.$invalid" class="glyphicon glyphicon-remove form-control-feedback"></span>
                 <span ng-show="applicationForm.applicationName.$error.required" class="help-block" translate="REQUIRED_FIELD_ERROR">This field is required, please populate it</span>
             </div>

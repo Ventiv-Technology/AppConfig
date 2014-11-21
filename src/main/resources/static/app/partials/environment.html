@@ -1,6 +1,17 @@
 <div class="" id="properties">
     <p ng-show="environment.parent" translate="INHERITS_FROM" translate-values="{{environment}}"></p>
 
+    <accordion close-others="false">
+        <accordion-group ng-repeat="propertyGroup in environment.propertyGroups" is-open="true">
+            <accordion-heading>
+                {{propertyGroup.name}} <i class="pull-right glyphicon glyphicon-plus" title="{{ 'ADD_PROPERTY' | translate }}"></i>
+            </accordion-heading>
+            <ul class="nav nav-sidebar">
+
+            </ul>
+        </accordion-group>
+    </accordion>
+
     <button class="btn" id="addPropertyGroup" ng-click="addPropertyGroup()" translate="ADD_PROPERTY_GROUP"></button>
     <button class="btn btn-danger" id="deleteEnvironemnt" translate="DELETE_ENVIRONMENT"></button>
     <button class="btn" id="import" translate="IMPORT"></button>

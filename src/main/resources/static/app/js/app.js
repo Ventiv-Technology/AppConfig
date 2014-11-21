@@ -56,9 +56,9 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
             $scope.addApplication = function() {
                 var addAppModal = $modal.open({
                     templateUrl: '/app/partials/addApplication.html',
-                    controller: 'AddApplicationController',
+                    controller: 'AddObjectController',
                     resolve: {
-                        applicationInterface: function() { return applicationInterface; }
+                        savingInterface: function() { return applicationInterface; }
                     }
                 });
 
@@ -66,31 +66,6 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
                     $scope.applications = applicationInterface.getList().$object;
                 });
             };
-        })
-
-        .controller('AddApplicationController', function($scope, $modalInstance, applicationInterface) {
-            $scope.application = { id: undefined, name: undefined };
-            $scope.alerts = [];
-
-            $scope.save = function() {
-                applicationInterface.customPUT($scope.application).then(
-                    function success() {
-                        $modalInstance.close();
-                    },
-                    function error(response) {
-                        console.log("Error Adding New Application: ", response);
-                        $scope.alerts.push({ msg: response.data.message, type: 'danger' });
-                    }
-                );
-            };
-
-            $scope.closeAlert = function(index) {
-                $scope.alerts.splice(index, 1);
-            };
-
-            $scope.cancel = function() {
-                $modalInstance.dismiss('cancel');
-            }
         })
 
         .controller('EnvironmentController', function($scope, Restangular, $stateParams, $modal) {
@@ -101,25 +76,29 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
             $scope.addPropertyGroup = function() {
                 var addPropertyGroupModal = $modal.open({
                     templateUrl: '/app/partials/addPropertyGroup.html',
-                    controller: 'AddPropertyGroupController',
+                    controller: 'AddObjectController',
                     resolve: {
-                        environmentInterface: function() { return environmentInterface; }
+                        savingInterface: function() { return environmentInterface; }
                     }
+                });
+
+                addPropertyGroupModal.result.then(function () {
+                    $scope.environment = environmentInterface.get().$object;
                 });
             }
         })
 
-        .controller('AddPropertyGroupController', function($scope, $modalInstance, environmentInterface) {
-            $scope.propertyGroup = { id: undefined, name: undefined };
+        .controller('AddObjectController', function($scope, $modalInstance, savingInterface) {
+            $scope.addingObject = { id: undefined, name: undefined };
             $scope.alerts = [];
 
             $scope.save = function() {
-                environmentInterface.customPUT($scope.propertyGroup).then(
+                savingInterface.customPUT($scope.addingObject).then(
                     function success() {
                         $modalInstance.close();
                     },
                     function error(response) {
-                        console.log("Error Adding New Property Group: ", response);
+                        console.log("Error Adding New Object Group: ", response);
                         $scope.alerts.push({ msg: response.data.message, type: 'danger' });
                     }
                 );
