@@ -15,11 +15,11 @@
  */
 'use strict';
 
-define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angular-translate', 'angular-ui-router', 'bootstrap'], function ($, angular, translations) {
+define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angular-translate', 'angular-ui-router', 'bootstrap', 'angular-xeditable'], function ($, angular, translations) {
 
     // Declare app level module which depends on filters, and services
 
-    return angular.module('myApp', ['ui.bootstrap', 'restangular', 'pascalprecht.translate', 'ui.router'])
+    return angular.module('myApp', ['ui.bootstrap', 'restangular', 'pascalprecht.translate', 'ui.router', 'xeditable'])
         .config(function(RestangularProvider, $translateProvider, $stateProvider) {
             // Configure RESTAngular
             RestangularProvider.setBaseUrl("/api");
@@ -33,9 +33,6 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
             // Configure Translations
             $translateProvider.translations('en', translations).preferredLanguage('en');
 
-            // Turn on tooltips
-            $('[data-toggle="tooltip"]').tooltip();
-
             // Configure UI-Router
             $stateProvider
                 .state('application', {
@@ -47,6 +44,10 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
                     templateUrl: '/app/partials/environment.html',
                     controller: 'EnvironmentController'
                 });
+        })
+
+        .run(function(editableOptions) {
+            editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
         })
 
         .controller('MainCtrl', function($scope, $modal, Restangular) {
@@ -85,7 +86,11 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
                 addPropertyGroupModal.result.then(function () {
                     $scope.environment = environmentInterface.get().$object;
                 });
-            }
+            };
+
+            $scope.addProperty = function(propertyGroup) {
+                propertyGroup.allProperties.push({key: undefined, value: undefined});
+            };
         })
 
         .controller('AddObjectController', function($scope, $modalInstance, savingInterface) {

@@ -48,7 +48,7 @@ dependencies {
     // Misc
     compile 'com.mangofactory:swagger-springmvc:0.8.8'
     compile 'org.webjars:webjars-locator:0.17'
-    compile 'org.ventiv:spring-boot-webjars-requirejs:1.0.0'
+    compile 'org.ventiv:spring-boot-webjars-requirejs:1.0.2'
     compile 'com.fasterxml.jackson.datatype:jackson-datatype-hibernate4:2.4.3'
 
     // Web Jars
@@ -61,6 +61,7 @@ dependencies {
     compile 'org.webjars:restangular:1.4.0-2'
     compile 'org.webjars:lodash:2.4.1-6'
     compile 'org.webjars:angular-translate:2.3.0'
+    compile 'org.webjars:angular-xeditable:0.1.8'
 
 	// Testing Stack
 	testCompile 'junit:junit'

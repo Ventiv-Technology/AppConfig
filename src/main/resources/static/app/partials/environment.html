@@ -4,10 +4,15 @@
     <accordion close-others="false">
         <accordion-group ng-repeat="propertyGroup in environment.propertyGroups" is-open="true">
             <accordion-heading>
-                {{propertyGroup.name}} <i class="pull-right glyphicon glyphicon-plus" title="{{ 'ADD_PROPERTY' | translate }}"></i>
+                {{propertyGroup.name}} <i class="pull-right glyphicon glyphicon-plus" title="{{ 'ADD_PROPERTY' | translate }}" ng-click="addProperty(propertyGroup)"></i>
             </accordion-heading>
             <ul class="nav nav-sidebar">
-
+                <table class="table table-hover">
+                    <tr ng-repeat="property in propertyGroup.allProperties">
+                        <td width="30%"><a href="#" editable-text="property.key">{{ property.key || "empty" }}</a></td>
+                        <td width="66%"><a href="#" editable-textarea="property.value" e-rows="4" e-cols="80">{{ property.value || "empty" }}</a></td>
+                    </tr>
+                </table>
             </ul>
         </accordion-group>
     </accordion>
