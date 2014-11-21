@@ -24,7 +24,13 @@ define([], function() {
         ADD_APPLICATION: 'Add Application',
         APPLICATION_ID: 'Application Id',
         APPLICATION_NAME: 'Application Name',
+        ADD_ENVIRONMENT: 'Add Environment',
         REQUIRED_FIELD_ERROR: 'This field is required, please populate it',
-        APP_ID_PATTERN_ERROR: 'This field can only contain the following characters: A-Z, a-z, 0-9, _.  No spaces allowed.'
+        APP_ID_PATTERN_ERROR: 'This field can only contain the following characters: A-Z, a-z, 0-9, _.  No spaces allowed.',
+        INHERITS_FROM: "Inherits from {{parent.name}}",
+        ADD_PROPERTY_GROUP: "Add Property Group",
+        DELETE_ENVIRONMENT: "Delete Environment",
+        IMPORT: "Import",
+        PROPERTY_GROUP_NAME: "Property Group Name"
     }
 });

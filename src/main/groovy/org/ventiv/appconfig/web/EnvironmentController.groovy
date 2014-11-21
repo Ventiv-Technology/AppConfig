@@ -15,9 +15,12 @@
  */
 package org.ventiv.appconfig.web
 
+import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.ventiv.appconfig.exception.NotFoundException
 import org.ventiv.appconfig.model.Environment
@@ -25,6 +28,7 @@ import org.ventiv.appconfig.model.InheritanceType
 import org.ventiv.appconfig.model.Property
 import org.ventiv.appconfig.model.PropertyGroup
 import org.ventiv.appconfig.repository.ApplicationRepository
+import org.ventiv.appconfig.repository.EnvironmentRepository
 
 import javax.annotation.Resource
 
@@ -38,6 +42,7 @@ import javax.annotation.Resource
 class EnvironmentController {
 
     @Resource ApplicationRepository applicationRepository;
+    @Resource EnvironmentRepository environmentRepository;
 
     @RequestMapping(value = "/{environmentName}", method = RequestMethod.GET)
     public Environment getEnvironment(@PathVariable String applicationId, @PathVariable String environmentName) {
@@ -92,6 +97,22 @@ class EnvironmentController {
 
         return env;
     }
+
+    @RequestMapping(value = "/{environmentName}", method = RequestMethod.PUT)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public PropertyGroup savePropertyGroup(@PathVariable String applicationId, @PathVariable String environmentName, @RequestBody PropertyGroup propertyGroup) {
+        Environment env = applicationRepository.findOne(applicationId)?.getEnvironments()?.find { it.getName() == environmentName };
+        if (env == null)
+            throw new NotFoundException();
+
+        propertyGroup.setEnvironment(env);
+        env.getPropertyGroups().add(propertyGroup);
+
+        environmentRepository.save(env);
+
+        return propertyGroup;
+    }
+
 
     private List<Environment> getEnvironmentInheritanceList(Environment env) {
         if (env)

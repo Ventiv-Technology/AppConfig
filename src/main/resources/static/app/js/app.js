@@ -15,7 +15,7 @@
  */
 'use strict';
 
-define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angular-translate', 'angular-ui-router'], function (angular, translations) {
+define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angular-translate', 'angular-ui-router', 'bootstrap'], function ($, angular, translations) {
 
     // Declare app level module which depends on filters, and services
 
@@ -32,6 +32,9 @@ define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angul
 
             // Configure Translations
             $translateProvider.translations('en', translations).preferredLanguage('en');
+
+            // Turn on tooltips
+            $('[data-toggle="tooltip"]').tooltip();
 
             // Configure UI-Router
             $stateProvider
@@ -90,8 +93,44 @@ define(['angular', 'translations-en', 'ui-bootstrap-tpls', 'restangular', 'angul
             }
         })
 
-        .controller('EnvironmentController', function($scope, Restangular, $stateParams) {
+        .controller('EnvironmentController', function($scope, Restangular, $stateParams, $modal) {
             var applicationInterface = Restangular.all('application');
-            $scope.environment = applicationInterface.one($stateParams.applicationId).one($stateParams.environmentId).get();
+            var environmentInterface = applicationInterface.one($stateParams.applicationId).one($stateParams.environmentId);
+            $scope.environment = environmentInterface.get().$object;
+
+            $scope.addPropertyGroup = function() {
+                var addPropertyGroupModal = $modal.open({
+                    templateUrl: '/app/partials/addPropertyGroup.html',
+                    controller: 'AddPropertyGroupController',
+                    resolve: {
+                        environmentInterface: function() { return environmentInterface; }
+                    }
+                });
+            }
+        })
+
+        .controller('AddPropertyGroupController', function($scope, $modalInstance, environmentInterface) {
+            $scope.propertyGroup = { id: undefined, name: undefined };
+            $scope.alerts = [];
+
+            $scope.save = function() {
+                environmentInterface.customPUT($scope.propertyGroup).then(
+                    function success() {
+                        $modalInstance.close();
+                    },
+                    function error(response) {
+                        console.log("Error Adding New Property Group: ", response);
+                        $scope.alerts.push({ msg: response.data.message, type: 'danger' });
+                    }
+                );
+            };
+
+            $scope.closeAlert = function(index) {
+                $scope.alerts.splice(index, 1);
+            };
+
+            $scope.cancel = function() {
+                $modalInstance.dismiss('cancel');
+            }
         });
 });
