@@ -17,6 +17,7 @@ package org.ventiv.appconfig.web
 
 import groovy.json.JsonSlurper
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.http.MediaType
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.web.WebAppConfiguration
 import org.springframework.test.web.servlet.MockMvc
@@ -31,6 +32,7 @@ import spock.lang.Specification
 import javax.annotation.Resource
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 /**
@@ -135,6 +137,61 @@ class EnvironmentControllerSpec extends Specification {
 
         then:
         fetched.andExpect(status().isNotFound());
+    }
+
+    def "property save flow"() {
+        when:   "Add Property Group"
+        insertTestData();
+        def fetched = mockMvc.perform(
+                get("/api/application/EnvironmentControllerSpec/Development")
+        )
+        def addPropertyGroup = mockMvc.perform(
+                put("/api/application/EnvironmentControllerSpec/Development").
+                contentType(MediaType.APPLICATION_JSON).
+                content("""
+                    {"name":"NewGroup"}
+                """)
+        )
+        def addPropertyGroupObj = new JsonSlurper().parseText(addPropertyGroup.andReturn().getResponse().getContentAsString())
+
+        then:
+        addPropertyGroup.andExpect(status().isCreated());
+        addPropertyGroupObj.allProperties == []
+        addPropertyGroupObj.name == "NewGroup"
+
+        when:   "Add Property Key"
+        def addNewKey = mockMvc.perform(
+                put("/api/application/EnvironmentControllerSpec/Development").
+                contentType(MediaType.APPLICATION_JSON).
+                content("""
+                    {"id":${addPropertyGroupObj.id},"name":"NewGroup","groupOrder":null,"allProperties":[{"key":"new.key"}]}
+                """)
+        )
+        def addNewKeyObj = new JsonSlurper().parseText(addNewKey.andReturn().getResponse().getContentAsString())
+
+        then:
+        addNewKey.andExpect(status().isOk());
+        addNewKeyObj.allProperties[0].id;       // Ensure we got the assigned ID back
+        addNewKeyObj.allProperties[0].inheritanceType == "New";
+        addNewKeyObj.allProperties[0].key == "new.key";
+        addNewKeyObj.allProperties[0].value == null;
+
+        when:   "Add Property Value"
+        def addPropertyValue = mockMvc.perform(
+                put("/api/application/EnvironmentControllerSpec/Development").
+                contentType(MediaType.APPLICATION_JSON).
+                content("""
+                    {"id":${addPropertyGroupObj.id},"name":"NewGroup","groupOrder":null,"allProperties":[{"key":"new.key","value":"Testing Value","id":${addNewKeyObj.allProperties[0].id}}]}
+                """)
+        )
+        def addPropertyValueObj = new JsonSlurper().parseText(addPropertyValue.andReturn().getResponse().getContentAsString())
+
+        then:
+        addPropertyValue.andExpect(status().isOk());
+        addPropertyValueObj.allProperties[0].id == addNewKeyObj.allProperties[0].id;
+        addPropertyValueObj.allProperties[0].inheritanceType == "New";
+        addPropertyValueObj.allProperties[0].key == "new.key";
+        addPropertyValueObj.allProperties[0].value == "Testing Value";
     }
 
 
