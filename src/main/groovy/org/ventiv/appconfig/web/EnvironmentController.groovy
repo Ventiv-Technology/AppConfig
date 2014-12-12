@@ -16,6 +16,7 @@
 package org.ventiv.appconfig.web
 
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -100,17 +101,21 @@ class EnvironmentController {
 
     @RequestMapping(value = "/{environmentName}", method = RequestMethod.PUT)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public PropertyGroup savePropertyGroup(@PathVariable String applicationId, @PathVariable String environmentName, @RequestBody PropertyGroup propertyGroup) {
+    public ResponseEntity<PropertyGroup> savePropertyGroup(@PathVariable String applicationId, @PathVariable String environmentName, @RequestBody PropertyGroup propertyGroup) {
         Environment env = applicationRepository.findOne(applicationId)?.getEnvironments()?.find { it.getName() == environmentName };
         if (env == null)
             throw new NotFoundException();
 
         propertyGroup.setEnvironment(env);
+        boolean removedExisting = env.getPropertyGroups().removeAll { return it.getId() == propertyGroup.getId() }        // Remove the 'old' one, if it exists
         env.getPropertyGroups().add(propertyGroup);
 
-        environmentRepository.save(env);
+        Environment savedEnv = environmentRepository.save(env);
+        PropertyGroup savedPropertyGroup = savedEnv.getPropertyGroups().find { it.getId() == propertyGroup.getId() };
+        if (savedPropertyGroup == null)
+            savedPropertyGroup = savedEnv.getPropertyGroups().find { it.getId() == savedEnv.getPropertyGroups().collect { it.getId() }.max() }
 
-        return propertyGroup;
+        return new ResponseEntity<PropertyGroup>(savedPropertyGroup, removedExisting ? HttpStatus.OK :HttpStatus.CREATED);
     }
 
 

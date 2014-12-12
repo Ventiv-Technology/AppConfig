@@ -1,3 +1,20 @@
+<!--
+
+    Copyright (c) 2014 Ventiv Technology
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not
+    use this file except in compliance with the License. You may obtain a copy of
+    the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+    License for the specific language governing permissions and limitations under
+    the License.
+
+-->
 <div class="" id="properties">
     <p ng-show="environment.parent" translate="INHERITS_FROM" translate-values="{{environment}}"></p>
 
@@ -9,8 +26,8 @@
             <ul class="nav nav-sidebar">
                 <table class="table table-hover">
                     <tr ng-repeat="property in propertyGroup.allProperties">
-                        <td width="30%"><a href="#" editable-text="property.key">{{ property.key || "empty" }}</a></td>
-                        <td width="66%"><a href="#" editable-textarea="property.value" e-rows="4" e-cols="80">{{ property.value || "empty" }}</a></td>
+                        <td width="30%"><a href="#" editable-text="property.key" onbeforesave="savePropertyKey(propertyGroup, property, $data)">{{ property.key || "empty" }}</a></td>
+                        <td width="66%"><a href="#" editable-textarea="property.value" onbeforesave="savePropertyValue(propertyGroup, property, $data)" e-rows="4" e-cols="80">{{ property.value || "empty" }}</a></td>
                     </tr>
                 </table>
             </ul>

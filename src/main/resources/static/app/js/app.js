@@ -90,7 +90,26 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
 
             $scope.addProperty = function(propertyGroup) {
                 propertyGroup.allProperties.push({key: undefined, value: undefined});
+                return false;
             };
+
+            $scope.savePropertyKey = function(propertyGroup, property, newValue) {
+                if (newValue) {
+                    property.key = newValue;
+                    var promise = environmentInterface.customPUT(propertyGroup);
+                    promise.then(function(data) {
+                        property.id = _.find(data.allProperties, function(e) { return e.key == newValue; }).id
+                    });
+
+                    return promise;
+                } else
+                    return "Property Key Needs to be a value";
+            };
+
+            $scope.savePropertyValue = function(propertyGroup, property, newValue) {
+                property.value = newValue;
+                return environmentInterface.customPUT(propertyGroup);
+            }
         })
 
         .controller('AddObjectController', function($scope, $modalInstance, savingInterface) {
