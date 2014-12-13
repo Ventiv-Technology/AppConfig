@@ -32,6 +32,8 @@ define([], function() {
         DELETE_ENVIRONMENT: "Delete Environment",
         IMPORT: "Import",
         PROPERTY_GROUP_NAME: "Property Group Name",
-        ADD_PROPERTY: "Add Property"
+        ADD_PROPERTY: "Add Property",
+        PARENT: "Parent",
+        ENVIRONMENT_NAME: "Environment Name"
     }
 });

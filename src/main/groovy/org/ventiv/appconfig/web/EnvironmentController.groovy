@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.ventiv.appconfig.exception.NotFoundException
+import org.ventiv.appconfig.model.Application
 import org.ventiv.appconfig.model.Environment
 import org.ventiv.appconfig.model.InheritanceType
 import org.ventiv.appconfig.model.Property
@@ -97,6 +98,19 @@ class EnvironmentController {
         }
 
         return env;
+    }
+
+    @RequestMapping(method = RequestMethod.PUT)
+    public ResponseEntity<Environment> saveEnvironment(@PathVariable String applicationId, @RequestBody Environment environment) {
+        HttpStatus responseCode = environment.getId() ? HttpStatus.OK :HttpStatus.CREATED;
+        Application app = applicationRepository.findOne(applicationId);
+        environment.setApplication(app);
+
+        // Hydrate the parent
+        environment.setParent(environmentRepository.findOne(environment.getParent().getId()));
+
+        Environment savedEnvironment = environmentRepository.save(environment);
+        return new ResponseEntity<Environment>(savedEnvironment, responseCode);
     }
 
     @RequestMapping(value = "/{environmentName}", method = RequestMethod.PUT)

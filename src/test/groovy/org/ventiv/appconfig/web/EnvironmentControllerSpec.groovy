@@ -170,7 +170,6 @@ class EnvironmentControllerSpec extends Specification {
         def addNewKeyObj = new JsonSlurper().parseText(addNewKey.andReturn().getResponse().getContentAsString())
 
         then:
-        addNewKey.andExpect(status().isOk());
         addNewKeyObj.allProperties[0].id;       // Ensure we got the assigned ID back
         addNewKeyObj.allProperties[0].inheritanceType == "New";
         addNewKeyObj.allProperties[0].key == "new.key";
@@ -187,13 +186,34 @@ class EnvironmentControllerSpec extends Specification {
         def addPropertyValueObj = new JsonSlurper().parseText(addPropertyValue.andReturn().getResponse().getContentAsString())
 
         then:
-        addPropertyValue.andExpect(status().isOk());
         addPropertyValueObj.allProperties[0].id == addNewKeyObj.allProperties[0].id;
         addPropertyValueObj.allProperties[0].inheritanceType == "New";
         addPropertyValueObj.allProperties[0].key == "new.key";
         addPropertyValueObj.allProperties[0].value == "Testing Value";
     }
 
+    def "Add Environment"() {
+        when:
+        insertTestData();
+        def fetched = mockMvc.perform(
+                get("/api/application/EnvironmentControllerSpec/Development")
+        )
+        def fetchedObj = new JsonSlurper().parseText(fetched.andReturn().getResponse().getContentAsString())
+
+        def addEnvironment = mockMvc.perform(
+                put("/api/application/EnvironmentControllerSpec").
+                contentType(MediaType.APPLICATION_JSON).
+                content("""
+                    {"name":"QA","parent":{"id":${fetchedObj.id},"name":"Development","propertyGroups":null}}
+                """)
+        )
+        def addEnvironmentObj = new JsonSlurper().parseText(addEnvironment.andReturn().getResponse().getContentAsString())
+
+        then:
+        addEnvironment.andExpect(status().isCreated());
+        addEnvironmentObj.id;           // Some value for ID
+        addEnvironmentObj.name == "QA"
+    }
 
     private void insertTestData() {
         Application app = new Application([id: "EnvironmentControllerSpec", name: "Application for EnvironmentControllerSpec"]);

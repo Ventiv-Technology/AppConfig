@@ -67,6 +67,23 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
                     $scope.applications = applicationInterface.getList().$object;
                 });
             };
+
+            $scope.addEnvironment = function(application) {
+                $scope.currentApplication = application;
+
+                var addEnvModal = $modal.open({
+                    templateUrl: '/app/partials/addEnvironment.html',
+                    controller: 'AddObjectController',
+                    scope: $scope,
+                    resolve: {
+                        savingInterface: function() { return applicationInterface.one(application.id); }
+                    }
+                });
+
+                addEnvModal.result.then(function (saveResponseData) {
+                    application.environments.push(saveResponseData);
+                });
+            };
         })
 
         .controller('EnvironmentController', function($scope, Restangular, $stateParams, $modal) {
@@ -103,7 +120,7 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
 
                     return promise;
                 } else
-                    return "Property Key Needs to be a value";
+                    return "Property Key Needs to be a value";  // TODO: i18n
             };
 
             $scope.savePropertyValue = function(propertyGroup, property, newValue) {
@@ -118,8 +135,8 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
 
             $scope.save = function() {
                 savingInterface.customPUT($scope.addingObject).then(
-                    function success() {
-                        $modalInstance.close();
+                    function success(data) {
+                        $modalInstance.close(data);
                     },
                     function error(response) {
                         console.log("Error Adding New Object Group: ", response);
