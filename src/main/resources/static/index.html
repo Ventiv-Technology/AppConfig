@@ -73,17 +73,17 @@
                 <accordion close-others="true">
                     <accordion-group ng-repeat="application in applications">
                         <accordion-heading>
-                            {{application.name}} <i class="pull-right glyphicon glyphicon-plus" title="{{ 'ADD_ENVIRONMENT' | translate }}" ng-click="addEnvironment(application)"></i>
+                            <span id="{{application.id}}-application">{{application.name}}</span> <i class="pull-right glyphicon glyphicon-plus" title="{{ 'ADD_ENVIRONMENT' | translate }}" ng-click="addEnvironment(application)"></i>
                         </accordion-heading>
                         <ul class="nav nav-sidebar">
                             <li ng-repeat="environment in application.environments" ui-sref-active="active" class="item">
-                                <a href ui-sref="environment({applicationId: application.id, environmentId: environment.name})">{{environment.name}}</a>
+                                <a id="{{application.id}}-{{environment.id}}" href ui-sref="environment({applicationId: application.id, environmentId: environment.name})">{{environment.name}}</a>
                             </li>
                         </ul>
                     </accordion-group>
                 </accordion>
 
-                <button type="button" class="btn btn-success" ng-click="addApplication();">Add Application</button>
+                <button id="add-application-btn" type="button" class="btn btn-success" ng-click="addApplication();">Add Application</button>
             </div>
 
             <!-- Details -->

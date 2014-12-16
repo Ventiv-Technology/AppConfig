@@ -20,7 +20,7 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
     // Declare app level module which depends on filters, and services
 
     return angular.module('myApp', ['ui.bootstrap', 'restangular', 'pascalprecht.translate', 'ui.router', 'xeditable'])
-        .config(function(RestangularProvider, $translateProvider, $stateProvider) {
+        .config(function(RestangularProvider, $translateProvider, $stateProvider, $urlRouterProvider) {
             // Configure RESTAngular
             RestangularProvider.setBaseUrl("/api");
             RestangularProvider.setResponseExtractor(function(response, operation, what) {
@@ -34,7 +34,12 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
             $translateProvider.translations('en', translations).preferredLanguage('en');
 
             // Configure UI-Router
+            $urlRouterProvider.otherwise('/');
             $stateProvider
+                .state('landing', {
+                    url: '/',
+                    templateUrl: '/app/partials/landing.html'
+                })
                 .state('application', {
                     url: '/{applicationId}',
                     templateUrl: '/app/partials/application.html'

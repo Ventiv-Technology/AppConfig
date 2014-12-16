@@ -21,13 +21,13 @@
     <accordion close-others="false">
         <accordion-group ng-repeat="propertyGroup in environment.propertyGroups" is-open="true">
             <accordion-heading>
-                {{propertyGroup.name}} <i class="pull-right glyphicon glyphicon-plus" title="{{ 'ADD_PROPERTY' | translate }}" ng-click="addProperty(propertyGroup)"></i>
+                {{propertyGroup.name}} <i class="pull-right glyphicon glyphicon-plus" title="{{ 'ADD_PROPERTY' | translate }}" id="{{propertyGroup.id}}-add-property" ng-click="addProperty(propertyGroup)"></i>
             </accordion-heading>
             <ul class="nav nav-sidebar">
                 <table class="table table-hover">
-                    <tr ng-repeat="property in propertyGroup.allProperties">
-                        <td width="30%"><a href="#" editable-text="property.key" onbeforesave="savePropertyKey(propertyGroup, property, $data)">{{ property.key || "empty" }}</a></td>
-                        <td width="66%"><a href="#" editable-textarea="property.value" onbeforesave="savePropertyValue(propertyGroup, property, $data)" e-rows="4" e-cols="80">{{ property.value || "empty" }}</a></td>
+                    <tr id="{{property.key}}-property" ng-repeat="property in propertyGroup.allProperties">
+                        <td width="30%"><a href="#" id="{{property.key}}-property-key" e-id="{{property.key}}-property-key-input" editable-text="property.key" onbeforesave="savePropertyKey(propertyGroup, property, $data)">{{ property.key || "empty" }}</a></td>
+                        <td width="66%"><a href="#" id="{{property.key}}-property-value" e-id="{{property.key}}-property-value-input" editable-textarea="property.value" onbeforesave="savePropertyValue(propertyGroup, property, $data)" e-rows="4" e-cols="80">{{ property.value || "empty" }}</a></td>
                     </tr>
                 </table>
             </ul>
