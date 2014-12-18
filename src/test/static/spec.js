@@ -78,3 +78,22 @@ describe('environment page', function() {
         expect(element(by.id('testing.property.1-property-value')).getText()).toBe("Value for property: testing.property.1");
     });
 });
+
+describe('extending an environment', function() {
+    it('should add a new environment', function() {
+        waitForAndClick('John_Test-add-environment');       // Click the + on 'John's Test Environment'
+
+        element(by.model('addingObject.name')).sendKeys('Test_Environment');
+        element(by.cssContainingText('option', 'Default')).click();
+        element(by.id('add-environment-save')).click();
+
+        waitForModalToClose();
+    });
+
+    it('should inherit the properties from Default', function() {
+        browser.get('/#/John_Test/Test_Environment');
+
+        expect(element(by.id('testing.property.1-property-key')).getText()).toBe("testing.property.1");
+        expect(element(by.id('testing.property.1-property-value')).getText()).toBe("Value for property: testing.property.1");
+    });
+});
