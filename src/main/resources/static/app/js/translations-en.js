@@ -27,13 +27,18 @@ define([], function() {
         ADD_ENVIRONMENT: 'Add Environment',
         REQUIRED_FIELD_ERROR: 'This field is required, please populate it',
         APP_ID_PATTERN_ERROR: 'This field can only contain the following characters: A-Z, a-z, 0-9, _.  No spaces allowed.',
-        INHERITS_FROM: "Inherits from {{parent.name}}",
+        INHERITS_FROM: "Inherits from {{property.parent}}",
         ADD_PROPERTY_GROUP: "Add Property Group",
         DELETE_ENVIRONMENT: "Delete Environment",
         IMPORT: "Import",
         PROPERTY_GROUP_NAME: "Property Group Name",
         ADD_PROPERTY: "Add Property",
         PARENT: "Parent",
-        ENVIRONMENT_NAME: "Environment Name"
+        ENVIRONMENT_NAME: "Environment Name",
+        OVERRIDES_ORIGINAL_VALUE: "Overrides Original Value: {{property.originalValue}}",
+        REVERT_TO_ORIGINAL_VALUE: "Reverts Property to Original Value: {{property.originalValue}}",
+        DELETE_PERMANENTLY: "Deletes property permanently",
+        ENCRYPT_PROPERTY: "Encrypts this property using the public key",
+        DECRYPT_PROPERTY: "Decrypts this property using the private key"
     }
 });

@@ -27,7 +27,11 @@
                 <table class="table table-hover">
                     <tr id="{{property.key}}-property" ng-repeat="property in propertyGroup.allProperties">
                         <td width="30%"><a href="#" id="{{property.key}}-property-key" e-id="{{property.key}}-property-key-input" editable-text="property.key" onbeforesave="savePropertyKey(propertyGroup, property, $data)">{{ property.key || "empty" }}</a></td>
-                        <td width="66%"><a href="#" id="{{property.key}}-property-value" e-id="{{property.key}}-property-value-input" editable-textarea="property.value" onbeforesave="savePropertyValue(propertyGroup, property, $data)" e-rows="4" e-cols="80">{{ property.value || "empty" }}</a></td>
+                        <td width="64%"><a href="#" id="{{property.key}}-property-value" e-id="{{property.key}}-property-value-input" editable-textarea="property.value" onbeforesave="savePropertyValue(propertyGroup, property, $data)" e-rows="4" e-cols="80">{{ property.value || "empty" }}</a></td>
+
+                        <td width="2%" ng-repeat="(iconName, iconInfo) in getIconInfo(property)">
+                            <i class="pull-right glyphicon" title="{{ iconInfo.toolTip }}" ng-class="iconInfo.icon" id="{{property.key}}-{{iconName}}-property"></i>
+                        </td>
                     </tr>
                 </table>
             </ul>

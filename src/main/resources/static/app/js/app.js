@@ -91,7 +91,7 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
             };
         })
 
-        .controller('EnvironmentController', function($scope, Restangular, $stateParams, $modal) {
+        .controller('EnvironmentController', function($scope, Restangular, $stateParams, $modal, $translate) {
             var applicationInterface = Restangular.all('application');
             var environmentInterface = applicationInterface.one($stateParams.applicationId).one($stateParams.environmentId);
             $scope.environment = environmentInterface.get().$object;
@@ -131,6 +131,49 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
             $scope.savePropertyValue = function(propertyGroup, property, newValue) {
                 property.value = newValue;
                 return environmentInterface.customPUT(propertyGroup);
+            };
+
+            $scope.getIconInfo = function(property) {
+                if ($scope.iconInfo === undefined)
+                    $scope.iconInfo = {};
+
+                if ($scope.iconInfo[property.key] === undefined) {
+                    var propertyIconInfo = {
+                        inheritance: {},
+                        delete: {},
+                        encrypt: {}
+                    };
+                    $scope.iconInfo[property.key] = propertyIconInfo;
+
+                    // Derive Inheritance
+                    if (property.inheritanceType === 'Inherited') {
+                        propertyIconInfo.inheritance.icon = 'glyphicon-arrow-up';
+                        $translate('INHERITS_FROM', {property: property}).then(function(data) { propertyIconInfo.inheritance.toolTip = data });
+                    } else if (property.inheritanceType === 'Overridden' || property.inheritanceType === 'OverriddenUnchanged') {
+                        propertyIconInfo.inheritance.icon = 'glyphicon-share-alt';
+                        $translate('OVERRIDES_ORIGINAL_VALUE', {property: property}).then(function(data) { propertyIconInfo.inheritance.toolTip = data });
+                    }
+
+                    // Derive Delete
+                    if (property.inheritanceType === 'Overridden' || property.inheritanceType === 'OverriddenUnchanged') {
+                        propertyIconInfo.delete.icon = 'glyphicon-trash';
+                        $translate('REVERT_TO_ORIGINAL_VALUE', {property: property}).then(function(data) { propertyIconInfo.delete.toolTip = data });
+                    } else if (property.inheritanceType === 'New') {
+                        propertyIconInfo.delete.icon = 'glyphicon-trash';
+                        $translate('DELETE_PERMANENTLY', {property: property}).then(function(data) { propertyIconInfo.delete.toolTip = data });
+                    }
+
+                    // Derive Encryption
+                    if (property.inheritanceType != 'Inherited' && property.encrypted == false) {
+                        propertyIconInfo.encrypt.icon = 'glyphicon-lock';
+                        $translate('ENCRYPT_PROPERTY', {property: property}).then(function(data) { propertyIconInfo.encrypt.toolTip = data });
+                    } else if (property.inheritanceType != 'Inherited' && property.encrypted == true) {
+                        propertyIconInfo.encrypt.icon = 'glyphicon-ok-sign';
+                        $translate('DECRYPT_PROPERTY', {property: property}).then(function(data) { propertyIconInfo.encrypt.toolTip = data });
+                    }
+                }
+
+                return $scope.iconInfo[property.key];
             }
         })
 
