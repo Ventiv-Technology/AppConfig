@@ -88,6 +88,9 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
                 addEnvModal.result.then(function (saveResponseData) {
                     application.environments.push(saveResponseData);
                 });
+
+                if (window.event)
+                    window.event.stopPropagation();
             };
         })
 
@@ -112,7 +115,9 @@ define(['jquery', 'angular', 'translations-en', 'ui-bootstrap-tpls', 'restangula
 
             $scope.addProperty = function(propertyGroup) {
                 propertyGroup.allProperties.push({key: undefined, value: undefined});
-                return false;
+
+                if (window.event)
+                    window.event.stopPropagation();
             };
 
             $scope.savePropertyKey = function(propertyGroup, property, newValue) {
