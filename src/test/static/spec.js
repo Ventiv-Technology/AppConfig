@@ -69,7 +69,7 @@ describe('environment page', function() {
 
     it('should add a property', function() {
         waitForAndClick('1-add-property');      // Click the + on 'Main'
-        element(by.cssContainingText('span', 'Main')).click();       // Click on "Main" to re-expand,  shouldn't be necesary
+        element(by.cssContainingText('span', 'Main')).click();       // Click on "Main" to re-expand,  shouldn't be necessary
 
         enterXEditable('-property-key', 'testing.property.1', false);
         enterXEditable('testing.property.1-property-value', 'Value for property: testing.property.1', true);
@@ -95,5 +95,31 @@ describe('extending an environment', function() {
 
         expect(element(by.id('testing.property.1-property-key')).getText()).toBe("testing.property.1");
         expect(element(by.id('testing.property.1-property-value')).getText()).toBe("Value for property: testing.property.1");
+    });
+
+    it ('should be able to add a new property to the environment', function() {
+        waitForAndClick('1-add-property');      // Click the + on 'Main'
+        element(by.cssContainingText('span', 'Main')).click();       // Click on "Main" to re-expand,  shouldn't be necessary
+
+        enterXEditable('-property-key', 'new.property.1', false);
+        enterXEditable('new.property.1-property-value', 'Value for property: new.property.1', true);
+
+        // Verify that the inherited one is still there
+        expect(element(by.id('testing.property.1-property-key')).getText()).toBe("testing.property.1");
+        expect(element(by.id('testing.property.1-property-value')).getText()).toBe("Value for property: testing.property.1");
+
+        // Verify that the new one is there
+        expect(element(by.id('new.property.1-property-key')).getText()).toBe("new.property.1");
+        expect(element(by.id('new.property.1-property-value')).getText()).toBe("Value for property: new.property.1");
+
+        // RE-Verify Default
+        browser.get('/#/John_Test/Default');
+
+        // Make sure the old property is there
+        expect(element(by.id('testing.property.1-property-key')).getText()).toBe("testing.property.1");
+        expect(element(by.id('testing.property.1-property-value')).getText()).toBe("Value for property: testing.property.1");
+
+        // Make sure the new property is not there
+        expect(element(by.id('new.property.1-property-key')).isPresent()).toBe(false);
     });
 });

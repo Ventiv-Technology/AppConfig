@@ -15,6 +15,7 @@
  */
 package org.ventiv.appconfig.web
 
+import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.MediaType
@@ -26,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext
 import org.ventiv.appconfig.App
 import org.ventiv.appconfig.model.Application
 import org.ventiv.appconfig.model.Environment
+import org.ventiv.appconfig.model.InheritanceType
 import org.ventiv.appconfig.model.PropertyGroup
 import spock.lang.Specification
 
@@ -213,6 +215,33 @@ class EnvironmentControllerSpec extends Specification {
         addEnvironment.andExpect(status().isCreated());
         addEnvironmentObj.id;           // Some value for ID
         addEnvironmentObj.name == "QA"
+    }
+
+    def "Add property to extended environment"() {
+        when:
+        insertTestData();
+        def fetched = mockMvc.perform(
+                get("/api/application/EnvironmentControllerSpec/Development")
+        )
+        def fetchedObj = new JsonSlurper().parseText(fetched.andReturn().getResponse().getContentAsString())
+        def propertyGroupToUpdate = fetchedObj.propertyGroups[0];
+        propertyGroupToUpdate.allProperties << [key: "another.property.1"]
+
+        def putPropertyGroup = mockMvc.perform(
+                put("/api/application/EnvironmentControllerSpec/Development").
+                contentType(MediaType.APPLICATION_JSON).
+                content(JsonOutput.toJson(propertyGroupToUpdate))
+        )
+        def putPropertyGroupObj = new JsonSlurper().parseText(putPropertyGroup.andReturn().getResponse().getContentAsString())
+        def propertyFromDefault = putPropertyGroupObj.allProperties.find { it.key == "lone.property.group" }
+        def propertyFromNew = putPropertyGroupObj.allProperties.find { it.key == "another.property.1" }
+
+        then:
+        propertyFromDefault.inheritanceType == InheritanceType.Inherited.toString()
+        propertyFromDefault.key == "lone.property.group"
+
+        propertyFromNew.inheritanceType == InheritanceType.New.toString()
+        propertyFromNew.key == "another.property.1"
     }
 
     private void insertTestData() {

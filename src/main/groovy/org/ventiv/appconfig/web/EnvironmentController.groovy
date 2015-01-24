@@ -120,6 +120,10 @@ class EnvironmentController {
         if (env == null)
             throw new NotFoundException();
 
+        // Remove any 'inherited' properties from the property group, so we don't 'steal' their ownership
+        def propertiesToRemove = propertyGroup.getAllProperties().findAll { it.getInheritanceType() == InheritanceType.Inherited }
+        propertyGroup.getAllProperties().removeAll(propertiesToRemove);
+
         propertyGroup.setEnvironment(env);
         boolean removedExisting = env.getPropertyGroups().removeAll { return it.getId() == propertyGroup.getId() }        // Remove the 'old' one, if it exists
         env.getPropertyGroups().add(propertyGroup);
@@ -128,6 +132,9 @@ class EnvironmentController {
         PropertyGroup savedPropertyGroup = savedEnv.getPropertyGroups().find { it.getId() == propertyGroup.getId() };
         if (savedPropertyGroup == null)
             savedPropertyGroup = savedEnv.getPropertyGroups().find { it.getId() == savedEnv.getPropertyGroups().collect { it.getId() }.max() }
+
+        // Add back in the 'inherited' properties, per API contract
+        savedPropertyGroup.getAllProperties().addAll(propertiesToRemove);
 
         return new ResponseEntity<PropertyGroup>(savedPropertyGroup, removedExisting ? HttpStatus.OK :HttpStatus.CREATED);
     }
